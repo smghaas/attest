@@ -1,0 +1,6 @@
+.venv/
+state/
+logs/
+runs/
+video/
+__pycache__/
