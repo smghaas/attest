@@ -29,7 +29,8 @@ OUT_HTML = ROOT / "docs" / "hw7_report.html"
 REPO = "https://github.com/smghaas/attest"
 COMMITS = {"prereg": "2ae2327", "harness": "8f2ca7c", "probe": "6a229df", "cap": "750a61a"}
 
-TEAM = [("Samuel Haas", "TODO: contribution"), ("Eduard Alsina", "TODO: contribution")]
+TEAM = ("<b>Samuel Haas</b> and <b>Eduard Alsina</b>. Both worked together on every part of this homework: the claim "
+        "and baseline, the benchmark design, running the experiments, the change and retest, the analysis and this report.")
 
 # palette (validated: bench colors pass all six checks on white, see the report's method note)
 BLUE, ORANGE = "#2a78d6", "#eb6834"
@@ -303,7 +304,7 @@ def build() -> str:
                         f"${d1['C4_attest_only']['exposure_mean']:,.0f} per pass. <span class='pending'>The C3 (LLM) "
                         f"version of this retest is pending the LLM run.</span>")
 
-    team = " · ".join(f"<b>{esc(n)}</b>: {esc(c)}" for n, c in TEAM)
+    team = TEAM
     links = (f"<a href='{REPO}'>repository</a> · "
              f"<a href='{REPO}/blob/{COMMITS['prereg']}/bench/PREREG.md'>pre-registration ({COMMITS['prereg']})</a> · "
              f"<a href='{REPO}/tree/claude/exciting-johnson-ijjvmr/bench/results'>raw results, transcripts</a> · "
@@ -353,7 +354,7 @@ splitting, out-of-scope sub-agent, broken delegation, revoked mandate, replayed 
 slashed operator, prompt injection, expired mandate, stolen identity). Each case runs in a fresh gate world (new keys,
 stakes, state). <b>Success check:</b> the action recorded by the agent's <code>fulfil</code>/<code>decline</code>/<code>escalate</code>
 tool call (never its prose), compared with the pre-set expected action. <b>LLM conditions:</b> {llm_cfg}; at most 8
-model calls per request; all requests of a case in one conversation, so the baseline remembers earlier orders.
+{"tool" if (cfg or {}).get("harness") == "claude-code" else "model"} calls per request; all requests of a case in one conversation, so the baseline remembers earlier orders.
 <b>Costs:</b> tokens and dollars per request, gate latency in-process and over HTTP.
 <b>Reproduce:</b> <code>python -m bench.run_bench</code> (C0, C1, C4), <code>bench/run_llm.sh</code> or <code>bench/run_llm_subscription.sh</code> (C2, C3),
 <code>python -m bench.sybil</code>, <code>python -m bench.latency</code>; a second deterministic run gave identical

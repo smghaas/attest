@@ -18,7 +18,7 @@ ul { margin: 2pt 0 4pt 14pt; padding: 0; } li { margin: 1pt 0; }
 .brk { break-before: page; } .keep { break-inside: avoid; }
 </style></head><body>
 <h1>Attest: does a Know-Your-Agent check make an agent harder to fool?</h1>
-<p class="sub">MAS.665 AI Studio, Homework 7 · <b>Samuel Haas</b>: TODO: contribution · <b>Eduard Alsina</b>: TODO: contribution<br><a href='https://github.com/smghaas/attest'>repository</a> · <a href='https://github.com/smghaas/attest/blob/2ae2327/bench/PREREG.md'>pre-registration (2ae2327)</a> · <a href='https://github.com/smghaas/attest/tree/claude/exciting-johnson-ijjvmr/bench/results'>raw results, transcripts</a> · <a href='https://github.com/smghaas/attest/commit/6a229df'>limit probe (6a229df)</a> · <a href='https://github.com/smghaas/attest/commit/750a61a'>the change (750a61a)</a> · <a href='https://github.com/smghaas/attest/actions'>CI runs</a></p>
+<p class="sub">MAS.665 AI Studio, Homework 7 · <b>Samuel Haas</b> and <b>Eduard Alsina</b>. Both worked together on every part of this homework: the claim and baseline, the benchmark design, running the experiments, the change and retest, the analysis and this report.<br><a href='https://github.com/smghaas/attest'>repository</a> · <a href='https://github.com/smghaas/attest/blob/2ae2327/bench/PREREG.md'>pre-registration (2ae2327)</a> · <a href='https://github.com/smghaas/attest/tree/claude/exciting-johnson-ijjvmr/bench/results'>raw results, transcripts</a> · <a href='https://github.com/smghaas/attest/commit/6a229df'>limit probe (6a229df)</a> · <a href='https://github.com/smghaas/attest/commit/750a61a'>the change (750a61a)</a> · <a href='https://github.com/smghaas/attest/actions'>CI runs</a></p>
 
 <h2>1. Claim and baseline</h2>
 <div class="claim">A supplier agent that checks senders with Attest before acting blocks unauthorized agent-to-agent
@@ -40,7 +40,7 @@ splitting, out-of-scope sub-agent, broken delegation, revoked mandate, replayed 
 slashed operator, prompt injection, expired mandate, stolen identity). Each case runs in a fresh gate world (new keys,
 stakes, state). <b>Success check:</b> the action recorded by the agent's <code>fulfil</code>/<code>decline</code>/<code>escalate</code>
 tool call (never its prose), compared with the pre-set expected action. <b>LLM conditions:</b> claude-sonnet-5-5, effort medium, 5 reps per case, run through headless Claude Code 2.1.318 on a Claude subscription with its own system prompt replaced by ours and its built-in tools off (a <a href='https://github.com/smghaas/attest/blob/claude/exciting-johnson-ijjvmr/bench/PREREG.md#amendment-2026-11-04-before-any-llm-episode-was-run'>dated amendment</a>, before any LLM run; the budget counts tool calls and cost is the API-equivalent figure, not money billed); run llm-main at commit 84960d0; at most 8
-model calls per request; all requests of a case in one conversation, so the baseline remembers earlier orders.
+tool calls per request; all requests of a case in one conversation, so the baseline remembers earlier orders.
 <b>Costs:</b> tokens and dollars per request, gate latency in-process and over HTTP.
 <b>Reproduce:</b> <code>python -m bench.run_bench</code> (C0, C1, C4), <code>bench/run_llm.sh</code> or <code>bench/run_llm_subscription.sh</code> (C2, C3),
 <code>python -m bench.sybil</code>, <code>python -m bench.latency</code>; a second deterministic run gave identical
