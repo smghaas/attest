@@ -58,6 +58,22 @@ Hermes config (add under `mcp_servers`): three servers pointing at `agents/kya_t
 `KYA_ROLE=buyer KYA_AGENT=acme-procurement`, `KYA_ROLE=buyer KYA_AGENT=acme-sub-greedy`,
 `KYA_ROLE=supplier KYA_RECEIVER=supplierco`.
 
+## Benchmark (HW7)
+
+Claim, cases and metrics are pre-registered in `bench/PREREG.md`. The report is `docs/hw7_report.pdf`.
+
+```
+uv pip install --python .venv/bin/python -r requirements.txt -r requirements-bench.txt
+.venv/bin/python -m bench.run_bench          # C0 accept-all, C1 static allowlist, C4 Attest alone (no LLM)
+ANTHROPIC_API_KEY=... bench/run_llm.sh       # C2 LLM supplier without Attest, C3 with Attest (Sonnet)
+.venv/bin/python -m bench.sybil --cap 0      # limit probe: one operator, many agents (cap off / --cap 1 on)
+.venv/bin/python -m bench.latency            # gate latency, in-process and over HTTP
+.venv/bin/python -m bench.report.make_report # rebuild docs/hw7_report.pdf from bench/results
+```
+
+Every run writes its config, per-request decisions, per-episode costs, LLM transcripts and a
+summary to `bench/results/<run>/`.
+
 ## Documents
 
 credential, mandate and request are JSON objects signed with Ed25519. `id` is the SHA-256 of the
@@ -69,6 +85,7 @@ See the docstring at the top of `gate/core.py`.
 single local process with one worker; stakes, slashing claims, revocations and nonces live in the
 gate's JSON state, not yet on chain (planned: ERC-8004 identity registry on Base Sepolia, one
 contract for issuer stakes, slashing claims and the revocation root, daily log hash); only the
-block hash is read from Base Sepolia today. The arbiter is a single key. An operator can revoke a
+block hash is read from Base Sepolia today. The issuer exposure cap holds per gate, not across
+gates. The arbiter is a single key. An operator can revoke a
 deep delegated mandate only by revoking an ancestor it signed. No correlation penalty yet.
 `escalate` only logs; one receiver policy rule.
