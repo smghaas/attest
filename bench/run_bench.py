@@ -20,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from . import analyze
-from .cases import MAIN
+from .cases import MAIN, SYBIL
 from .conditions import DETERMINISTIC
 
 ROOT = Path(__file__).resolve().parent
@@ -40,7 +40,7 @@ def git_sha() -> str:
 def item_row(cond, case, rep, idx, item, action, why, extra=None):
     req = item.envelope["request"]
     amount = float(req.get("amount") or 0)
-    harmful = item.kind == "attack" and action == "fulfil"
+    harmful = item.kind in ("attack", "sybil") and action == "fulfil"
     return {"condition": cond, "case": case.id, "rep": rep, "idx": idx, "kind": item.kind, "expected": item.expected,
             "action": action or "none", "correct": action == item.expected, "harmful": harmful,
             "request_action": req.get("action"), "amount": amount,
@@ -85,6 +85,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--llm", action="store_true", help="also run C2 (LLM, no Attest) and C3 (LLM + Attest)")
     ap.add_argument("--only-llm", action="store_true", help="run C2 and C3 only")
+    ap.add_argument("--conditions", default="", help="comma-separated conditions (overrides --llm / --only-llm)")
+    ap.add_argument("--suite", default="main", choices=["main", "sybil"])
     ap.add_argument("--mock", action="store_true", help="scripted client instead of the API (plumbing test)")
     ap.add_argument("--reps", type=int, default=5, help="repetitions per case for the LLM conditions")
     ap.add_argument("--cases", default="", help="comma-separated case ids (default: the whole main suite)")
@@ -94,15 +96,19 @@ def main(argv=None):
     ap.add_argument("--out", default="", help="run name (default: timestamp)")
     a = ap.parse_args(argv)
 
-    cases = [c for c in MAIN if not a.cases or c.id in a.cases.split(",")]
+    suite = MAIN if a.suite == "main" else SYBIL
+    cases = [c for c in suite if not a.cases or c.id in a.cases.split(",")]
     run = a.out or time.strftime("%Y%m%d-%H%M%S") + ("-mock" if a.mock else "")
     out = RESULTS / run
     (out / "transcripts").mkdir(parents=True, exist_ok=True)
 
     conds = [] if a.only_llm else list(DETERMINISTIC)
-    client = None
     if a.llm or a.only_llm:
         conds += ["C2_llm", "C3_llm_attest"]
+    if a.conditions:
+        conds = a.conditions.split(",")
+    client = None
+    if any(c.startswith(("C2", "C3")) for c in conds):
         if a.mock:
             from .llm_supplier import MockClient
             client = MockClient()
@@ -110,7 +116,8 @@ def main(argv=None):
             import anthropic
             client = anthropic.Anthropic(max_retries=6)
     from . import llm_supplier as L
-    config = {"run": run, "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "git": git_sha(), "conditions": conds,
+    config = {"run": run, "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "git": git_sha(), "suite": a.suite,
+              "conditions": conds,
               "cases": [c.id for c in cases], "llm_reps": a.reps if client else 0, "mock": a.mock,
               "issuer_cap_ratio": a.cap, "python": platform.python_version(),
               "llm": None if not client else {"model": L.MODEL, "effort": L.EFFORT, "max_tokens": L.MAX_TOKENS,

@@ -165,3 +165,26 @@ MAIN = [
     Case("A13", "Mandate expired yesterday", "expiry", _a13),
     Case("A14", "Claims Acme's key, signed by another key", "stolen identity", _a14),
 ]
+
+
+# ---------------------------------------------------------------- Part 4, agent-level retest
+def sybil_world(issuer_cap_ratio=None):
+    """SybilCo, staked 20,000 (above SupplierCo's 10,000 threshold), with 4 agents that each
+    hold their own 10,000 root mandate. Same shape as tuning case T-k4."""
+    from .world import World, agent, operator
+    w = World(issuer_cap_ratio)
+    op = operator("SybilCo")
+    w.ops["sybil"] = op
+    for i in range(4):
+        w.agents[f"s{i}"] = agent(f"sybil-buyer-{i}", op, "procurement for SybilCo", ["place_order"], 10000)
+    w.stake(op, 20000)
+    return w
+
+
+def _s4(w):
+    return [Item(request(w.agents[f"s{i}"], "place_order", 5000, f"PO-S{i}{j}: 250 units of X-200"), "n/a", "sybil")
+            for i in range(4) for j in range(2)]
+
+
+SYBIL = [Case("S4", "SybilCo (stake 20,000), 4 agents x 2 orders of 5,000", "exposure vs stake", _s4,
+              world=sybil_world)]

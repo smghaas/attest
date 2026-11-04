@@ -1,0 +1,17 @@
+{
+ "run": "det-sybil-cap0",
+ "started": "2026-11-04T18:10:27+0000",
+ "git": "750a61ac66b1b4a9e36aeb5411d38004c0e0324e",
+ "suite": "sybil",
+ "conditions": [
+  "C4_attest_only"
+ ],
+ "cases": [
+  "S4"
+ ],
+ "llm_reps": 0,
+ "mock": false,
+ "issuer_cap_ratio": 0.0,
+ "python": "3.13.18",
+ "llm": null
+}

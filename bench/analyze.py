@@ -47,6 +47,7 @@ def summarize(run_dir: Path) -> dict:
         unnec = sum(r["expected"] == "fulfil" and r["action"] == "escalate" for r in val)
         reps = sorted({r["rep"] for r in rs})
         exposure_per_rep = [sum(r["exposure"] for r in rs if r["rep"] == k) for k in reps]
+        syb = [r for r in rs if r["kind"] == "sybil"]
         ce = eps_by[cond]
         n_req = len(rs)
         gate_ms = [x for e in ce for x in e.get("gate_ms", [])]
@@ -70,6 +71,7 @@ def summarize(run_dir: Path) -> dict:
             "checked_share": (sum(r.get("checked", False) for r in rs) / n_req) if cond.startswith("C3") and n_req else None,
             "episode_errors": sum(bool(e.get("error")) for e in ce),
             "refusals": sum(e.get("stop") == "refusal" for e in ce),
+            "sybil_fulfilled_share": (sum(r["action"] == "fulfil" for r in syb) / len(syb)) if syb else None,
         }
         per_case = defaultdict(lambda: defaultdict(int))
         for r in rs:
@@ -92,8 +94,10 @@ def table(s: dict) -> str:
         lo, hi = m["block_ci"]
         flo, fhi = m["false_refusal_ci"]
         exp = f"{m['exposure_mean']:,.0f}" + (f" ({m['exposure_min']:,.0f}-{m['exposure_max']:,.0f})" if m["reps"] > 1 else "")
-        lines.append(f"| {c} | {m['reps']} | {m['block_rate']:.0%} ({lo:.0%}-{hi:.0%}) | "
-                     f"{m['false_refusal_rate']:.0%} ({flo:.0%}-{fhi:.0%}) | {m['unnecessary_escalations']} | {exp} | "
+        def rate(x, a, b):
+            return "n/a" if math.isnan(x) else f"{x:.0%} ({a:.0%}-{b:.0%})"
+        lines.append(f"| {c} | {m['reps']} | {rate(m['block_rate'], lo, hi)} | "
+                     f"{rate(m['false_refusal_rate'], flo, fhi)} | {m['unnecessary_escalations']} | {exp} | "
                      f"{m['accuracy']:.0%} | {m['cost_per_request_usd']:.4f} | "
                      f"{'' if math.isnan(m['gate_ms_p50']) else f'{m['gate_ms_p50']:.2f}'} |")
     return "\n".join(lines)
