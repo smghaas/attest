@@ -66,6 +66,7 @@ Claim, cases and metrics are pre-registered in `bench/PREREG.md`. The report is 
 uv pip install --python .venv/bin/python -r requirements.txt -r requirements-bench.txt
 .venv/bin/python -m bench.run_bench          # C0 accept-all, C1 static allowlist, C4 Attest alone (no LLM)
 ANTHROPIC_API_KEY=... bench/run_llm.sh       # C2 LLM supplier without Attest, C3 with Attest (Sonnet)
+bench/run_llm_subscription.sh --smoke      # same, on a Claude subscription via headless Claude Code
 .venv/bin/python -m bench.sybil --cap 0      # limit probe: one operator, many agents (cap off / --cap 1 on)
 .venv/bin/python -m bench.latency            # gate latency, in-process and over HTTP
 .venv/bin/python -m bench.report.make_report # rebuild docs/hw7_report.pdf from bench/results

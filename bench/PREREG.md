@@ -114,3 +114,19 @@ places two orders of 5,000, below the escalation threshold. Measured under C4:
 
 Any change motivated by this probe will be judged on these tuning cases, and on fresh cases
 committed before the change is implemented.
+
+## Amendment, 2026-11-04 (before any LLM episode was run)
+
+The team runs the LLM conditions on a Claude subscription rather than API credits, so C2 and C3
+reach Sonnet through headless Claude Code (`claude -p`, `bench/claude_code.py`) instead of a bare
+Messages API loop. Everything else is unchanged and identical in both arms:
+- the same model (claude-sonnet-5-5) and effort (medium)
+- the same system prompt (it replaces Claude Code's own) and kickoff message
+- the same tools, served by an MCP server per episode (`bench/desk_mcp.py`); Claude Code's built-in tools are off
+- the same decision of record and the same scoring
+
+Two differences follow from the harness:
+- The budget is 8 tool calls per request, counted by the desk, instead of 8 model calls.
+- Cost per request is the API-equivalent figure Claude Code reports, not money billed.
+
+The API route (`bench/run_llm.sh`) remains available and gives comparable results.
