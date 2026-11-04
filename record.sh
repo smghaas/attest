@@ -7,7 +7,7 @@ W=1512; TOP=25; H=860   # main screen is 1512x982 points; leave the menu bar and
 osascript <<APPLESCRIPT
 tell application "Terminal"
   activate
-  set w to do script "cd ~/kya-gate && ./demo.sh"
+  set w to do script "cd '$PWD' && ./demo.sh"
   delay 0.5
   set bounds of front window to {0, $TOP, $W, $((TOP+H))}
   try

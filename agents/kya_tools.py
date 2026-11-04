@@ -33,19 +33,20 @@ ROOT = Path(__file__).resolve().parent.parent
 import sys
 sys.path.insert(0, str(ROOT))
 from gate import crypto  # noqa: E402
+from gate.core import LOG_DIR, STATE_DIR  # noqa: E402
 
 GATE = os.environ.get("KYA_GATE_URL", "http://127.0.0.1:8402")
 ROLE = os.environ.get("KYA_ROLE", "buyer")
 AGENT = os.environ.get("KYA_AGENT", "acme-procurement")
 RECEIVER = os.environ.get("KYA_RECEIVER", "supplierco")
-AG_DIR = ROOT / "state" / "agents"
-AUDIT = ROOT / "logs" / "tools_audit.log"
+AG_DIR = STATE_DIR / "agents"
+AUDIT = LOG_DIR / "tools_audit.log"
 
 mcp = MCPServer(f"kya_{ROLE}")
 
 
 def _audit(tool: str, args: dict, out):
-    AUDIT.parent.mkdir(exist_ok=True)
+    AUDIT.parent.mkdir(parents=True, exist_ok=True)
     with AUDIT.open("a") as f:
         f.write(json.dumps({"ts": time.time(), "role": ROLE, "agent": AGENT if ROLE == "buyer" else RECEIVER,
                             "tool": tool, "args": args, "out": out}, default=str) + "\n")
@@ -82,7 +83,7 @@ if ROLE == "buyer":
             "type": "kya.request/1", "from": me["pub"], "to": to, "action": action,
             "amount": float(amount), "message": message, "ts": time.time(), "nonce": uuid.uuid4().hex})
         env = {"credential": me["credential"], "chain": me["chain"], "request": req}
-        r = httpx.post(f"{GATE}/inbox/{to}", json=env, timeout=10).json()
+        httpx.post(f"{GATE}/inbox/{to}", json=env, timeout=10).raise_for_status()
         out = {"sent": True, "request_id": req["id"], "to": to, "action": action, "amount": amount,
                "attached": f"credential from {me['credential']['operator']}, mandate chain depth {len(me['chain'])}, request signed by {me['name']}"}
         _audit("send_request", {"action": action, "amount": amount, "to": to}, out)
