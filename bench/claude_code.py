@@ -21,7 +21,11 @@ from pathlib import Path
 from .llm_supplier import EFFORT, KICKOFF, MODEL, system_prompt
 
 ROOT = Path(__file__).resolve().parent.parent
-CLAUDE = os.environ.get("CLAUDE_BIN", "claude")
+CLAUDE = os.environ.get("CLAUDE_BIN") or shutil.which("claude") or "claude"
+if CLAUDE.lower().endswith((".cmd", ".bat")):
+    # Windows npm shim: cmd.exe would mangle the multi-line --system-prompt argument
+    sys.exit("Found the npm 'claude.cmd' wrapper. Install the native Claude Code build instead "
+             "(PowerShell: irm https://claude.ai/install.ps1 | iex) or set CLAUDE_BIN to claude.exe.")
 TIMEOUT_PER_ITEM_S = 240
 TOOLS = ["inbox_next", "view_documents", "quote_price", "check_agent", "fulfil", "decline", "escalate"]
 LIMIT_RE = re.compile(r"usage limit|rate limit|limit reached|too many requests|overloaded|\b429\b", re.I)
@@ -33,7 +37,8 @@ class UsageLimit(RuntimeError):
 
 def cli_version() -> str:
     try:
-        return subprocess.run([CLAUDE, "--version"], capture_output=True, text=True, timeout=30).stdout.strip()
+        return subprocess.run([CLAUDE, "--version"], capture_output=True, encoding="utf-8", errors="replace",
+                              timeout=30).stdout.strip()
     except (OSError, subprocess.SubprocessError):
         return "unknown"
 
@@ -60,11 +65,12 @@ def run_episode(case, rep: int, cond: str, cap, n_items: int) -> dict:
             env = dict(os.environ)
         t0 = time.time()
         try:
-            p = subprocess.run(cmd, cwd=work, env=env, capture_output=True, text=True,
+            p = subprocess.run(cmd, cwd=work, env=env, capture_output=True, encoding="utf-8", errors="replace",
                                timeout=TIMEOUT_PER_ITEM_S * n_items)
             stdout, stderr = p.stdout, p.stderr
         except subprocess.TimeoutExpired as e:
-            stdout, stderr = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""), "timeout"
+            raw = e.stdout or ""
+            stdout, stderr = raw.decode("utf-8", "replace") if isinstance(raw, bytes) else raw, "timeout"
         wall = time.time() - t0
         events = []
         for line in stdout.splitlines():
