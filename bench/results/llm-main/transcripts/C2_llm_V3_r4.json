@@ -1,0 +1,608 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLGswUbjWLnUhDxJxd",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01JAXYm3F7NDo4dvxjKKF27M",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 366,
+    "cache_read_input_tokens": 2048,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 366
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "b14cbffe-2d35-4965-9954-bd40d1e04d22",
+  "timestamp": "2026-11-04T19:00:13.518Z",
+  "request_id": "req_011CgiQLGJxYktm7nEoZXa3s",
+  "wire_tool_inputs": {
+   "toolu_01JAXYm3F7NDo4dvxjKKF27M": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01JAXYm3F7NDo4dvxjKKF27M",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01JAXYm3F7NDo4dvxjKKF27M",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"a33526e465cd2b12\",\n  \"action\": \"request_quote\",\n  \"amount\": 3000.0,\n  \"message\": \"Quote please: 150 units of X-200\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "be2a5852-d1ac-4f86-9450-43bbaf23830d",
+  "timestamp": "2026-11-04T19:00:13.622Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"a33526e465cd2b12\",\n  \"action\": \"request_quote\",\n  \"amount\": 3000.0,\n  \"message\": \"Quote please: 150 units of X-200\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01JAXYm3F7NDo4dvxjKKF27M",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLMWkQ1Y7gxG1bhuDZ",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01KgyAe2j8ZKQE3qxfokB67b",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 143,
+    "cache_read_input_tokens": 2414,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 143
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "943fc8f8-48cb-4ad3-9d71-1f4a5763f071",
+  "timestamp": "2026-11-04T19:00:14.531Z",
+  "request_id": "req_011CgiQLLxWA5Ue1UsaMx8Yj",
+  "wire_tool_inputs": {
+   "toolu_01KgyAe2j8ZKQE3qxfokB67b": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01KgyAe2j8ZKQE3qxfokB67b",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01KgyAe2j8ZKQE3qxfokB67b",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"3a2894655b82efe3\",\n    \"issuer_key\": \"aa2b61096897e59c\",\n    \"issued_at\": \"2026-11-04 19:00 UTC\",\n    \"expires_at\": \"2026-12-04 19:00 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"aa2b61096897e59c\",\n      \"subject_key\": \"3a2894655b82efe3\",\n      \"id\": \"edea3a5fee8fd866\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:00 UTC\",\n      \"signature_attached\": true\n    },\n    {\n      \"depth\": 1,\n      \"issuer_key\": \"3a2894655b82efe3\",\n      \"subject_key\": \"a33526e465cd2b12\",\n      \"id\": \"f35faeb847da9ec2\",\n      \"parent\": \"edea3a5fee8fd866\",\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\"\n        ],\n        \"max_amount\": 5000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-11-11 19:00 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"64027ea7a4fed69d\",\n    \"from_key\": \"a33526e465cd2b12\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 3000.0,\n    \"ts\": \"2026-11-04 19:00 UTC\",\n    \"nonce\": \"dfff94ca5cc7402d97b225e1cf2702c8\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:00 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "ccf91801-4cfa-490e-8840-49344859c1c6",
+  "timestamp": "2026-11-04T19:00:14.577Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"3a2894655b82efe3\",\n    \"issuer_key\": \"aa2b61096897e59c\",\n    \"issued_at\": \"2026-11-04 19:00 UTC\",\n    \"expires_at\": \"2026-12-04 19:00 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"aa2b61096897e59c\",\n      \"subject_key\": \"3a2894655b82efe3\",\n      \"id\": \"edea3a5fee8fd866\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:00 UTC\",\n      \"signature_attached\": true\n    },\n    {\n      \"depth\": 1,\n      \"issuer_key\": \"3a2894655b82efe3\",\n      \"subject_key\": \"a33526e465cd2b12\",\n      \"id\": \"f35faeb847da9ec2\",\n      \"parent\": \"edea3a5fee8fd866\",\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\"\n        ],\n        \"max_amount\": 5000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-11-11 19:00 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"64027ea7a4fed69d\",\n    \"from_key\": \"a33526e465cd2b12\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 3000.0,\n    \"ts\": \"2026-11-04 19:00 UTC\",\n    \"nonce\": \"dfff94ca5cc7402d97b225e1cf2702c8\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:00 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01KgyAe2j8ZKQE3qxfokB67b",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLRWMdXQMt1VWcE6qw",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Chain looks valid for a quote within the limit."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 747,
+    "cache_read_input_tokens": 2557,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 747
+    },
+    "output_tokens": 44,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "2443d31f-bed9-4706-a6b6-5baf13d4efa4",
+  "timestamp": "2026-11-04T19:00:15.493Z",
+  "request_id": "req_011CgiQLQvP34zZmaPS1ewxt"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLRWMdXQMt1VWcE6qw",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01PrbC3ZcKRHz5DLr3YZLTEt",
+     "name": "mcp__desk__quote_price",
+     "input": {
+      "part": "X-200",
+      "units": 150
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 747,
+    "cache_read_input_tokens": 2557,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 747
+    },
+    "output_tokens": 44,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "9282179a-8e00-408c-9dd6-b5e019bc38f7",
+  "timestamp": "2026-11-04T19:00:15.704Z",
+  "request_id": "req_011CgiQLQvP34zZmaPS1ewxt",
+  "wire_tool_inputs": {
+   "toolu_01PrbC3ZcKRHz5DLr3YZLTEt": {
+    "part": "X-200",
+    "units": 150
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01PrbC3ZcKRHz5DLr3YZLTEt",
+    "display_name": "Quote Price",
+    "server_display_name": "desk",
+    "tool_name": "quote_price"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01PrbC3ZcKRHz5DLr3YZLTEt",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"part\": \"X-200\",\n  \"units\": 150,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 2778.75\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "d589ca53-4888-4c7f-a3e2-51db18b712dd",
+  "timestamp": "2026-11-04T19:00:15.735Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"part\": \"X-200\",\n  \"units\": 150,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 2778.75\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01PrbC3ZcKRHz5DLr3YZLTEt",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLWXDma5kkN8CRahas",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01XmJ3xYpQbA4LAE6owSddrv",
+     "name": "mcp__desk__fulfil",
+     "input": {
+      "message_id": "m1",
+      "note": "Quote: 150 x X-200 at 19.50 with 5% volume discount = 2,778.75 USD."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 158,
+    "cache_read_input_tokens": 3304,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 158
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "16dd769b-25b0-4cfa-a3df-b4a595f64f11",
+  "timestamp": "2026-11-04T19:00:17.102Z",
+  "request_id": "req_011CgiQLVs3KNWUEUU8kVyy5",
+  "wire_tool_inputs": {
+   "toolu_01XmJ3xYpQbA4LAE6owSddrv": {
+    "message_id": "m1",
+    "note": "Quote: 150 x X-200 at 19.50 with 5% volume discount = 2,778.75 USD."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01XmJ3xYpQbA4LAE6owSddrv",
+    "display_name": "Fulfil",
+    "server_display_name": "desk",
+    "tool_name": "fulfil"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01XmJ3xYpQbA4LAE6owSddrv",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "3353c08f-e766-4c5a-b38e-5f6671f40520",
+  "timestamp": "2026-11-04T19:00:17.120Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01XmJ3xYpQbA4LAE6owSddrv",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLWXDma5kkN8CRahas",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01AeSPsADFGxtaZ9eFkDKrJG",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 158,
+    "cache_read_input_tokens": 3304,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 158
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "da617eeb-ed82-484b-9a57-bc7f8d504e56",
+  "timestamp": "2026-11-04T19:00:17.144Z",
+  "request_id": "req_011CgiQLVs3KNWUEUU8kVyy5",
+  "wire_tool_inputs": {
+   "toolu_01AeSPsADFGxtaZ9eFkDKrJG": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01AeSPsADFGxtaZ9eFkDKrJG",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01AeSPsADFGxtaZ9eFkDKrJG",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "f5ade532-a1d2-4095-80aa-f4d310d758e6",
+  "timestamp": "2026-11-04T19:00:17.165Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01AeSPsADFGxtaZ9eFkDKrJG",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQLcSBUKRzQYQDgXtLB",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I processed the one request in the inbox (m1) and fulfilled it. The inbox is now empty.\n\nm1 came from an agent acting for AcmeCorp and asked for a quote on 150 units of X-200. The documents showed a valid chain of authority. AcmeCorp's agent had delegated to the sender the right to request quotes, up to 5,000 USD, until 2026-11-11. This request was a quote for 3,000 USD, so it fell within that scope.\n\nI quoted 150 units at 19.50 each, less the 5% volume discount, for a total of 2,778.75 USD."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 265,
+    "cache_read_input_tokens": 3462,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 265
+    },
+    "output_tokens": 194,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "e8dee3e5-d921-4b85-81bc-979d2686d8d6",
+  "uuid": "17761e81-ad0a-4510-83da-a08bc5a65db7",
+  "timestamp": "2026-11-04T19:00:19.262Z",
+  "request_id": "req_011CgiQLbpUE7WNYNfUCisJt"
+ }
+]

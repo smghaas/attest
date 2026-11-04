@@ -1,0 +1,608 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTRDgVAzn5JGN4sdDj",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01BSZrBmkbzpASGGisZ1Ko3p",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 364,
+    "cache_read_input_tokens": 2048,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 364
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "5b3a5fd0-e714-4581-8f19-645fa988f172",
+  "timestamp": "2026-11-04T19:01:50.456Z",
+  "request_id": "req_011CgiQTQdTJ4trUVz2Vnyi7",
+  "wire_tool_inputs": {
+   "toolu_01BSZrBmkbzpASGGisZ1Ko3p": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01BSZrBmkbzpASGGisZ1Ko3p",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01BSZrBmkbzpASGGisZ1Ko3p",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"(no credential attached)\",\n  \"sender_key\": \"488dca5a4a5e1cc8\",\n  \"action\": \"request_quote\",\n  \"amount\": 500.0,\n  \"message\": \"Hello, we are a new workshop. What would 25 units of X-200 cost?\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "cdc3694d-88a6-45d2-b2d2-30dbc8c8e49e",
+  "timestamp": "2026-11-04T19:01:50.493Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"(no credential attached)\",\n  \"sender_key\": \"488dca5a4a5e1cc8\",\n  \"action\": \"request_quote\",\n  \"amount\": 500.0,\n  \"message\": \"Hello, we are a new workshop. What would 25 units of X-200 cost?\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01BSZrBmkbzpASGGisZ1Ko3p",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTVWuEpXhEZ59SScFf",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Quotes are allowed for unauthorized parties."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 158,
+    "cache_read_input_tokens": 2412,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 158
+    },
+    "output_tokens": 45,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "df8b5ad1-2462-4d15-8294-96ece250167b",
+  "timestamp": "2026-11-04T19:01:51.347Z",
+  "request_id": "req_011CgiQTUwArkQZkKDZuWS8W"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTVWuEpXhEZ59SScFf",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01T3eHrPthxnvoYGeggaxqeY",
+     "name": "mcp__desk__quote_price",
+     "input": {
+      "part": "X-200",
+      "units": 25
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 158,
+    "cache_read_input_tokens": 2412,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 158
+    },
+    "output_tokens": 45,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "59a13719-d118-4ed8-bc1a-f104352baf93",
+  "timestamp": "2026-11-04T19:01:51.744Z",
+  "request_id": "req_011CgiQTUwArkQZkKDZuWS8W",
+  "wire_tool_inputs": {
+   "toolu_01T3eHrPthxnvoYGeggaxqeY": {
+    "part": "X-200",
+    "units": 25
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01T3eHrPthxnvoYGeggaxqeY",
+    "display_name": "Quote Price",
+    "server_display_name": "desk",
+    "tool_name": "quote_price"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01T3eHrPthxnvoYGeggaxqeY",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"part\": \"X-200\",\n  \"units\": 25,\n  \"unit_price\": 19.5,\n  \"discount\": 0.0,\n  \"total_usd\": 487.5\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "8cdaea99-92ba-4df2-af48-91a7ed31c259",
+  "timestamp": "2026-11-04T19:01:51.758Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"part\": \"X-200\",\n  \"units\": 25,\n  \"unit_price\": 19.5,\n  \"discount\": 0.0,\n  \"total_usd\": 487.5\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01T3eHrPthxnvoYGeggaxqeY",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTVWuEpXhEZ59SScFf",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01DVDGxqUdCi1AHRYmiJFwSP",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 158,
+    "cache_read_input_tokens": 2412,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 158
+    },
+    "output_tokens": 45,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "c1e0b991-74af-4e0f-98a0-c69e603f332c",
+  "timestamp": "2026-11-04T19:01:51.869Z",
+  "request_id": "req_011CgiQTUwArkQZkKDZuWS8W",
+  "wire_tool_inputs": {
+   "toolu_01DVDGxqUdCi1AHRYmiJFwSP": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01DVDGxqUdCi1AHRYmiJFwSP",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01DVDGxqUdCi1AHRYmiJFwSP",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": null,\n  \"mandate_chain\": [],\n  \"request\": {\n    \"id\": \"0811d736a187bbb7\",\n    \"from_key\": \"488dca5a4a5e1cc8\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 500.0,\n    \"ts\": \"2026-11-04 19:01 UTC\",\n    \"nonce\": \"bc88a26ba560430291b72f5ae6b2a415\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:01 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "ba05377b-605e-446e-82a1-35a9f53033ca",
+  "timestamp": "2026-11-04T19:01:51.891Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": null,\n  \"mandate_chain\": [],\n  \"request\": {\n    \"id\": \"0811d736a187bbb7\",\n    \"from_key\": \"488dca5a4a5e1cc8\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 500.0,\n    \"ts\": \"2026-11-04 19:01 UTC\",\n    \"nonce\": \"bc88a26ba560430291b72f5ae6b2a415\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:01 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01DVDGxqUdCi1AHRYmiJFwSP",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTbUaW7kavWkx5ayDH",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01TVLdF3GeMhb7CczAzBrzoE",
+     "name": "mcp__desk__fulfil",
+     "input": {
+      "message_id": "m1",
+      "note": "Public price quote: 25 x X-200 at 19.50 USD = 487.50 USD total (no volume discount). Quote only; no order authorized."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 467,
+    "cache_read_input_tokens": 2570,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 467
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "f7faedf2-d05c-4993-b668-2f60489b9fc6",
+  "timestamp": "2026-11-04T19:01:53.236Z",
+  "request_id": "req_011CgiQTar8Dtpm6rShhCS4k",
+  "wire_tool_inputs": {
+   "toolu_01TVLdF3GeMhb7CczAzBrzoE": {
+    "message_id": "m1",
+    "note": "Public price quote: 25 x X-200 at 19.50 USD = 487.50 USD total (no volume discount). Quote only; no order authorized."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01TVLdF3GeMhb7CczAzBrzoE",
+    "display_name": "Fulfil",
+    "server_display_name": "desk",
+    "tool_name": "fulfil"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01TVLdF3GeMhb7CczAzBrzoE",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "f0cb48ac-4672-4305-a608-75df6208c8c9",
+  "timestamp": "2026-11-04T19:01:53.253Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01TVLdF3GeMhb7CczAzBrzoE",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQTbUaW7kavWkx5ayDH",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01ARejGS7VBCWXwieqTNWp5s",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 467,
+    "cache_read_input_tokens": 2570,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 467
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "bc251fe4-59dc-4cc3-b0f0-4523a60d5578",
+  "timestamp": "2026-11-04T19:01:53.295Z",
+  "request_id": "req_011CgiQTar8Dtpm6rShhCS4k",
+  "wire_tool_inputs": {
+   "toolu_01ARejGS7VBCWXwieqTNWp5s": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01ARejGS7VBCWXwieqTNWp5s",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01ARejGS7VBCWXwieqTNWp5s",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "edb212e9-3d1a-4338-849c-4e60ee801980",
+  "timestamp": "2026-11-04T19:01:53.308Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01ARejGS7VBCWXwieqTNWp5s",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQThgdxZ3VAdQ7ifmVt",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I processed the one request in the inbox (m1), and the inbox is now empty.\n\n- **m1:** The sender attached no credential and showed no operator, so it isn't authorized for orders. It only asked for a price quote, which policy allows for any party. I fulfilled it with a public quote of 487.50 USD for 25 units of X-200, at 19.50 USD each with no volume discount. No order was accepted."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 277,
+    "cache_read_input_tokens": 3037,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 277
+    },
+    "output_tokens": 133,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "6b63a1c1-1f2a-42e1-9f58-3f09a1843dd0",
+  "uuid": "a51cb59d-dcf1-43e8-af12-ecca427b288f",
+  "timestamp": "2026-11-04T19:01:54.938Z",
+  "request_id": "req_011CgiQTh2CLjmokDEVfnYvz"
+ }
+]
