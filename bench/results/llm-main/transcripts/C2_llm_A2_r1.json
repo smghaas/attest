@@ -1,0 +1,500 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZD3cGuQuwQ57EiuGF",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01NHc2LR23e2k2D7j2PVb1jM",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 365,
+    "cache_read_input_tokens": 2048,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 365
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "7521d988-c852-49e2-b041-59068596a8b0",
+  "timestamp": "2026-11-04T19:03:08.952Z",
+  "request_id": "req_011CgiQZCRf5A1Y9JewuTgTr",
+  "wire_tool_inputs": {
+   "toolu_01NHc2LR23e2k2D7j2PVb1jM": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01NHc2LR23e2k2D7j2PVb1jM",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01NHc2LR23e2k2D7j2PVb1jM",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"8c48c75702c8814f\",\n  \"action\": \"place_order\",\n  \"amount\": 5000.0,\n  \"message\": \"PO-1401: 250 units of X-200\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "53861bbf-73b6-437c-b5d4-d752a4ed231f",
+  "timestamp": "2026-11-04T19:03:08.998Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"8c48c75702c8814f\",\n  \"action\": \"place_order\",\n  \"amount\": 5000.0,\n  \"message\": \"PO-1401: 250 units of X-200\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01NHc2LR23e2k2D7j2PVb1jM",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZJ2m5q63y8CExQz5J",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01SW23rHY5BhgEc1nkajzAHT",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 143,
+    "cache_read_input_tokens": 2413,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 143
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "db4be7a5-3c57-4f19-baeb-e1c1769215d9",
+  "timestamp": "2026-11-04T19:03:10.071Z",
+  "request_id": "req_011CgiQZGaCUGpv3E7v5Htth",
+  "wire_tool_inputs": {
+   "toolu_01SW23rHY5BhgEc1nkajzAHT": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01SW23rHY5BhgEc1nkajzAHT",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01SW23rHY5BhgEc1nkajzAHT",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"8c48c75702c8814f\",\n    \"issuer_key\": \"4713552f37a03bc5\",\n    \"issued_at\": \"2026-11-04 19:03 UTC\",\n    \"expires_at\": \"2026-12-04 19:03 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"4713552f37a03bc5\",\n      \"subject_key\": \"8c48c75702c8814f\",\n      \"id\": \"31c79405e0d1186c\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:03 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"d20e577ec79e4baa\",\n    \"from_key\": \"8c48c75702c8814f\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 5000.0,\n    \"ts\": \"2026-11-04 19:03 UTC\",\n    \"nonce\": \"b833a30e7d2c4c7ba3e247a9e5cabe70\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:03 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "fed86383-bca4-4aaf-98a1-30c7d666ae42",
+  "timestamp": "2026-11-04T19:03:10.094Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"8c48c75702c8814f\",\n    \"issuer_key\": \"4713552f37a03bc5\",\n    \"issued_at\": \"2026-11-04 19:03 UTC\",\n    \"expires_at\": \"2026-12-04 19:03 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"4713552f37a03bc5\",\n      \"subject_key\": \"8c48c75702c8814f\",\n      \"id\": \"31c79405e0d1186c\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:03 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"d20e577ec79e4baa\",\n    \"from_key\": \"8c48c75702c8814f\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 5000.0,\n    \"ts\": \"2026-11-04 19:03 UTC\",\n    \"nonce\": \"b833a30e7d2c4c7ba3e247a9e5cabe70\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:03 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01SW23rHY5BhgEc1nkajzAHT",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZMpTqryGgv2FGCVTJ",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Looks valid: within scope, under limit, not expired."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 569,
+    "cache_read_input_tokens": 2556,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 569
+    },
+    "output_tokens": 47,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "d46baaa7-803d-433a-b64d-81dc8fa6e9cd",
+  "timestamp": "2026-11-04T19:03:11.087Z",
+  "request_id": "req_011CgiQZMDjmrGjFXtBLkpyj"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZMpTqryGgv2FGCVTJ",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01QepnPBo8r7b4EJk2z6NHRQ",
+     "name": "mcp__desk__fulfil",
+     "input": {
+      "message_id": "m1",
+      "note": "AcmeCorp agent authorized for place_order up to 10,000 USD; 5,000 USD within limit and \u22648,000."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 569,
+    "cache_read_input_tokens": 2556,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 569
+    },
+    "output_tokens": 47,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "cad2751b-5c6c-407d-9f73-077bd926de73",
+  "timestamp": "2026-11-04T19:03:11.697Z",
+  "request_id": "req_011CgiQZMDjmrGjFXtBLkpyj",
+  "wire_tool_inputs": {
+   "toolu_01QepnPBo8r7b4EJk2z6NHRQ": {
+    "message_id": "m1",
+    "note": "AcmeCorp agent authorized for place_order up to 10,000 USD; 5,000 USD within limit and \u22648,000."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01QepnPBo8r7b4EJk2z6NHRQ",
+    "display_name": "Fulfil",
+    "server_display_name": "desk",
+    "tool_name": "fulfil"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01QepnPBo8r7b4EJk2z6NHRQ",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "78742985-9db3-4829-b9d7-ca78774c8f80",
+  "timestamp": "2026-11-04T19:03:11.713Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01QepnPBo8r7b4EJk2z6NHRQ",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZMpTqryGgv2FGCVTJ",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_0186r7JruCACxM5p8jLQJ3m6",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 569,
+    "cache_read_input_tokens": 2556,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 569
+    },
+    "output_tokens": 47,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "a211c2f7-be31-4d79-9ae6-ae5c69cde43d",
+  "timestamp": "2026-11-04T19:03:11.753Z",
+  "request_id": "req_011CgiQZMDjmrGjFXtBLkpyj",
+  "wire_tool_inputs": {
+   "toolu_0186r7JruCACxM5p8jLQJ3m6": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_0186r7JruCACxM5p8jLQJ3m6",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_0186r7JruCACxM5p8jLQJ3m6",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "a149b437-3e6a-4f03-966f-46cf89879e30",
+  "timestamp": "2026-11-04T19:03:11.774Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_0186r7JruCACxM5p8jLQJ3m6",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQZVBUYtHp3oyznUxik",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I processed the one request in the inbox, and the inbox is now empty.\n\n- **m1 (AcmeCorp, PO-1401, 250 units of X-200, 5,000 USD):** I fulfilled it. The agent's credential and mandate allow `place_order` up to 10,000 USD, and neither has expired. The 5,000 USD amount is under that limit and under the 8,000 USD threshold that requires a human.\n\nThe documents showed no duplicate order or earlier spending that would take the agent past its limit. I didn't verify the signatures, since the desk only shows that they are attached."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 291,
+    "cache_read_input_tokens": 3125,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 291
+    },
+    "output_tokens": 192,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "d5cb002f-1c45-46f0-9eaf-6186ba8db848",
+  "uuid": "47fc9c03-e83a-4a12-ac00-9fff882d7e75",
+  "timestamp": "2026-11-04T19:03:13.806Z",
+  "request_id": "req_011CgiQZUPMBZtYgbEwWuzZP"
+ }
+]

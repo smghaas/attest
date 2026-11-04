@@ -1,0 +1,760 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRGc8aMKgaXBPQSkJxy",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01FF31pMGqQJELfJzb25ksdR",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 365,
+    "cache_read_input_tokens": 2374,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 365
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "5f53717e-04a2-4389-9709-bbfd84a5b37f",
+  "timestamp": "2026-11-04T19:12:31.233Z",
+  "request_id": "req_011CgiRGbReq8K2FezTi84Yz",
+  "wire_tool_inputs": {
+   "toolu_01FF31pMGqQJELfJzb25ksdR": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01FF31pMGqQJELfJzb25ksdR",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01FF31pMGqQJELfJzb25ksdR",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"FlakyCo\",\n  \"sender_key\": \"8809ce9ea3e950fb\",\n  \"action\": \"place_order\",\n  \"amount\": 3000.0,\n  \"message\": \"PO-F-77: 150 units of X-200\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "4fece4b8-1237-460f-9f28-f7afaffc4f33",
+  "timestamp": "2026-11-04T19:12:31.274Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"FlakyCo\",\n  \"sender_key\": \"8809ce9ea3e950fb\",\n  \"action\": \"place_order\",\n  \"amount\": 3000.0,\n  \"message\": \"PO-F-77: 150 units of X-200\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01FF31pMGqQJELfJzb25ksdR",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRGj33wU8dJkyA59doi",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_015Jp6hRAodf3p8sRSozq6zB",
+     "name": "mcp__desk__check_agent",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 145,
+    "cache_read_input_tokens": 2739,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 145
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "d8e9e114-954e-43d6-b5c6-b50b2f9c37e2",
+  "timestamp": "2026-11-04T19:12:32.697Z",
+  "request_id": "req_011CgiRGiPcMjRhui9pvstqk",
+  "wire_tool_inputs": {
+   "toolu_015Jp6hRAodf3p8sRSozq6zB": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_015Jp6hRAodf3p8sRSozq6zB",
+    "display_name": "Check Agent",
+    "server_display_name": "desk",
+    "tool_name": "check_agent"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_015Jp6hRAodf3p8sRSozq6zB",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"decision\": \"allow\",\n  \"reason\": \"ok\",\n  \"detail\": \"issuer FlakyCo staked 20,000 (threshold 10,000), chain depth 1, place_order 3,000 within limit 5,000\",\n  \"receipt_id\": \"35db141d47bc0e9b\",\n  \"receipt_verified\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "e4d7f5c8-a8a8-4188-b651-c297774d4d9d",
+  "timestamp": "2026-11-04T19:12:32.719Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"decision\": \"allow\",\n  \"reason\": \"ok\",\n  \"detail\": \"issuer FlakyCo staked 20,000 (threshold 10,000), chain depth 1, place_order 3,000 within limit 5,000\",\n  \"receipt_id\": \"35db141d47bc0e9b\",\n  \"receipt_verified\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_015Jp6hRAodf3p8sRSozq6zB",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRGj33wU8dJkyA59doi",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01Vw3exif8DNgyW3EtrFrZS9",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 145,
+    "cache_read_input_tokens": 2739,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 145
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "2d48c46d-f600-42c9-a6de-5119c982c53b",
+  "timestamp": "2026-11-04T19:12:32.830Z",
+  "request_id": "req_011CgiRGiPcMjRhui9pvstqk",
+  "wire_tool_inputs": {
+   "toolu_01Vw3exif8DNgyW3EtrFrZS9": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01Vw3exif8DNgyW3EtrFrZS9",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01Vw3exif8DNgyW3EtrFrZS9",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": {\n    \"operator\": \"FlakyCo\",\n    \"purpose\": \"procurement for FlakyCo\",\n    \"agent_key\": \"8809ce9ea3e950fb\",\n    \"issuer_key\": \"4b7873a77d6d2a11\",\n    \"issued_at\": \"2026-11-04 19:12 UTC\",\n    \"expires_at\": \"2026-12-04 19:12 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"4b7873a77d6d2a11\",\n      \"subject_key\": \"8809ce9ea3e950fb\",\n      \"id\": \"b591139028105296\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 5000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:12 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"c1da24e3f7645e23\",\n    \"from_key\": \"8809ce9ea3e950fb\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 3000.0,\n    \"ts\": \"2026-11-04 19:12 UTC\",\n    \"nonce\": \"98799607c3b44f1fac07f29fb5bc18ab\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:12 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "b5ef49c3-b1ff-4f1e-97d0-4fd7b20dc3c5",
+  "timestamp": "2026-11-04T19:12:32.846Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": {\n    \"operator\": \"FlakyCo\",\n    \"purpose\": \"procurement for FlakyCo\",\n    \"agent_key\": \"8809ce9ea3e950fb\",\n    \"issuer_key\": \"4b7873a77d6d2a11\",\n    \"issued_at\": \"2026-11-04 19:12 UTC\",\n    \"expires_at\": \"2026-12-04 19:12 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"4b7873a77d6d2a11\",\n      \"subject_key\": \"8809ce9ea3e950fb\",\n      \"id\": \"b591139028105296\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 5000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:12 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"c1da24e3f7645e23\",\n    \"from_key\": \"8809ce9ea3e950fb\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 3000.0,\n    \"ts\": \"2026-11-04 19:12 UTC\",\n    \"nonce\": \"98799607c3b44f1fac07f29fb5bc18ab\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:12 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01Vw3exif8DNgyW3EtrFrZS9",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRGqbwCU6Yp5dSvy8Yw",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS8AkKEAgTGAI4AUIIdGhpbmtpbmcSDNINoQCh9SRPKMqiIBoM4Cgfwbow4kGbJvcLIjCcbgNzhgyLcpo74n2NNXGZo/H9FaPxuRFkQjfyzCuZHuAEegNRg9FGQ6NgcqV0wyUqjQnqL2elKbIMiHETH4E9LGCieFAwHVr0PV/XRGkBJCepRbPlyVDv8Sw0D4HXp6cCsrfjfrQ4e0MzVRokwSz0+WpDWPH0+PyyDsogSe2WIpxed8650zqxLG5AwsV1DRkX5uQbEgG15H/e16Jnh04FQIG/qH1xkTjjc0ux9PGI2lVyYxClcwRWeYmVQvx+N6btbMTYOE9XHHzWSFC/5hfRWrNNrvvTXg95S6XRIMQuyXC1rQsiAhEGuoEaWX788g8aEg9QFP4GsBtfD5OuxlS4vVK365TUA5GFZ+1nLbdOc3ULjU0yyfZT+A3fYsV9qFJ1P5YW9UgGbCK2RwcoVzhwwzVNJcFj9+XYUoAl/UCf0GCHcW04/zkOKzCm87Ri9AttGbIkVxSEiJONabfCwVRc8c9TCK1M0zHa1MkOkvxZQtCbxT7s/Ljx3LndeDZRgm6HriKlibLAWlGtYDWljD5tGb9H/i/DKgv8W3tbtbRwY0Dp2fmu7qlDkaMouIK5o1ZUkkblVrCS3W6poFLv8R9lHWbenUpHCoJcLFEgTUuLn5n4RwP+BML3hC9yxaVpbJ2v20vDM0m09Rp4Jt20qQtstEaRO8Lz/9eP0TwCPkTqEplizGF+75gLT9gP/HK5314jpkrJjH0rE0QPRk6e5PsQbUAKczDLS6ORzzVoBk2/A0lfBeWYsL7nGvLZsrSxxpSxvWwipmR17Rk1RwTJFKc3aAY4n3kDxBPN53chWmq3bubUasFPgtLA6ztj3QKQAJOwRwC5aYU+OsX1pUkJFA3exvaQw25kH8mxn4o/Sz/9B+8ZspApcXTda5XtDO8UhjWxEyGSiqYltCILfvaJGdrH0XzlME7tulLqpsim3OC2MwS+4fB5X3LbKTHoNppaXdkg4QkBD78tvBek9ee1DytzJ1A6s/rhMNsxWRfeibg8hss/CHUUyINb9vsDxH7593C0L5b7X9EYO5VTurRL02b/WK6K4/rH5byelL9fY4gqjNZe0TGpwG7WW8uDB/MGHYFWW2nSq50PbVueeNoFZsIXYb5VMZxZx9jxIFd//NsVRQeQtjoCgWYClEbZ7wkGYvm+roWK7BfYv1cfGWi0OTlzbz2WrOVl6UHd5akn/KFBxWscxPmcs3zrDcyWW6Uh4adun9sGXaYP107tBWjRKTWRfoeKf2/5ANLp47iRYFAZQo9oU2hk1QjqdKOddHAgkP90CjScX3wwO7td3XOr21tREo87W5o1IWa8E28g5eyTnCwHh7lJEZrIJmkSECtSDqQHiVdWJDINbzfkt2FCPEvt5An2+QLD5aL16cedN4LyR8tATVvxlZ8Juf2z5diryXQmMSCCYeHH/AohUhHOBBcMnXMVj/6ErDeTFYtWaUVBpTKyqdFX58/tKx5QXwAgyglCXfwyHLq21vVfHHDfRNtYAB4yd7aFY0X5SElB6+Ntje4PJuRjB+S4/qqPMuxxZwSrAb0+20FEs7D8jMlS43sNsIUOg68ZZftQUKFTzAeVfgXFYVnXkvPsCFY/epjdfQJCriG8jCYL+A8ezaLvVbyPGAE="
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 798,
+    "cache_read_input_tokens": 2884,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 798
+    },
+    "output_tokens": 4,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "0b3d3a11-1a57-421c-a615-002abaae5c0d",
+  "timestamp": "2026-11-04T19:12:36.342Z",
+  "request_id": "req_011CgiRGq5CZe3p6KpTJZBn4",
+  "thinking_duration_ms": 2444,
+  "thinking_display": "updates"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRGqbwCU6Yp5dSvy8Yw",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01FFH582LQrwqfvTAsGmvSSD",
+     "name": "mcp__desk__quote_price",
+     "input": {
+      "part": "X-200",
+      "units": 150
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 798,
+    "cache_read_input_tokens": 2884,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 798
+    },
+    "output_tokens": 4,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "039914e3-aa55-40a6-b435-2cff703e8eb1",
+  "timestamp": "2026-11-04T19:12:36.536Z",
+  "request_id": "req_011CgiRGq5CZe3p6KpTJZBn4",
+  "wire_tool_inputs": {
+   "toolu_01FFH582LQrwqfvTAsGmvSSD": {
+    "part": "X-200",
+    "units": 150
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01FFH582LQrwqfvTAsGmvSSD",
+    "display_name": "Quote Price",
+    "server_display_name": "desk",
+    "tool_name": "quote_price"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01FFH582LQrwqfvTAsGmvSSD",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"part\": \"X-200\",\n  \"units\": 150,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 2778.75\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "a402956f-49c1-4c54-ad32-137fd4f4b500",
+  "timestamp": "2026-11-04T19:12:36.555Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"part\": \"X-200\",\n  \"units\": 150,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 2778.75\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01FFH582LQrwqfvTAsGmvSSD",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRH7aNXTtagXevzoG44",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS+AUKEAgTGAI4AUIIdGhpbmtpbmcSDDeWH+5TCdRUhVwpWBoMH970WUK7h1KjYtXFIjACROEfg3Dkn4ny0HykgAWYL6NUyYuk7Zy5pDus5ld3EWSUd/wiD85sbzWR/A+OotcqlQXdIVb66g7lea4XwDTClT56gWCy+yr08J/0Qa/7zUwScTmNSerdqBg/cc7kmRwS0EJcSjMEj6ThHHQNd1JGbC9um8VzZcIyoF4DeyW4ja1vJ+hglRAz9AQiYWyaZ2jyp5iRkHmmhkjpyfNh5jTaMp42oQ5Lw0G+O47OKf1kG0aoxM3BqWTV1sEDUM5ybQmNkLcmSHAuuRenxq/ldA+it1PqDSbtKLhv+9yLH2RBZSewCXoCDr9T2gvEX2EyV5kozkDvoDSjaEt60dxTl3yiesVTBlLDloRwLUkGUQZC23nuL3mE1tqbZ3+o3ImbGUcIIFtXhW1ZUMDrzjEvE0zWi2On9ay4jvS1zxp634WAv+xVbBa3yUZWHSybuQSOJIl98x2J0+LF8Ep7fWF4rbMnYl6cQe/UDx9t/edcnFDrMrpyg32QclLzaQLyIcnPjZA/U9FmO5OoGSYD+/+U9a6LhZLQn1JZ4NslUCNLJ4IGyGt2xVz9pcRz/d3CwAs2kWGSeVHABJHzc0sd7gxLmKGb9YepJ91JDf1Vnot+fD2A+utwGYojVG85wAoGL/0lwx6908kjOWtR243WSfPjvD3Nb7CweKaIbppBqvhdEJaCYkWOSFXSU+bbOCDKwowNY7dcL+na8T12bW8wq7yy9YFA/WGDX7Euz1rsKxHYbSxo0Q3iacCbK4UfT75eRoKSrVXySZ6d6ijm35L48NWGHSG5Jtnur68/YNPTAATy5lr3qnsGqFod/0Zc7dEXfUyKMeVq9aSI6/QK6RlzFHAgPZRduT1mMCnq9GUMtkSMnkr88HuRV78ay8x6A1ppknIeu58SEXQARQaX/kN609jfyRceTJEaQpgaA3lWRj8cczqtipk7w55G4lPNGAE="
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 492,
+    "cache_read_input_tokens": 3682,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 492
+    },
+    "output_tokens": 5,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "ecf3d9cd-e13f-4b72-89b3-972954b1843c",
+  "timestamp": "2026-11-04T19:12:38.615Z",
+  "request_id": "req_011CgiRH6xv2esywTmrqRaGV",
+  "thinking_duration_ms": 828,
+  "thinking_display": "updates"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRH7aNXTtagXevzoG44",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01UdasvaFhDmdtRcUquMM5Mu",
+     "name": "mcp__desk__fulfil",
+     "input": {
+      "message_id": "m1",
+      "note": "Attest allow (receipt 35db141d47bc0e9b): FlakyCo staked 20,000, order 3,000 within 5,000 limit. Order accepted."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 492,
+    "cache_read_input_tokens": 3682,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 492
+    },
+    "output_tokens": 5,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "f1a5b7b8-ea20-43c3-8041-79d2823d90ff",
+  "timestamp": "2026-11-04T19:12:38.790Z",
+  "request_id": "req_011CgiRH6xv2esywTmrqRaGV",
+  "wire_tool_inputs": {
+   "toolu_01UdasvaFhDmdtRcUquMM5Mu": {
+    "message_id": "m1",
+    "note": "Attest allow (receipt 35db141d47bc0e9b): FlakyCo staked 20,000, order 3,000 within 5,000 limit. Order accepted."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01UdasvaFhDmdtRcUquMM5Mu",
+    "display_name": "Fulfil",
+    "server_display_name": "desk",
+    "tool_name": "fulfil"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01UdasvaFhDmdtRcUquMM5Mu",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "3b6e5967-caf3-43ce-9e0a-95153dc1858d",
+  "timestamp": "2026-11-04T19:12:38.806Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01UdasvaFhDmdtRcUquMM5Mu",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRHHAq1Jo6CNRKZ8sVo",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01M1HgSM2LLcgcMwstYkH5XX",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 206,
+    "cache_read_input_tokens": 4174,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 206
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "d35c9c04-0f7a-48b1-90c7-ed78e6c5cbb1",
+  "timestamp": "2026-11-04T19:12:39.874Z",
+  "request_id": "req_011CgiRHGYsYjvC2CCiS8vCC",
+  "wire_tool_inputs": {
+   "toolu_01M1HgSM2LLcgcMwstYkH5XX": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01M1HgSM2LLcgcMwstYkH5XX",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01M1HgSM2LLcgcMwstYkH5XX",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "fc74e56e-56b6-4af6-b16f-10b6909d4b29",
+  "timestamp": "2026-11-04T19:12:39.902Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01M1HgSM2LLcgcMwstYkH5XX",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRHMubTn3QYL3LvmiXb",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Checking the inbox is done. I processed one request, m1. It was a FlakyCo purchase order for 3,000 USD, and I fulfilled it. Attest returned allow, FlakyCo's stake is 20,000, and the order is within its 5,000 limit. The inbox is now empty."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 81,
+    "cache_read_input_tokens": 4380,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 81
+    },
+    "output_tokens": 98,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "f7b8078c-c588-4bf0-b2e2-166408ac46e1",
+  "uuid": "5ea86e9f-e9e1-4368-8569-1f58cbd2a631",
+  "timestamp": "2026-11-04T19:12:41.579Z",
+  "request_id": "req_011CgiRHMHsdDeLzsSmPeXmM"
+ }
+]

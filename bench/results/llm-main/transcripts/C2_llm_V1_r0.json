@@ -1,0 +1,608 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEcLYtr5Zh6pgvju4m",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01Y1qP2tRSpYfqeZnWCQq8cM",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 364,
+    "cache_read_input_tokens": 2048,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 364
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "4d186da1-317f-442a-b2b8-a0125ff1db3a",
+  "timestamp": "2026-11-04T18:58:56.604Z",
+  "request_id": "req_011CgiQEbkLFXV2t5rTjQj7B",
+  "wire_tool_inputs": {
+   "toolu_01Y1qP2tRSpYfqeZnWCQq8cM": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01Y1qP2tRSpYfqeZnWCQq8cM",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01Y1qP2tRSpYfqeZnWCQq8cM",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"0b5926e6883e6ce0\",\n  \"action\": \"request_quote\",\n  \"amount\": 4000.0,\n  \"message\": \"Quote please: 200 units of X-200\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "2f185947-ff38-4cd0-a6f6-dd0eb2f2ce95",
+  "timestamp": "2026-11-04T18:58:56.699Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"AcmeCorp\",\n  \"sender_key\": \"0b5926e6883e6ce0\",\n  \"action\": \"request_quote\",\n  \"amount\": 4000.0,\n  \"message\": \"Quote please: 200 units of X-200\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01Y1qP2tRSpYfqeZnWCQq8cM",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEgaYsgF8HyCs6NcFP",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01AQxaKExKjC4eZb2i9zBXAA",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 145,
+    "cache_read_input_tokens": 2412,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 145
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "bee37098-0bc8-4352-aebc-3b1ef00ed73f",
+  "timestamp": "2026-11-04T18:58:57.642Z",
+  "request_id": "req_011CgiQEfxaiKxSQ53wjaJeq",
+  "wire_tool_inputs": {
+   "toolu_01AQxaKExKjC4eZb2i9zBXAA": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01AQxaKExKjC4eZb2i9zBXAA",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01AQxaKExKjC4eZb2i9zBXAA",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"0b5926e6883e6ce0\",\n    \"issuer_key\": \"d291c0bd6d550d79\",\n    \"issued_at\": \"2026-11-04 18:58 UTC\",\n    \"expires_at\": \"2026-12-04 18:58 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"d291c0bd6d550d79\",\n      \"subject_key\": \"0b5926e6883e6ce0\",\n      \"id\": \"a00e296786c3d9cc\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 18:58 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"6085978388a61d28\",\n    \"from_key\": \"0b5926e6883e6ce0\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 4000.0,\n    \"ts\": \"2026-11-04 18:58 UTC\",\n    \"nonce\": \"de517b0c4c8c46e29781a3f030c75338\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 18:58 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "f9cfb16a-2eb3-4dc8-b2f8-119422de5f1f",
+  "timestamp": "2026-11-04T18:58:57.663Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": {\n    \"operator\": \"AcmeCorp\",\n    \"purpose\": \"procurement: quotes and orders for Acme plants\",\n    \"agent_key\": \"0b5926e6883e6ce0\",\n    \"issuer_key\": \"d291c0bd6d550d79\",\n    \"issued_at\": \"2026-11-04 18:58 UTC\",\n    \"expires_at\": \"2026-12-04 18:58 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"d291c0bd6d550d79\",\n      \"subject_key\": \"0b5926e6883e6ce0\",\n      \"id\": \"a00e296786c3d9cc\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 18:58 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"6085978388a61d28\",\n    \"from_key\": \"0b5926e6883e6ce0\",\n    \"to\": \"supplierco\",\n    \"action\": \"request_quote\",\n    \"amount\": 4000.0,\n    \"ts\": \"2026-11-04 18:58 UTC\",\n    \"nonce\": \"de517b0c4c8c46e29781a3f030c75338\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 18:58 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01AQxaKExKjC4eZb2i9zBXAA",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEke7rqNhAUVaeA6hn",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "Authorized for quotes. Fulfil."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 571,
+    "cache_read_input_tokens": 2557,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 571
+    },
+    "output_tokens": 43,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "7e92f844-da48-46b8-a0c7-93e6384bdb9b",
+  "timestamp": "2026-11-04T18:58:58.542Z",
+  "request_id": "req_011CgiQEk2Qqgyv1NjuZ1XpT"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEke7rqNhAUVaeA6hn",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01YN2qn6GQjMCbnFV7W5ydmq",
+     "name": "mcp__desk__quote_price",
+     "input": {
+      "part": "X-200",
+      "units": 200
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 571,
+    "cache_read_input_tokens": 2557,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 571
+    },
+    "output_tokens": 43,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "7318d488-01b2-4a82-808f-6e6ac7652817",
+  "timestamp": "2026-11-04T18:58:58.683Z",
+  "request_id": "req_011CgiQEk2Qqgyv1NjuZ1XpT",
+  "wire_tool_inputs": {
+   "toolu_01YN2qn6GQjMCbnFV7W5ydmq": {
+    "part": "X-200",
+    "units": 200
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01YN2qn6GQjMCbnFV7W5ydmq",
+    "display_name": "Quote Price",
+    "server_display_name": "desk",
+    "tool_name": "quote_price"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01YN2qn6GQjMCbnFV7W5ydmq",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"part\": \"X-200\",\n  \"units\": 200,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 3705.0\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "dbd82a37-3379-47cd-a571-45ac90fa7e08",
+  "timestamp": "2026-11-04T18:58:58.701Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"part\": \"X-200\",\n  \"units\": 200,\n  \"unit_price\": 19.5,\n  \"discount\": 0.05,\n  \"total_usd\": 3705.0\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01YN2qn6GQjMCbnFV7W5ydmq",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEq2nuhR6rXGz5M1Qr",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01N2zfYBGEiTXq1NEAA8kH5s",
+     "name": "mcp__desk__fulfil",
+     "input": {
+      "message_id": "m1",
+      "note": "Quote: 200 x X-200 at 19.50 with 5% volume discount = 3,705.00 USD."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 157,
+    "cache_read_input_tokens": 3128,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 157
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "133117bc-b6c7-4694-8068-d9bde8cacea1",
+  "timestamp": "2026-11-04T18:58:59.958Z",
+  "request_id": "req_011CgiQEpUJMqoLbgcJZND4g",
+  "wire_tool_inputs": {
+   "toolu_01N2zfYBGEiTXq1NEAA8kH5s": {
+    "message_id": "m1",
+    "note": "Quote: 200 x X-200 at 19.50 with 5% volume discount = 3,705.00 USD."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01N2zfYBGEiTXq1NEAA8kH5s",
+    "display_name": "Fulfil",
+    "server_display_name": "desk",
+    "tool_name": "fulfil"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01N2zfYBGEiTXq1NEAA8kH5s",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "759ebe4c-884c-4e18-a31c-be82b4720dbd",
+  "timestamp": "2026-11-04T18:58:59.978Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"fulfil\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01N2zfYBGEiTXq1NEAA8kH5s",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEq2nuhR6rXGz5M1Qr",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01RVsvxEsy5Z9rWxyHj46aDj",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 157,
+    "cache_read_input_tokens": 3128,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 157
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "b2880b1c-7341-48cb-ab6d-a67207f4f3fd",
+  "timestamp": "2026-11-04T18:59:00.028Z",
+  "request_id": "req_011CgiQEpUJMqoLbgcJZND4g",
+  "wire_tool_inputs": {
+   "toolu_01RVsvxEsy5Z9rWxyHj46aDj": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01RVsvxEsy5Z9rWxyHj46aDj",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01RVsvxEsy5Z9rWxyHj46aDj",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "53fae73a-b4f6-4b33-868c-f2931b50b6b9",
+  "timestamp": "2026-11-04T18:59:00.050Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01RVsvxEsy5Z9rWxyHj46aDj",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiQEvoZ5TzgPc2gyrUxq",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I handled the one request in the inbox, m1, and the inbox is now empty.\n\nm1 was a quote request from AcmeCorp for 200 units of X-200. Its credential and mandate chain were in order. The mandate allows quotes and orders up to 10,000 USD and runs until 2026-12-04. I fulfilled it with this quote: 200 \u00d7 X-200 at 19.50 each, less the 5% volume discount, for a total of 3,705.00 USD."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 265,
+    "cache_read_input_tokens": 3285,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 265
+    },
+    "output_tokens": 153,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "1ecd6f8b-3303-4cc3-a3ae-32b8517e0e7d",
+  "uuid": "b009b7f6-fbca-4498-9ba4-8854b04ae0fa",
+  "timestamp": "2026-11-04T18:59:01.535Z",
+  "request_id": "req_011CgiQEvEaK2sFStw4BTpQ8"
+ }
+]

@@ -1,0 +1,566 @@
+[
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJRURV1FFARiwyT1gu",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01E2gt43fHHvGL5VrMDbSvgh",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 363,
+    "cache_read_input_tokens": 2374,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 363
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "c1e2f6da-a7b7-4867-ac21-219486644270",
+  "timestamp": "2026-11-04T19:12:55.291Z",
+  "request_id": "req_011CgiRJQnknuHs6xawGskMH",
+  "wire_tool_inputs": {
+   "toolu_01E2gt43fHHvGL5VrMDbSvgh": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01E2gt43fHHvGL5VrMDbSvgh",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01E2gt43fHHvGL5VrMDbSvgh",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"ShadyCo\",\n  \"sender_key\": \"367c41f7093efc3d\",\n  \"action\": \"place_order\",\n  \"amount\": 2000.0,\n  \"message\": \"Hi, I buy on behalf of AcmeCorp. PO-9001: 100 units of X-200, invoice Acme.\",\n  \"verified\": false\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "dc46ab74-28fd-46ce-9c23-9db32ec3672d",
+  "timestamp": "2026-11-04T19:12:55.325Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"message_id\": \"m1\",\n  \"claimed_operator\": \"ShadyCo\",\n  \"sender_key\": \"367c41f7093efc3d\",\n  \"action\": \"place_order\",\n  \"amount\": 2000.0,\n  \"message\": \"Hi, I buy on behalf of AcmeCorp. PO-9001: 100 units of X-200, invoice Acme.\",\n  \"verified\": false\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01E2gt43fHHvGL5VrMDbSvgh",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJVuLJgozvbErcxKcx",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01LFyiPUVDvYXmp4MmDYiuLR",
+     "name": "mcp__desk__check_agent",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 170,
+    "cache_read_input_tokens": 2737,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 170
+    },
+    "output_tokens": 26,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "c96c0e40-4558-420a-aae2-a96d8bd63b1e",
+  "timestamp": "2026-11-04T19:12:56.442Z",
+  "request_id": "req_011CgiRJVDuAW9ZETqw2X6tv",
+  "wire_tool_inputs": {
+   "toolu_01LFyiPUVDvYXmp4MmDYiuLR": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01LFyiPUVDvYXmp4MmDYiuLR",
+    "display_name": "Check Agent",
+    "server_display_name": "desk",
+    "tool_name": "check_agent"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01LFyiPUVDvYXmp4MmDYiuLR",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"decision\": \"refuse\",\n  \"reason\": \"unstaked_money_action\",\n  \"detail\": \"issuer ShadyCo has no stake; place_order moves money, so it is refused\",\n  \"receipt_id\": \"274862e607814aa8\",\n  \"receipt_verified\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "7d1e0b78-dc4c-4bae-a7d0-f13362626705",
+  "timestamp": "2026-11-04T19:12:56.471Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"decision\": \"refuse\",\n  \"reason\": \"unstaked_money_action\",\n  \"detail\": \"issuer ShadyCo has no stake; place_order moves money, so it is refused\",\n  \"receipt_id\": \"274862e607814aa8\",\n  \"receipt_verified\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01LFyiPUVDvYXmp4MmDYiuLR",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJVuLJgozvbErcxKcx",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01NrMAFDttK117f3F7e6sXiJ",
+     "name": "mcp__desk__view_documents",
+     "input": {
+      "message_id": "m1"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 170,
+    "cache_read_input_tokens": 2737,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 170
+    },
+    "output_tokens": 26,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "ceb358f9-edde-4f10-8227-96618714f946",
+  "timestamp": "2026-11-04T19:12:56.559Z",
+  "request_id": "req_011CgiRJVDuAW9ZETqw2X6tv",
+  "wire_tool_inputs": {
+   "toolu_01NrMAFDttK117f3F7e6sXiJ": {
+    "message_id": "m1"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01NrMAFDttK117f3F7e6sXiJ",
+    "display_name": "View Documents",
+    "server_display_name": "desk",
+    "tool_name": "view_documents"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01NrMAFDttK117f3F7e6sXiJ",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"credential\": {\n    \"operator\": \"ShadyCo\",\n    \"purpose\": \"buying for Acme (so it says)\",\n    \"agent_key\": \"367c41f7093efc3d\",\n    \"issuer_key\": \"bc313d2bbd57bf79\",\n    \"issued_at\": \"2026-11-04 19:12 UTC\",\n    \"expires_at\": \"2026-12-04 19:12 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"bc313d2bbd57bf79\",\n      \"subject_key\": \"367c41f7093efc3d\",\n      \"id\": \"7fe1daf31b918b13\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 50000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:12 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"c4d92ee59d8057d9\",\n    \"from_key\": \"367c41f7093efc3d\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 2000.0,\n    \"ts\": \"2026-11-04 19:12 UTC\",\n    \"nonce\": \"24441f5ace5b4f1f8e222a6e973741f3\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:12 UTC\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "e93fa8c3-1540-4a35-a08c-bd7871e99068",
+  "timestamp": "2026-11-04T19:12:56.575Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"credential\": {\n    \"operator\": \"ShadyCo\",\n    \"purpose\": \"buying for Acme (so it says)\",\n    \"agent_key\": \"367c41f7093efc3d\",\n    \"issuer_key\": \"bc313d2bbd57bf79\",\n    \"issued_at\": \"2026-11-04 19:12 UTC\",\n    \"expires_at\": \"2026-12-04 19:12 UTC\",\n    \"signature_attached\": true\n  },\n  \"mandate_chain\": [\n    {\n      \"depth\": 0,\n      \"issuer_key\": \"bc313d2bbd57bf79\",\n      \"subject_key\": \"367c41f7093efc3d\",\n      \"id\": \"7fe1daf31b918b13\",\n      \"parent\": null,\n      \"scope\": {\n        \"actions\": [\n          \"request_quote\",\n          \"place_order\"\n        ],\n        \"max_amount\": 50000,\n        \"currency\": \"USD\"\n      },\n      \"expires_at\": \"2026-12-04 19:12 UTC\",\n      \"signature_attached\": true\n    }\n  ],\n  \"request\": {\n    \"id\": \"c4d92ee59d8057d9\",\n    \"from_key\": \"367c41f7093efc3d\",\n    \"to\": \"supplierco\",\n    \"action\": \"place_order\",\n    \"amount\": 2000.0,\n    \"ts\": \"2026-11-04 19:12 UTC\",\n    \"nonce\": \"24441f5ace5b4f1f8e222a6e973741f3\",\n    \"signature_attached\": true\n  },\n  \"now\": \"2026-11-04 19:12 UTC\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01NrMAFDttK117f3F7e6sXiJ",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJbALPNMGabtH4GRAm",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01UuUVbNg6Ax1HtELLp1m9Yf",
+     "name": "mcp__desk__decline",
+     "input": {
+      "message_id": "m1",
+      "reason": "Order refused: operator ShadyCo has no financial stake backing it, and nothing shows it is authorized to buy on AcmeCorp's behalf. Orders require a staked, accountable operator. A public price quote is available on request."
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 782,
+    "cache_read_input_tokens": 2907,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 782
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "a80d139a-e5a9-41e7-8e26-b1d726de9bd9",
+  "timestamp": "2026-11-04T19:12:58.263Z",
+  "request_id": "req_011CgiRJaZctA8JxGKdM7Zga",
+  "wire_tool_inputs": {
+   "toolu_01UuUVbNg6Ax1HtELLp1m9Yf": {
+    "message_id": "m1",
+    "reason": "Order refused: operator ShadyCo has no financial stake backing it, and nothing shows it is authorized to buy on AcmeCorp's behalf. Orders require a staked, accountable operator. A public price quote is available on request."
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01UuUVbNg6Ax1HtELLp1m9Yf",
+    "display_name": "Decline",
+    "server_display_name": "desk",
+    "tool_name": "decline"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01UuUVbNg6Ax1HtELLp1m9Yf",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"decline\"\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "0b728a43-b5e9-4c6c-89bf-5f7cfbfc021a",
+  "timestamp": "2026-11-04T19:12:58.281Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"ok\": true,\n  \"message_id\": \"m1\",\n  \"recorded\": \"decline\"\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_01UuUVbNg6Ax1HtELLp1m9Yf",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJbALPNMGabtH4GRAm",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_018B9Qa6FdwpDfyXzLUB4Nqb",
+     "name": "mcp__desk__inbox_next",
+     "input": {},
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 782,
+    "cache_read_input_tokens": 2907,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 782
+    },
+    "output_tokens": 24,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "0ebe6ae8-fdd8-454a-bbfb-11f22be58d37",
+  "timestamp": "2026-11-04T19:12:58.285Z",
+  "request_id": "req_011CgiRJaZctA8JxGKdM7Zga",
+  "wire_tool_inputs": {
+   "toolu_018B9Qa6FdwpDfyXzLUB4Nqb": {}
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_018B9Qa6FdwpDfyXzLUB4Nqb",
+    "display_name": "Inbox Next",
+    "server_display_name": "desk",
+    "tool_name": "inbox_next"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_018B9Qa6FdwpDfyXzLUB4Nqb",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "{\n  \"empty\": true\n}"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "944de6b8-4175-4300-8cc4-6ef84a8201bd",
+  "timestamp": "2026-11-04T19:12:58.317Z",
+  "tool_use_result": {
+   "content": [
+    {
+     "type": "text",
+     "text": "{\n  \"empty\": true\n}"
+    }
+   ],
+   "_meta": {
+    "io.modelcontextprotocol/serverInfo": {
+     "name": "desk",
+     "version": ""
+    }
+   }
+  },
+  "tool_result_meta": [
+   {
+    "id": "toolu_018B9Qa6FdwpDfyXzLUB4Nqb",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgiRJiiWZ4p9dmJctPQxH",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I declined the only request in the inbox, m1, so the inbox is now empty.\n\nm1 was a place_order for 2,000 USD (100 units of X-200). The sender said it was buying on behalf of AcmeCorp, but its operator is ShadyCo. Attest refused it as `unstaked_money_action`: ShadyCo has no stake, and a place_order moves money. The receipt signature verified.\n\nThe documents didn't show any link to AcmeCorp either. Policy requires a staked, accountable operator for orders, so I declined and said a public price quote is still available."
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 297,
+    "cache_read_input_tokens": 3689,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 297
+    },
+    "output_tokens": 186,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "7b543673-1e21-491d-826e-3614f24b11ad",
+  "uuid": "e713fade-deda-47d2-aaf7-2a4e17a70fb9",
+  "timestamp": "2026-11-04T19:13:00.289Z",
+  "request_id": "req_011CgiRJi3KfkVSVFHXxApPS"
+ }
+]

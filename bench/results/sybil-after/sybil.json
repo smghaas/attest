@@ -1,0 +1,131 @@
+{
+ "issuer_cap_ratio": 1.0,
+ "tuning": [
+  {
+   "id": "T-k1",
+   "note": "1 agent(s), own root mandates",
+   "honest": false,
+   "stake": 20000,
+   "requested": 10000,
+   "exposure": 10000.0,
+   "exposure_over_stake": 0.5,
+   "recovered": 15000.0,
+   "uncovered": 0.0,
+   "over_recovered": 5000.0,
+   "refused_reasons": [],
+   "refused_amount": 0.0
+  },
+  {
+   "id": "T-k2",
+   "note": "2 agent(s), own root mandates",
+   "honest": false,
+   "stake": 20000,
+   "requested": 20000,
+   "exposure": 20000.0,
+   "exposure_over_stake": 1.0,
+   "recovered": 18750.0,
+   "uncovered": 1250.0,
+   "over_recovered": 0.0,
+   "refused_reasons": [],
+   "refused_amount": 0.0
+  },
+  {
+   "id": "T-k4",
+   "note": "4 agent(s), own root mandates",
+   "honest": false,
+   "stake": 20000,
+   "requested": 40000,
+   "exposure": 20000.0,
+   "exposure_over_stake": 1.0,
+   "recovered": 18750.0,
+   "uncovered": 1250.0,
+   "over_recovered": 0.0,
+   "refused_reasons": [
+    "issuer_exposure_over_stake"
+   ],
+   "refused_amount": 20000.0
+  },
+  {
+   "id": "T-k8",
+   "note": "8 agent(s), own root mandates",
+   "honest": false,
+   "stake": 20000,
+   "requested": 80000,
+   "exposure": 20000.0,
+   "exposure_over_stake": 1.0,
+   "recovered": 18750.0,
+   "uncovered": 1250.0,
+   "over_recovered": 0.0,
+   "refused_reasons": [
+    "issuer_exposure_over_stake"
+   ],
+   "refused_amount": 60000.0
+  }
+ ],
+ "fresh": [
+  {
+   "id": "F1-subagents",
+   "note": "one root agent delegates to 6 sub-agents (10,000 each)",
+   "honest": false,
+   "stake": 20000,
+   "requested": 60000,
+   "exposure": 10000.0,
+   "exposure_over_stake": 0.5,
+   "recovered": 15000.0,
+   "uncovered": 0.0,
+   "over_recovered": 5000.0,
+   "refused_reasons": [
+    "cumulative_over_limit"
+   ],
+   "refused_amount": 50000.0
+  },
+  {
+   "id": "F2-two-receivers",
+   "note": "6 root agents, orders alternate between two receivers sharing the gate",
+   "honest": false,
+   "stake": 20000,
+   "requested": 48000,
+   "exposure": 20000.0,
+   "exposure_over_stake": 1.0,
+   "recovered": 19375.0,
+   "uncovered": 625.0,
+   "over_recovered": 0.0,
+   "refused_reasons": [
+    "issuer_exposure_over_stake"
+   ],
+   "refused_amount": 28000.0
+  },
+  {
+   "id": "F3-stake-15k",
+   "note": "stake 15,000, 5 root agents, three 3,000 orders each",
+   "honest": false,
+   "stake": 15000,
+   "requested": 45000,
+   "exposure": 15000.0,
+   "exposure_over_stake": 1.0,
+   "recovered": 14531.25,
+   "uncovered": 468.75,
+   "over_recovered": 0.0,
+   "refused_reasons": [
+    "issuer_exposure_over_stake"
+   ],
+   "refused_amount": 30000.0
+  },
+  {
+   "id": "F4-honest-volume",
+   "note": "honest high-volume operator: 40,000 of real orders on a 30,000 stake",
+   "honest": true,
+   "stake": 30000,
+   "requested": 40000,
+   "exposure": 28000.0,
+   "exposure_over_stake": 0.9333333333333333,
+   "recovered": 0.0,
+   "uncovered": null,
+   "over_recovered": null,
+   "refused_reasons": [
+    "issuer_exposure_over_stake"
+   ],
+   "refused_amount": 12000.0
+  }
+ ]
+}
