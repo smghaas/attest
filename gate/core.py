@@ -34,6 +34,11 @@ Trust comes from stake, not from a list the receiver keeps by hand:
     moves money from an unstaked agent is refused.
   - a credential or mandate can only be revoked by the key that signed it (or the
     gate's own key); the revoker presents the document so the gate can check that.
+  - an issuer's stake bounds the money the gate lets its agents move: across all of the
+    issuer's mandates and all receivers, orders allowed in the last 30 days may not exceed
+    stake x issuer_cap_ratio (1.0 by default; 0 turns the cap off). Without this, an operator
+    could mint any number of agents with their own root mandates and move many times its
+    stake (HW7 limit probe, bench/sybil.py).
 
 verify(receiver, envelope) returns a decision and a receipt signed by the gate:
   allow     everything checks out and the action is inside the leaf scope
@@ -85,6 +90,8 @@ NONCE_TTL_S = 2 * REQUEST_SKEW_S        # after this a replayed request is refus
 PRUNE_EVERY_S = 60
 
 SLASH_FRACTION = 0.5                    # base penalty; the issuer is also suspended
+ISSUER_CAP_RATIO = 1.0                  # money allowed per issuer in the window <= stake x this
+ISSUER_WINDOW_S = 30 * 86400
 DISPUTE_WINDOW_S = 72 * 3600            # default; setup_demo.py shortens it for the demo
 
 CHAIN_RPC = "https://sepolia.base.org"  # Base Sepolia testnet, read only
@@ -130,14 +137,17 @@ class Gate:
             "revoked": {},          # doc id -> {"by", "ts", "reason"}
             "nonces_seen": {},      # nonce -> gate time it was first seen
             "spent": {},            # mandate id -> money already allowed under it
+            "issuer_spent": {},     # issuer pubkey -> [[ts, amount], ..] allowed within ISSUER_WINDOW_S
             "pow_attempts": {},     # agent pubkey -> [times a puzzle was issued to it]
             "pow_recent": {},       # receiver -> {minute: puzzles issued}
             "pow_open": {},         # challenge id -> {seed, bits, request_id, receiver, from, block, issued_at}
             "claims": {},           # receipt id -> slashing claim
-            "settings": {"dispute_window_s": DISPUTE_WINDOW_S, "arbiter": None},
+            "settings": {},
         }
         for k, v in defaults.items():
             st.setdefault(k, v)
+        for k, v in {"dispute_window_s": DISPUTE_WINDOW_S, "arbiter": None, "issuer_cap_ratio": ISSUER_CAP_RATIO}.items():
+            st["settings"].setdefault(k, v)
         # states written before retries were time-stamped kept a plain counter
         st["pow_attempts"] = {k: v for k, v in st["pow_attempts"].items() if isinstance(v, list)}
         self._write(st)
@@ -165,12 +175,16 @@ class Gate:
         self._save()
 
     @_locked
-    def configure(self, dispute_window_s: float | None = None, arbiter: str | None = None):
-        """arbiter is the public key that rules on disputed slashing claims."""
+    def configure(self, dispute_window_s: float | None = None, arbiter: str | None = None,
+                  issuer_cap_ratio: float | None = None):
+        """arbiter is the public key that rules on disputed slashing claims.
+        issuer_cap_ratio bounds money allowed per issuer at stake x ratio; 0 turns the cap off."""
         if dispute_window_s is not None:
             self.state["settings"]["dispute_window_s"] = float(dispute_window_s)
         if arbiter is not None:
             self.state["settings"]["arbiter"] = arbiter
+        if issuer_cap_ratio is not None:
+            self.state["settings"]["issuer_cap_ratio"] = float(issuer_cap_ratio) if issuer_cap_ratio > 0 else None
         self._save()
 
     @_locked
@@ -339,6 +353,8 @@ class Gate:
         st["pow_open"] = {k: v for k, v in st["pow_open"].items() if now - v.get("issued_at", 0) < POW_TTL_S}
         st["pow_attempts"] = {k: kept for k, v in st["pow_attempts"].items()
                               if (kept := [t for t in v if now - t < POW_KEY_WINDOW_S])}
+        st["issuer_spent"] = {k: kept for k, v in st["issuer_spent"].items()
+                              if (kept := [e for e in v if now - e[0] < ISSUER_WINDOW_S])}
         for rcv, buckets in st["pow_recent"].items():
             st["pow_recent"][rcv] = {m: c for m, c in buckets.items() if now - int(m) * 60 < POW_GLOBAL_WINDOW_S}
         self._save()
@@ -553,6 +569,15 @@ class Gate:
                 if spent + amt > cap:
                     return "refuse", "cumulative_over_limit", (f"{spent:,.0f} already spent under this mandate; "
                                                                f"{amt:,.0f} more would exceed {cap:,.0f} (order splitting)")
+            ratio = self.state["settings"].get("issuer_cap_ratio")
+            if ratio:
+                s = self.state["stakes"][cred["issuer"]]
+                spent = sum(a for t, a in self.state["issuer_spent"].get(cred["issuer"], []) if now - t < ISSUER_WINDOW_S)
+                if spent + amt > s["stake"] * ratio:
+                    return "refuse", "issuer_exposure_over_stake", (
+                        f"issuer {s['name']} already has {spent:,.0f} of orders allowed in the last "
+                        f"{ISSUER_WINDOW_S // 86400} days; {amt:,.0f} more would exceed what its stake backs "
+                        f"({s['stake']:,.0f} x {ratio:g})")
 
         # 5. the receiver's own policy
         pol = rcv.get("policy") or {}
@@ -563,6 +588,7 @@ class Gate:
         if req.get("action") in MONEY:
             for m in chain:
                 self.state["spent"][m["id"]] = self.state["spent"].get(m["id"], 0.0) + amt
+            self.state["issuer_spent"].setdefault(cred["issuer"], []).append([now, amt])
             self._save()
         return "allow", "ok", f"{why}, chain depth {len(chain)}, {req.get('action')} {amt:,.0f} within limit {scope.get('max_amount'):,}"
 
