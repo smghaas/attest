@@ -21,12 +21,19 @@ Trust comes from stake, not from a list the receiver keeps by hand:
     this is one small contract, here it is a table in the gate's state)
   - each receiver sets a stake threshold; an issuer below it, or suspended after a
     slash, counts as unstaked
-  - a receiver can file a slashing claim backed by a gate receipt; the issuer loses
-    part of its stake and is suspended
+  - a receiver (signing with its own key) can file a slashing claim backed by an allow
+    receipt the gate signed for it. The claim waits out a dispute window. If the issuer
+    does not dispute it, it is upheld when the window closes: the issuer loses part of
+    its stake and is suspended. A disputed claim goes to the arbiter, who upholds or
+    rejects it. One claim per receipt.
   - an agent with no staked issuer gets a hashcash puzzle seeded by the latest Base
-    Sepolia block hash and bound to this request and receiver; difficulty doubles on
-    every retry from the same key. It is answered as unknown, read-only actions only.
-    Anything that moves money from an unstaked agent is refused.
+    Sepolia block hash and bound to this request and receiver. Difficulty rises by one
+    bit per retry from the same key within an hour, and by one bit for every doubling
+    of the unstaked load on that receiver, so switching to fresh keys does not escape
+    it during a flood. It is answered as unknown, read-only actions only. Anything that
+    moves money from an unstaked agent is refused.
+  - a credential or mandate can only be revoked by the key that signed it (or the
+    gate's own key); the revoker presents the document so the gate can check that.
 
 verify(receiver, envelope) returns a decision and a receipt signed by the gate:
   allow     everything checks out and the action is inside the leaf scope
@@ -35,31 +42,70 @@ verify(receiver, envelope) returns a decision and a receipt signed by the gate:
   escalate  checks pass but the receiver's own policy wants a human
   unknown   no staked issuer behind the agent: read-only request, puzzle required
             (pow_required) or solved (pow_ok)
+
+All public methods of Gate take one lock, so concurrent HTTP requests (FastAPI runs
+sync endpoints in a thread pool) cannot race on the spend totals, nonces or stakes.
+The state lives in one JSON file owned by one process: run the server with a single
+worker.
 """
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
+import math
+import os
+import threading
 import time
+from collections import deque
 from pathlib import Path
 
 import httpx
 
 from . import crypto
 
-STATE_DIR = Path(__file__).resolve().parent.parent / "state"
-LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+ROOT = Path(__file__).resolve().parent.parent
+STATE_DIR = Path(os.environ.get("ATTEST_STATE_DIR", ROOT / "state"))
+LOG_DIR = Path(os.environ.get("ATTEST_LOG_DIR", ROOT / "logs"))
 
 READ_ONLY = {"request_quote"}           # actions that move no money
 MONEY = {"place_order"}
-POW_BASE_BITS = 16                      # about 65,000 hashes on average; +1 bit (x2 work) per retry
+
+POW_BASE_BITS = 16                      # about 65,000 hashes on average
+POW_MAX_BITS = 30
+POW_KEY_WINDOW_S = 3600                 # retries from one key add +1 bit (x2 work) each, for an hour
+POW_GLOBAL_WINDOW_S = 600               # puzzles issued per receiver in the last 10 minutes...
+POW_GLOBAL_FREE = 32                    # ...above this many, each doubling of that load adds +1 bit
+POW_TTL_S = 600                         # an issued puzzle must be solved within 10 minutes
+POW_MAX_OPEN = 5000                     # open puzzles kept; the oldest is dropped beyond this
+POW_MAX_KEYS = 50000                    # keys whose retries are tracked; the oldest is dropped beyond this
+
+REQUEST_SKEW_S = 600                    # a request timestamp may be this far off the gate's clock
+NONCE_TTL_S = 2 * REQUEST_SKEW_S        # after this a replayed request is refused as stale anyway
+PRUNE_EVERY_S = 60
+
 SLASH_FRACTION = 0.5                    # base penalty; the issuer is also suspended
+DISPUTE_WINDOW_S = 72 * 3600            # default; setup_demo.py shortens it for the demo
+
 CHAIN_RPC = "https://sepolia.base.org"  # Base Sepolia testnet, read only
 BLOCK_CACHE_S = 60
 
 
+def _locked(fn):
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        with self.lock:
+            return fn(self, *args, **kwargs)
+    return wrapper
+
+
+def _err(code: str) -> dict:
+    return {"ok": False, "error": code}
+
+
 class Gate:
     def __init__(self, state_dir: Path = STATE_DIR):
+        self.lock = threading.RLock()
         self.state_dir = Path(state_dir)
         self.state_dir.mkdir(parents=True, exist_ok=True)
         LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -67,81 +113,200 @@ class Gate:
         self.receipts_file = LOG_DIR / "receipts.jsonl"
         self.state = self._load()
         self._block = None  # (fetched_at, number, hash, source)
+        self._last_prune = 0.0
 
     # ---------- state ----------
     def _load(self) -> dict:
         if self.state_file.exists():
-            return json.loads(self.state_file.read_text())
-        priv, pub = crypto.keygen()
-        st = {
-            "gate_key": {"priv": priv, "pub": pub},
-            # receiver name -> {"min_stake": float, "policy": {...}}
+            st = json.loads(self.state_file.read_text())
+        else:
+            priv, pub = crypto.keygen()
+            st = {"gate_key": {"priv": priv, "pub": pub}}
+        defaults = {
+            # receiver name -> {"min_stake": float, "policy": {...}, "pubkey": hex|None}
             "receivers": {},
             # issuer pubkey -> {"name", "stake", "suspended", "slashes": [..]}
             "stakes": {},
             "revoked": {},          # doc id -> {"by", "ts", "reason"}
-            "nonces_seen": {},      # nonce -> ts
+            "nonces_seen": {},      # nonce -> gate time it was first seen
             "spent": {},            # mandate id -> money already allowed under it
-            "pow_attempts": {},     # agent pubkey -> puzzles issued so far
-            "pow_open": {},         # challenge id -> {seed, bits, request_id, receiver, from}
+            "pow_attempts": {},     # agent pubkey -> [times a puzzle was issued to it]
+            "pow_recent": {},       # receiver -> {minute: puzzles issued}
+            "pow_open": {},         # challenge id -> {seed, bits, request_id, receiver, from, block, issued_at}
+            "claims": {},           # receipt id -> slashing claim
+            "settings": {"dispute_window_s": DISPUTE_WINDOW_S, "arbiter": None},
         }
-        self.state_file.write_text(json.dumps(st, indent=1))
+        for k, v in defaults.items():
+            st.setdefault(k, v)
+        # states written before retries were time-stamped kept a plain counter
+        st["pow_attempts"] = {k: v for k, v in st["pow_attempts"].items() if isinstance(v, list)}
+        self._write(st)
         return st
 
+    def _write(self, st: dict):
+        tmp = self.state_file.with_suffix(".tmp")
+        tmp.write_text(json.dumps(st, indent=1))
+        os.replace(tmp, self.state_file)    # never leave a half-written state file behind
+
     def _save(self):
-        self.state_file.write_text(json.dumps(self.state, indent=1))
+        self._write(self.state)
 
     @property
     def pubkey(self) -> str:
         return self.state["gate_key"]["pub"]
 
     # ---------- configuration ----------
-    def register_receiver(self, name: str, min_stake: float, policy: dict | None = None):
-        self.state["receivers"][name] = {"min_stake": float(min_stake), "policy": policy or {}}
+    @_locked
+    def register_receiver(self, name: str, min_stake: float, policy: dict | None = None,
+                          pubkey: str | None = None):
+        """pubkey is the receiver's own signing key; it is needed to file slashing claims."""
+        self.state["receivers"][name] = {"min_stake": float(min_stake), "policy": policy or {},
+                                         "pubkey": pubkey}
         self._save()
 
+    @_locked
+    def configure(self, dispute_window_s: float | None = None, arbiter: str | None = None):
+        """arbiter is the public key that rules on disputed slashing claims."""
+        if dispute_window_s is not None:
+            self.state["settings"]["dispute_window_s"] = float(dispute_window_s)
+        if arbiter is not None:
+            self.state["settings"]["arbiter"] = arbiter
+        self._save()
+
+    @_locked
     def stake(self, issuer_pub: str, name: str, amount: float, sig: str) -> dict:
         """An operator adds stake for its issuer key. The operator signs {stake, issuer, name, amount}."""
         body = {"stake": True, "issuer": issuer_pub, "name": name, "amount": float(amount)}
+        if float(amount) <= 0:
+            return _err("amount_must_be_positive")
         if not crypto.verify(issuer_pub, body, sig):
-            return {"ok": False, "error": "bad_signature"}
+            return _err("bad_signature")
         s = self.state["stakes"].setdefault(issuer_pub, {"name": name, "stake": 0.0, "suspended": False, "slashes": []})
         s["stake"] += float(amount)
         self._save()
         return {"ok": True, "issuer": name, "stake": s["stake"]}
 
-    def slash(self, receiver: str, receipt_id: str, breach: str) -> dict:
-        """A receiver claims a breach, backed by a receipt the gate signed for that receiver.
-        MVP rule: the receipt must exist, be addressed to this receiver, be an allow, and
-        name a credential from a staked issuer. No dispute window yet."""
-        rec = next((r for r in self.receipts(10_000) if r["id"] == receipt_id), None)
-        if rec is None:
-            return {"ok": False, "error": "no_such_receipt"}
-        if rec["receiver"] != receiver or rec["decision"] != "allow":
-            return {"ok": False, "error": "receipt_not_an_allow_for_this_receiver"}
-        issuer = rec.get("issuer")
+    @_locked
+    def stakes(self) -> dict:
+        self._settle(time.time())
+        return json.loads(json.dumps(self.state["stakes"]))
+
+    # ---------- slashing claims ----------
+    @_locked
+    def file_claim(self, receipt: dict, breach: str, sig: str) -> dict:
+        """A receiver claims a breach, backed by an allow receipt the gate signed for it.
+        The receiver signs {claim: receipt id, receiver, breach} with the key it registered.
+        The claim then waits out the dispute window (see dispute, resolve, _settle)."""
+        receipt = receipt or {}
+        if not (receipt.get("gate") == self.pubkey and crypto.id_ok(receipt)
+                and crypto.verify(self.pubkey, crypto.body_of(receipt), receipt.get("sig", ""))):
+            return _err("receipt_not_signed_by_this_gate")
+        receiver = receipt.get("receiver")
+        rcv = self.state["receivers"].get(receiver)
+        if not rcv or not rcv.get("pubkey"):
+            return _err("receiver_has_no_registered_key")
+        body = {"claim": receipt["id"], "receiver": receiver, "breach": breach}
+        if not crypto.verify(rcv["pubkey"], body, sig):
+            return _err("bad_signature")
+        if receipt.get("decision") != "allow":
+            return _err("receipt_not_an_allow")
+        if receipt["id"] in self.state["claims"]:
+            return _err("receipt_already_claimed")
+        issuer = receipt.get("issuer")
         s = self.state["stakes"].get(issuer)
         if not s or s["stake"] <= 0:
-            return {"ok": False, "error": "issuer_has_no_stake"}
-        penalty = round(s["stake"] * SLASH_FRACTION, 2)
-        s["stake"] -= penalty
-        s["suspended"] = True
-        s["slashes"].append({"receipt": receipt_id, "receiver": receiver, "breach": breach,
-                             "penalty": penalty, "ts": time.time()})
+            return _err("issuer_has_no_stake")
+        now = time.time()
+        claim = {"id": receipt["id"], "receiver": receiver, "issuer": issuer, "issuer_name": s["name"],
+                 "breach": breach, "filed_at": now,
+                 "deadline": now + self.state["settings"]["dispute_window_s"], "status": "pending"}
+        self.state["claims"][claim["id"]] = claim
         self._save()
-        return {"ok": True, "issuer": s["name"], "penalty": penalty, "stake_left": s["stake"], "suspended": True}
+        return {"ok": True, **claim}
 
-    def revoke(self, target_id: str, by_pub: str, sig: str, reason: str = "") -> dict:
-        """Revoke a credential or mandate. MVP: accepted from any staked issuer key or the
-        gate operator (the gate does not keep every document, so it cannot check who issued
-        the target). A delegated mandate is revoked implicitly when any ancestor is revoked
-        (cascade), which verify() enforces by walking the chain."""
+    @_locked
+    def dispute(self, claim_id: str, reason: str, sig: str) -> dict:
+        """The accused issuer contests a pending claim before its deadline, signing
+        {dispute: claim id, reason}. The claim then waits for the arbiter."""
+        now = time.time()
+        self._settle(now)
+        c = self.state["claims"].get(claim_id)
+        if not c:
+            return _err("no_such_claim")
+        if c["status"] != "pending":
+            return _err(f"claim_is_{c['status']}")
+        if not crypto.verify(c["issuer"], {"dispute": claim_id, "reason": reason}, sig):
+            return _err("bad_signature")
+        c.update(status="disputed", disputed_at=now, dispute_reason=reason)
+        self._save()
+        return {"ok": True, **c}
+
+    @_locked
+    def resolve(self, claim_id: str, uphold: bool, sig: str) -> dict:
+        """The arbiter rules on a disputed claim, signing {resolve: claim id, uphold}."""
+        arbiter = self.state["settings"].get("arbiter")
+        if not arbiter:
+            return _err("no_arbiter_configured")
+        c = self.state["claims"].get(claim_id)
+        if not c:
+            return _err("no_such_claim")
+        if c["status"] != "disputed":
+            return _err(f"claim_is_{c['status']}")
+        if not crypto.verify(arbiter, {"resolve": claim_id, "uphold": bool(uphold)}, sig):
+            return _err("bad_signature")
+        now = time.time()
+        if uphold:
+            self._apply_slash(c, now, "upheld by the arbiter")
+        else:
+            c.update(status="rejected", resolved_at=now)
+        self._save()
+        return {"ok": True, **c}
+
+    @_locked
+    def claims(self) -> list[dict]:
+        self._settle(time.time())
+        return json.loads(json.dumps(list(self.state["claims"].values())))
+
+    def _apply_slash(self, c: dict, now: float, how: str):
+        s = self.state["stakes"].get(c["issuer"])
+        penalty = round(s["stake"] * SLASH_FRACTION, 2) if s else 0.0
+        if s:
+            s["stake"] -= penalty
+            s["suspended"] = True
+            s["slashes"].append({"claim": c["id"], "receiver": c["receiver"], "breach": c["breach"],
+                                 "penalty": penalty, "ts": now})
+        c.update(status="upheld", resolved_at=now, penalty=penalty, how=how)
+
+    def _settle(self, now: float):
+        """Uphold every pending claim whose dispute window has closed."""
+        changed = False
+        for c in self.state["claims"].values():
+            if c["status"] == "pending" and c["deadline"] <= now:
+                self._apply_slash(c, now, "not disputed within the window")
+                changed = True
+        if changed:
+            self._save()
+
+    # ---------- revocation ----------
+    @_locked
+    def revoke(self, document: dict, by_pub: str, sig: str, reason: str = "") -> dict:
+        """Revoke a credential or mandate. The caller presents the document itself so the
+        gate can check that the revoker is the key that signed it: the operator for a
+        credential or root mandate, the delegating agent for a delegated mandate. The
+        gate's own key may revoke anything. A mandate is revoked implicitly when any
+        ancestor is revoked (cascade), which verify() enforces by walking the chain."""
+        document = document or {}
+        if document.get("type") not in ("kya.credential/1", "kya.mandate/1"):
+            return _err("not_a_credential_or_mandate")
+        if not (crypto.id_ok(document)
+                and crypto.verify(document.get("issuer", ""), crypto.body_of(document), document.get("sig", ""))):
+            return _err("bad_document")
+        target_id = document["id"]
         body = {"revoke": target_id, "by": by_pub, "reason": reason}
         if not crypto.verify(by_pub, body, sig):
-            return {"ok": False, "error": "bad_signature"}
-        trusted = {self.pubkey} | {k for k, v in self.state["stakes"].items() if v["stake"] > 0}
-        if by_pub not in trusted:
-            return {"ok": False, "error": "revoker_not_trusted"}
+            return _err("bad_signature")
+        if by_pub not in (document["issuer"], self.pubkey):
+            return _err("revoker_is_not_the_issuer")
         self.state["revoked"][target_id] = {"by": by_pub, "ts": time.time(), "reason": reason}
         self._save()
         return {"ok": True, "revoked": target_id}
@@ -163,8 +328,27 @@ class Gate:
         self._block = (now, num, h, src)
         return {"number": num, "hash": h, "source": src}
 
+    # ---------- housekeeping ----------
+    def _prune(self, now: float):
+        """Drop state that can no longer matter, so it does not grow without bound."""
+        if now - self._last_prune < PRUNE_EVERY_S:
+            return
+        self._last_prune = now
+        st = self.state
+        st["nonces_seen"] = {n: t for n, t in st["nonces_seen"].items() if now - t < NONCE_TTL_S}
+        st["pow_open"] = {k: v for k, v in st["pow_open"].items() if now - v.get("issued_at", 0) < POW_TTL_S}
+        st["pow_attempts"] = {k: kept for k, v in st["pow_attempts"].items()
+                              if (kept := [t for t in v if now - t < POW_KEY_WINDOW_S])}
+        for rcv, buckets in st["pow_recent"].items():
+            st["pow_recent"][rcv] = {m: c for m, c in buckets.items() if now - int(m) * 60 < POW_GLOBAL_WINDOW_S}
+        self._save()
+
     # ---------- verify ----------
+    @_locked
     def verify(self, receiver: str, envelope: dict) -> dict:
+        now = time.time()
+        self._settle(now)
+        self._prune(now)
         extra: dict = {}
         decision, reason, detail = self._decide(receiver, envelope or {}, extra)
         req = (envelope or {}).get("request") or {}
@@ -213,11 +397,32 @@ class Gate:
             return "bad_request_signature", "request signature does not verify"
         if req.get("to") != receiver:
             return "wrong_receiver", "request is addressed to a different receiver"
-        if abs(now - float(req.get("ts", 0))) > 600:
-            return "stale_request", "request timestamp is more than 10 minutes off"
+        try:
+            ts = float(req.get("ts", 0))
+        except (TypeError, ValueError):
+            ts = 0.0
+        if abs(now - ts) > REQUEST_SKEW_S:
+            return "stale_request", f"request timestamp is more than {REQUEST_SKEW_S // 60} minutes off"
         if req.get("nonce") in self.state["nonces_seen"]:
             return "replay", "this request was already presented"
         return None
+
+    def _pow_bits(self, receiver: str, pub: str, now: float) -> int:
+        tries = [t for t in self.state["pow_attempts"].get(pub, []) if now - t < POW_KEY_WINDOW_S]
+        buckets = self.state["pow_recent"].get(receiver, {})
+        recent = sum(c for m, c in buckets.items() if now - int(m) * 60 < POW_GLOBAL_WINDOW_S)
+        load = int(math.log2(1 + recent / POW_GLOBAL_FREE))
+        return min(POW_MAX_BITS, POW_BASE_BITS + len(tries) + load)
+
+    def _record_puzzle(self, receiver: str, pub: str, now: float):
+        att = self.state["pow_attempts"]
+        tries = [t for t in att.pop(pub, []) if now - t < POW_KEY_WINDOW_S] + [now]
+        att[pub] = tries[-(POW_MAX_BITS - POW_BASE_BITS + 1):]   # re-inserted, so oldest keys come first
+        while len(att) > POW_MAX_KEYS:
+            del att[next(iter(att))]
+        buckets = self.state["pow_recent"].setdefault(receiver, {})
+        minute = str(int(now // 60))
+        buckets[minute] = buckets.get(minute, 0) + 1
 
     def _unstaked(self, receiver: str, env: dict, req: dict, why: str, now: float, extra: dict) -> tuple[str, str, str]:
         """No staked issuer behind this agent: refuse money, puzzle for read-only."""
@@ -234,6 +439,10 @@ class Gate:
             ch = self.state["pow_open"].get(sol.get("challenge_id", ""))
             if not ch or ch["request_id"] != req.get("id") or ch["receiver"] != receiver:
                 return "refuse", "bad_pow", "proof of work does not match an open challenge for this request"
+            if now - ch.get("issued_at", 0) > POW_TTL_S:
+                del self.state["pow_open"][sol["challenge_id"]]
+                self._save()
+                return "refuse", "bad_pow", f"puzzle expired (must be solved within {POW_TTL_S // 60} minutes)"
             digest = hashlib.sha256(f"{ch['seed']}:{sol.get('nonce')}".encode()).digest()
             if int.from_bytes(digest, "big") >> (256 - ch["bits"]) != 0:
                 return "refuse", "bad_pow", f"solution does not have {ch['bits']} leading zero bits"
@@ -245,13 +454,16 @@ class Gate:
                                          f"(read-only, nothing that moves money)")
         # issue a puzzle bound to the latest block, this request and this receiver
         blk = self.latest_block()
-        n = self.state["pow_attempts"].get(req["from"], 0)
-        bits = POW_BASE_BITS + n
+        bits = self._pow_bits(receiver, req["from"], now)
         seed = hashlib.sha256(f"{blk['hash']}:{req['id']}:{receiver}".encode()).hexdigest()
         cid = seed[:16]
-        self.state["pow_attempts"][req["from"]] = n + 1
-        self.state["pow_open"][cid] = {"seed": seed, "bits": bits, "request_id": req["id"],
-                                       "receiver": receiver, "from": req["from"], "block": blk}
+        self._record_puzzle(receiver, req["from"], now)
+        opened = self.state["pow_open"]
+        opened.pop(cid, None)
+        opened[cid] = {"seed": seed, "bits": bits, "request_id": req["id"], "receiver": receiver,
+                       "from": req["from"], "block": blk, "issued_at": now}
+        while len(opened) > POW_MAX_OPEN:
+            del opened[next(iter(opened))]
         self._save()
         extra["challenge"] = {"challenge_id": cid, "seed": seed, "bits": bits, "block": blk,
                               "rule": "find nonce so that sha256(seed + ':' + nonce) starts with `bits` zero bits"}
@@ -325,7 +537,13 @@ class Gate:
         scope = leaf["scope"]
         if req.get("action") not in scope.get("actions", []):
             return "refuse", "out_of_scope", f"action {req.get('action')} is not in the mandate (allowed: {scope.get('actions')})"
-        amt = float(req.get("amount") or 0)
+        try:
+            amt = float(req.get("amount") or 0)
+        except (TypeError, ValueError):
+            amt = math.nan
+        if not math.isfinite(amt) or amt < 0:
+            # a negative or NaN amount would lower or poison the running spend totals
+            return "refuse", "bad_amount", "amount must be a finite number, not negative"
         if amt > float(scope.get("max_amount", 0)):
             return "refuse", "over_limit", f"amount {amt:,.0f} exceeds mandate limit {scope.get('max_amount'):,}"
         if req.get("action") in MONEY:
@@ -352,17 +570,21 @@ class Gate:
     def _attenuates(child: dict, parent: dict, child_exp: float, parent_exp: float) -> tuple[bool, str]:
         if not set(child.get("actions", [])) <= set(parent.get("actions", [])):
             return False, f"actions {child.get('actions')} not within {parent.get('actions')}"
+        if child.get("currency") != parent.get("currency"):
+            return False, f"currency {child.get('currency')} differs from parent {parent.get('currency')}"
         if float(child.get("max_amount", 0)) > float(parent.get("max_amount", 0)):
             return False, f"max_amount {child.get('max_amount')} > parent {parent.get('max_amount')}"
         if child_exp > parent_exp:
             return False, "child expires after its parent"
         return True, ""
 
+    @_locked
     def receipts(self, limit: int = 50) -> list[dict]:
-        if not self.receipts_file.exists():
+        if not self.receipts_file.exists() or limit <= 0:
             return []
-        lines = self.receipts_file.read_text().strip().splitlines()
-        return [json.loads(l) for l in lines[-limit:]]
+        with self.receipts_file.open() as f:
+            tail = deque((line for line in f if line.strip()), maxlen=limit)
+        return [json.loads(line) for line in tail]
 
 
 def solve_pow(seed: str, bits: int) -> tuple[str, int]:

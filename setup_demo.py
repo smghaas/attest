@@ -13,16 +13,18 @@
   SupplierCo    receiver (Hermes, role supplier). Accepts any issuer staked at
                 10,000 or more (at least the value of what it protects).
                 Policy: place_order above 8,000 escalates to a human.
+                Has its own key (rcv-supplierco), used to sign slashing claims.
+  Arbiter       key that rules on disputed slashing claims.
 
 Stakes (stand-in for the on-chain stake contract): AcmeCorp 25,000, FlakyCo 20,000,
-ShadyCo none.
+ShadyCo none. The dispute window for slashing claims is shortened to a few seconds
+so the scenarios can show it closing (the gate's default is 72 hours).
 
 Everything is written to state/agents/<name>.json. Private keys stay on this
 laptop; this is a demo, not a key management system.
 """
 import json
 import time
-from pathlib import Path
 
 from gate import crypto
 from gate.core import Gate, STATE_DIR
@@ -30,16 +32,17 @@ from gate.core import Gate, STATE_DIR
 AG = STATE_DIR / "agents"
 AG.mkdir(parents=True, exist_ok=True)
 DAY = 86400
+DEMO_DISPUTE_WINDOW_S = 3
 
 
 def save(name, doc):
     (AG / f"{name}.json").write_text(json.dumps(doc, indent=1))
 
 
-def operator(name):
+def operator(name, file=None):
     priv, pub = crypto.keygen()
     doc = {"name": name, "priv": priv, "pub": pub}
-    save(f"op-{name}", doc)
+    save(file or f"op-{name}", doc)
     return doc
 
 
@@ -86,9 +89,13 @@ if __name__ == "__main__":
     flaky = operator("FlakyCo")
     agent("flaky-buyer", flaky, "procurement for FlakyCo", ["request_quote", "place_order"], 5000)
 
+    supplier_key = operator("supplierco", file="rcv-supplierco")
+    arbiter = operator("Arbiter", file="arbiter")
+
     g = Gate()
     g.register_receiver("supplierco", min_stake=10000,
-                        policy={"escalate_above": {"place_order": 8000}})
+                        policy={"escalate_above": {"place_order": 8000}}, pubkey=supplier_key["pub"])
+    g.configure(dispute_window_s=DEMO_DISPUTE_WINDOW_S, arbiter=arbiter["pub"])
     for op, amount in ((acme, 25000), (flaky, 20000)):
         body = {"stake": True, "issuer": op["pub"], "name": op["name"], "amount": float(amount)}
         print(g.stake(op["pub"], op["name"], amount, crypto.sign(op["priv"], body)))

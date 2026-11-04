@@ -4,7 +4,7 @@
 #  2 supplier agent checks it through the gate (allow), prices it, replies
 #  3 buyer agent reads the reply
 #  4 a sub-agent whose mandate exceeds its parent tries to order: gate refuses
-#  5 seventeen scripted scenarios (stakes, proof of work, slashing, order splitting, revocation), decisions compared with the design, receipts checked
+#  5 the scripted scenarios (stakes, proof of work, slashing claims and disputes, order splitting, concurrent orders, revocation), decisions compared with the design, receipts checked
 export PATH="$HOME/.local/bin:$PATH"
 cd "$(dirname "$0")"
 B=$'\e[1m'; C=$'\e[1;33m'; G=$'\e[1;32m'; R=$'\e[0m'
@@ -36,8 +36,8 @@ cap "4 of 5  A SUB-AGENT with a mandate bigger than its parent's tries to place 
 $H -t kya_greedy -q "You are a sub-agent of AcmeCorp's procurement agent. Call whoami, then place an order with send_request, action place_order, amount 500, message 'PO-3001: 25 units of Z-FLANGE'. State the request id."
 $H -t kya_supplier -q "Take the next request with inbox_next, call check_agent on it, then reply accordingly (quote with quote_price only if allowed, otherwise one line saying you cannot proceed and why). End with: decision, reason, receipt verified yes or no."
 
-cap "5 of 5  RESULT CHECK: seventeen scripted scenarios, no LLM, every decision compared with the design, every receipt verified" "Includes: unstaked agent must solve a proof-of-work puzzle seeded by the live Base Sepolia block hash, order splitting, slashing, revocation cascade." ""
+cap "5 of 5  RESULT CHECK: the scripted scenarios, no LLM, every decision compared with the design, every receipt verified" "Includes: unstaked agent must solve a proof-of-work puzzle seeded by the live Base Sepolia block hash, order splitting, slashing with a dispute window, revocation cascade." ""
 .venv/bin/python run_scenarios.py
 
-cap "DONE" "Limitations today: stakes, slashing and revocations live in the gate's own table, not yet in a contract on Base Sepolia (only the block hash is read from chain); no dispute window before a slash; escalation only logs." 4
+cap "DONE" "Limitations today: stakes, slashing and revocations live in the gate's own table, not yet in a contract on Base Sepolia (only the block hash is read from chain); escalation only logs." 4
 date +%s >> runs/demo_timing

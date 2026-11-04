@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+httpx
+cryptography
+pydantic
+mcp>=2.0  # agents/kya_tools.py uses mcp.server.mcpserver.MCPServer
