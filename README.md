@@ -37,6 +37,7 @@ gate/server.py       FastAPI: /pubkey /verify/{receiver} /revoke /claims /receip
 agents/kya_tools.py  MCP tools for Hermes agents (buyer role and supplier role)
 setup_demo.py        creates operators, agents, receiver and arbiter keys, credentials, mandates in state/agents/
 run_scenarios.py     scripted scenarios, decisions compared with the design, receipts verified
+demo.py              the class demo (HW7 story, live gate calls, recorded LLM results)
 demo.sh              the Homework 6 demo: reset, two Hermes agents, scenario table
 ```
 
@@ -44,6 +45,7 @@ demo.sh              the Homework 6 demo: reset, two Hermes agents, scenario tab
 
 ```
 uv venv --python 3.11 .venv && uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/python demo.py                 # class demo in the terminal: no server, LLM or network needed
 .venv/bin/python run_scenarios.py --spawn  # no LLM needed; own temporary state and gate, as CI runs it
 .venv/bin/python setup_demo.py
 .venv/bin/uvicorn gate.server:app --port 8402 &
