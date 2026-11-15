@@ -69,7 +69,8 @@ button:disabled{opacity:.6;cursor:wait}
     <div class="step"><h3>3. Who checks (receiver)</h3>
       <label for="m-rc">Receiver name</label><input id="m-rc" placeholder="e.g. my-desk" autocomplete="off">
       <div class="row"><div><label for="m-min">Min stake behind an agent</label><input id="m-min" type="number" min="0" value="5000"></div>
-        <div><label for="m-esc">Ask a human for orders above</label><input id="m-esc" type="number" min="0" value="8000"></div></div>
+        <div><label for="m-esc">Ask a human for anything above</label><input id="m-esc" type="number" min="0" value="8000"></div></div>
+      <label for="m-esc-for">That limit applies to</label><select id="m-esc-for"><option value="*">every action (quotes and orders)</option><option value="place_order">orders only</option></select>
       <button id="m-rc-go">Create receiver</button><div class="msg" id="m-rc-msg"></div></div>
     <div class="step"><h3>4. Send a request, get a decision</h3>
       <div class="row"><div><label for="m-from">From agent</label><select id="m-from"></select></div>
@@ -227,7 +228,7 @@ $("#m-ag-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-ag").value)
   try{const sub=K.get(iss).kind==="agent";await K.createAgent(n,iss,"agent made in the browser",acts,Number($("#m-max").value)||0,sub?7:30);
     say("#m-ag-msg",sub?`${n} is a sub-agent of ${iss}. If its limits are wider than its parent's, the gate will refuse it.`:`${n} now holds a credential and a mandate signed by ${iss}.`);idsChanged();$("#m-from").value=n}catch(err){say("#m-ag-msg",err.message,false)}});
 $("#m-rc-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-rc").value).toLowerCase();if(!n)return say("#m-rc-msg","Name the receiver (lowercase, dashes).",false);
-  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0);say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
+  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0,$("#m-esc-for").value);say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
 $("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("#m-to").value;
   if(!a){$("#m-out").innerHTML='<div class="msg err">Create an agent in step 2 first.</div>';return}
   try{const {envelope,result}=await K.check(a,to,$("#m-act").value,Number($("#m-amt").value)||0);

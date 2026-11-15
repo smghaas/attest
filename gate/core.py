@@ -595,8 +595,9 @@ class Gate:
         # 5. the receiver's own policy
         pol = rcv.get("policy") or {}
         esc = pol.get("escalate_above", {})
-        if req.get("action") in esc and amt > float(esc[req["action"]]):
-            return "escalate", "policy_escalation", f"{req['action']} above {esc[req['action']]:,} needs a human at {receiver}"
+        limit = esc.get(req.get("action"), esc.get("*"))      # "*" covers every action without its own threshold
+        if limit is not None and amt > float(limit):
+            return "escalate", "policy_escalation", f"{req.get('action')} above {limit:,} needs a human at {receiver}"
 
         if req.get("action") in MONEY:
             for m in chain:

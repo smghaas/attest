@@ -130,3 +130,16 @@ def test_a_failed_registration_leaves_no_key_behind(sandbox):
     with pytest.raises(SystemExit):
         run("receiver", "create", "supplierco")           # the seeded demo name is taken
     assert not any(d["name"] == "supplierco" for d in identity.ids())
+
+
+def test_a_human_threshold_for_every_action_also_catches_large_quotes(sandbox, capsys):
+    assert run("operator", "create", "Vandelay2") == 0
+    assert run("receiver", "create", "careful-desk", "--min-stake", "5000", "--escalate", "*=8000") == 0
+    assert run("agent", "create", "v-buyer", "--operator", "Vandelay2", "--actions", "request_quote,place_order",
+               "--max", "10000") == 0
+    capsys.readouterr()
+    assert run("request", "v-buyer", "careful-desk", "request_quote", "9000", "--check") == 2
+    assert "ESCALATE" in capsys.readouterr().out
+    assert run("request", "v-buyer", "careful-desk", "place_order", "9000", "--check") == 2
+    assert "ESCALATE" in capsys.readouterr().out
+    assert run("request", "v-buyer", "careful-desk", "request_quote", "500", "--check") == 0

@@ -80,11 +80,11 @@ const AttestKeys = (() => {
     return out;
   }
 
-  async function createReceiver(name, minStake, escalateOrderAbove) {
+  async function createReceiver(name, minStake, escalateAbove, escalateFor) {
     if (exists(name)) throw new Error(name + " already exists in this browser");
     const k = await keygen();
     const rc = { kind: "receiver", name, ...k };
-    const policy = escalateOrderAbove > 0 ? { escalate_above: { place_order: escalateOrderAbove } } : {};
+    const policy = escalateAbove > 0 ? { escalate_above: { [escalateFor || "*"]: escalateAbove } } : {};
     const body = { register_receiver: name, pubkey: rc.pub, min_stake: minStake, policy };
     const out = await post("/register/receiver", { name, pubkey: rc.pub, min_stake: minStake, policy, sig: await sign(rc, body) });
     save(rc);

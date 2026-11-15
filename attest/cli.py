@@ -51,7 +51,7 @@ def main(argv=None) -> int:
     rc.add_argument("name")
     rc.add_argument("--min-stake", type=float, default=0, help="operators must have at least this much stake")
     rc.add_argument("--escalate", action="append", default=[], metavar="ACTION=AMOUNT",
-                    help="ask a human above this amount, e.g. place_order=8000")
+                    help="ask a human above this amount: *=8000 for every action, or place_order=8000 for one")
     ag = sub.add_parser("agent", help="create an agent for an operator, or delegate a narrower one")
     ag.add_argument("action", choices=["create", "delegate"])
     ag.add_argument("name")
