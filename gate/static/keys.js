@@ -127,17 +127,40 @@ const AttestKeys = (() => {
   // ---- the ledger -------------------------------------------------------------------------------
   const zeroBits = h => { let n = 0; for (const c of h) { const v = parseInt(c, 16); if (v === 0) { n += 4; continue; } return n + Math.clz32(v) - 28; } return n; };
 
-  async function passport(agentName) {
-    const a = get(agentName), op = get(a.operator);
+  async function hasPassport(who) {
+    const r = await fetch("/ledger/agents/" + who.pub + "/history");
+    return r.ok && (await r.json()).passport;
+  }
+
+  async function passport(name) {
+    const a = get(name);
+    // an agent's operator vouches for it; a receiver vouches for itself
+    const op = a.kind === "receiver" ? a : get(a.operator);
     if (!op) throw new Error("the passport needs the operator's key, and " + a.operator + " is not in this browser");
     const bits = (await (await fetch("/ledger/info")).json()).registration_puzzle_bits;
     let n = 0;
     while (zeroBits(await sha(a.pub + ":" + n)) < bits) n++;     // the registration puzzle (proof of work)
-    const scope = a.chain[0].scope;
+    const scope = a.kind === "receiver" ? { actions: ["receive"], max_amount: 0 } : a.chain[0].scope;
     const doc = await signed(op, { type: "passport", agent: a.pub, operator: op.pub, name: a.name,
                                    actions: [...scope.actions].sort(), max_amount: scope.max_amount, nonce: n });
     doc.agent_sig = await sign(a, { id: doc.id });
     return post("/ledger/records", doc);
+  }
+
+  async function ensurePassport(name) {
+    if (!(await hasPassport(get(name)))) await passport(name);
+  }
+
+  // After the gate allowed a request: the receiver (provider) and the agent (buyer) both sign what happened.
+  // The record's request field is the gate request's id, so the history points back to the gate's receipt.
+  async function settle(agentName, receiverName, requestId, amount, status) {
+    const rc = get(receiverName);
+    if (!rc || rc.kind !== "receiver")
+      throw new Error("the receiver " + receiverName + " must countersign, and its key is not in this browser. " +
+                      "Only receivers you created here can confirm a deal from this page.");
+    await ensurePassport(agentName);
+    await ensurePassport(receiverName);
+    return trade(receiverName, agentName, requestId, amount, status);
   }
 
   async function trade(providerName, buyerName, request, amount, status) {
@@ -148,5 +171,5 @@ const AttestKeys = (() => {
   }
 
   return { supported, canon, list, get, save, forget, createOperator, createReceiver, createAgent, envelope, check,
-           passport, trade, nonce };
+           passport, trade, settle, hasPassport, nonce };
 })();

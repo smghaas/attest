@@ -286,7 +286,7 @@ class LightClient:
         outs = [r for r in seen.values() if r["type"] == "outcome"]
         disputed = [r for r in outs if r["status"] == "disputed"]
         if outs and len(disputed) / len(outs) > max_dispute_ratio:
-            return "refuse", f"{len(disputed)} of {len(outs)} trades disputed"
+            return "refuse", f"flagged: {len(disputed)} of {len(outs)} deals disputed"
         per_peer: dict[str, int] = {}
         for r in outs:
             if r["status"] == "accepted":
@@ -294,9 +294,9 @@ class LightClient:
                 per_peer[peer] = per_peer.get(peer, 0) + 1
         credit = sum(min(pair_cap, c) for c in per_peer.values())
         if credit < min_credit:
-            return "unknown", (f"history credit {credit} of {min_credit} needed "
-                               f"(at most {pair_cap} per counterparty)")
-        return "allow", f"{credit} credit from {len(per_peer)} counterparties, {len(disputed)} disputed"
+            return "unknown", (f"new: {credit} of {min_credit} good deals so far "
+                               f"(at most {pair_cap} counted per partner)")
+        return "allow", f"trusted: {credit} good deals with {len(per_peer)} partners, {len(disputed)} disputed"
 
 
 def connect(nodes: list[Node]):

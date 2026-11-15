@@ -41,6 +41,7 @@ class LedgerService:
         self.dir.mkdir(parents=True, exist_ok=True)
         self.keys_file = self.dir / "ledger_keys.json"
         self.records_file = self.dir / "ledger_records.json"
+        self.blocks_file = self.dir / "ledger_blocks.json"
         self.lock = threading.RLock()
         if self.keys_file.exists():
             keys = json.loads(self.keys_file.read_text())
@@ -56,13 +57,20 @@ class LedgerService:
         self.light = LightClient(vals)
         self.turn = 0
         self.records: list = []
-        if self.records_file.exists():                  # rebuild the chain from the saved records
+        if self.blocks_file.exists():                   # replay the saved blocks: same chain, no re-mining
+            for blk in json.loads(self.blocks_file.read_text()):
+                self.nodes[0].receive_block(blk, None)
+                self.records.extend(blk["records"])
+            self.turn = self.height()
+            self.log.clear()
+        elif self.records_file.exists():                # older saves kept records only: re-mine them
             saved = json.loads(self.records_file.read_text())
             for i in range(0, len(saved), 50):
                 for rec in saved[i:i + 50]:
                     if self.nodes[0].submit(rec)[0]:
                         self.records.append(rec)
                 self._mine()
+            self._save()
 
     def _mine(self):
         self.nodes[self.turn % self.VALIDATORS].propose()
@@ -82,8 +90,11 @@ class LedgerService:
                 return True, "already on the ledger", self.height()
             self._mine()
             self.records.append(rec)
-            self.records_file.write_text(json.dumps(self.records))
+            self._save()
             return True, "ok", self.height()
+
+    def _save(self):
+        self.blocks_file.write_text(json.dumps(self.nodes[0].chain.best_chain()[1:]))
 
     def height(self) -> int:
         n = self.nodes[0]

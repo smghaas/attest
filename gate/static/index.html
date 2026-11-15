@@ -79,13 +79,9 @@ button:disabled{opacity:.6;cursor:wait}
         <div><label for="m-amt">Amount (USD)</label><input id="m-amt" type="number" min="0" value="2000"></div></div>
       <button id="m-ask">Ask the gate</button><div id="m-out"></div></div>
   </div>
-  <div class="step" id="m-ledger" hidden style="margin-top:14px"><h3>5. Build the agent's history on the ledger</h3>
-    <div class="row"><div><label for="m-pp">Agent</label><select id="m-pp"></select></div>
-      <div><label>&nbsp;</label><button id="m-pp-go" style="margin-top:0">Register passport</button></div></div>
-    <div class="row"><div><label for="m-sel">Seller agent</label><select id="m-sel"></select></div><div><label for="m-buy">Buyer agent</label><select id="m-buy"></select></div></div>
-    <div class="row"><div><label for="m-tamt">Amount (USD)</label><input id="m-tamt" type="number" min="0" value="500"></div>
-      <div><label for="m-st">Outcome (both sign it)</label><select id="m-st"><option>accepted</option><option>disputed</option></select></div></div>
-    <button id="m-tr-go">Record trade</button><div class="msg" id="m-l-msg"></div></div>
+  <div class="step" id="m-ledger" hidden style="margin-top:14px"><h3>5. Your agents' track record (on the ledger)</h3>
+    <p class="sub" style="margin:0 0 8px">After the gate allows a request, press "Deal done" or "Dispute" under the decision. The agent and the receiver both sign, and it is added to the agent's history. Anyone can read it; nobody can edit it.</p>
+    <div id="m-track"></div><div class="msg" id="m-l-msg"></div></div>
   <h3 style="margin-top:16px">Your keys (in this browser)</h3>
   <div id="m-ids"></div>
   <div class="row" style="max-width:520px"><button id="m-dl">Download all as JSON</button><button id="m-forget" class="ghost">Forget all keys</button></div>
@@ -165,9 +161,9 @@ async function refresh(){
     demo=st.demo;
     try{
       const [li,la,lb]=await Promise.all([get("/ledger/info"),get("/ledger/agents"),get("/ledger/blocks?limit=5")]);
-      $("#ledger").hidden=false;$("#m-ledger").hidden=false;
+      $("#ledger").hidden=false;$("#m-ledger").hidden=false;if(!ledgerOn){ledgerOn=true;track()}
       $("#linfo").textContent=`Height ${li.height}, final to ${li.final}, ${li.records} records, ${li.validators} validators. Blocks need a ${li.block_puzzle_bits}-bit puzzle and a staked validator's signature; a block is final once more than 2/3 of stake voted for it. ${li.note}.`;
-      $("#lagents").innerHTML=tbl(la,[["Agent",r=>esc(r.name)],["Trades",r=>r.trades],["Accepted",r=>r.accepted],["Disputed",r=>r.disputed],["Volume",r=>"$"+Number(r.volume).toLocaleString()],["Light client says",r=>pill(r.decision)+`<div class="sub">${esc(r.why)}</div>`]]);
+      $("#lagents").innerHTML=tbl(la,[["Agent",r=>esc(r.name)],["Trades",r=>r.trades],["Accepted",r=>r.accepted],["Disputed",r=>r.disputed],["Volume",r=>"$"+Number(r.volume).toLocaleString()],["What a stranger would conclude",r=>pill(r.decision).replace(r.decision.toUpperCase(),verdict[r.decision]||r.decision)+`<div class="sub">${esc(r.why)}</div>`]]);
       $("#lblocks").innerHTML=tbl(lb,[["Block",r=>r.height],["Records",r=>r.records],["Proposer",r=>`<span class="mono">${esc(r.proposer)}</span>`],["Merkle root",r=>`<span class="mono">${esc(r.root.slice(0,16))}…</span>`]]);
     }catch(e){}
     if(st.sandbox&&!$("#banner").dataset.set){
@@ -206,13 +202,25 @@ $("#go2").onclick=async()=>{let env;try{env=JSON.parse($("#env").value)}catch(e)
 
 // ---------------- use Attest in your browser ----------------
 const K=AttestKeys;
+let ledgerOn=false;
+const verdict={allow:"Trusted",unknown:"New",refuse:"Flagged"};
+async function track(){
+  if(!ledgerOn)return;
+  const mine=K.list().filter(d=>d.kind==="agent");
+  if(!mine.length){$("#m-track").innerHTML='<div class="empty">Create an agent, get an allow in step 4, then press "Deal done".</div>';return}
+  try{
+    const all=await get("/ledger/agents"),by=Object.fromEntries(all.map(x=>[x.agent,x]));
+    $("#m-track").innerHTML=tbl(mine.map(d=>({d,x:by[d.pub]})),[["Agent",r=>esc(r.d.name)],["Deals",r=>r.x?r.x.trades:0],["Confirmed",r=>r.x?r.x.accepted:0],["Disputed",r=>r.x?r.x.disputed:0],["Volume",r=>"$"+Number(r.x?r.x.volume:0).toLocaleString()],
+      ["What a stranger would conclude",r=>r.x?pill(r.x.decision).replace(r.x.decision.toUpperCase(),verdict[r.x.decision]||r.x.decision)+`<div class="sub">${esc(r.x.why)}</div>`:'<span class="sub">no deals yet</span>']]);
+  }catch(e){}
+}
 const fill=(sel,items,keep=true)=>{const s=$(sel),cur=s.value;s.innerHTML=items.map(n=>`<option>${esc(n)}</option>`).join("");if(keep&&items.includes(cur))s.value=cur};
 function idsChanged(){
   const ids=K.list(),names=k=>ids.filter(d=>d.kind===k).map(d=>d.name);
   const agents=names("agent");
   fill("#m-iss",[...names("operator"),...agents]);
-  for(const s of ["#m-from","#m-pp","#m-sel","#m-buy"])fill(s,agents);
-  if(agents.length>1&&$("#m-buy").value===$("#m-sel").value)$("#m-buy").value=agents[1];
+  fill("#m-from",agents);
+  track();
   $("#m-ids").innerHTML=tbl(ids,[["Name",r=>esc(r.name)],["Kind",r=>esc(r.kind)],["Details",r=>r.kind==="agent"?esc(`${r.chain[r.chain.length-1].scope.actions.join(", ")} up to $${Number(r.chain[r.chain.length-1].scope.max_amount).toLocaleString()}`+(r.delegated_by?`, delegated by ${r.delegated_by}`:`, for ${r.operator}`)):""],["Public key",r=>`<span class="mono">${esc(r.pub.slice(0,16))}…</span>`]]);
 }
 function say(id,text,ok=true){const m=$(id);m.className="msg "+(ok?"ok":"err");m.textContent=text}
@@ -235,15 +243,15 @@ $("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("
     const r=result,ch=r.challenge?`<div class="sub">Puzzle required: ${esc(r.challenge.bits)} bits of proof of work before an unstaked agent is heard.</div>`:"";
     $("#m-out").innerHTML=`<div class="result"><div class="big">${pill(r.decision)} ${esc(r.reason)}</div>${r.detail?`<pre>${esc(r.detail)}</pre>`:""}${ch}
       <div class="sub" style="margin-top:8px">Receipt <span class="mono">${esc(r.receipt.id.slice(0,16))}</span> signed by the gate.</div>
+      ${r.decision==="allow"&&ledgerOn?`<div class="row" style="margin-top:6px"><button id="m-done">Deal done (both sign)</button><button id="m-disp" class="ghost">Dispute</button></div><div class="msg" id="m-set-msg"></div>`:""}
       <button class="ghost" style="color:var(--accent);width:auto;padding:4px 12px" id="m-copy">Copy the signed envelope (to send to another agent)</button></div>`;
+    const settle=status=>async ev=>{for(const b of ["#m-done","#m-disp"])$(b).disabled=true;say("#m-set-msg","Signing and adding to the ledger…");
+      try{const out=await K.settle(a,to,envelope.request.id,envelope.request.amount,status);
+        say("#m-set-msg",status==="accepted"?`Recorded in block ${out.height}: ${a} and ${to} both confirmed the deal.`:`Dispute recorded in block ${out.height}, signed by both. It counts against ${a}'s record.`);track();refresh()}
+      catch(err){say("#m-set-msg",err.message,false);for(const b of ["#m-done","#m-disp"])$(b).disabled=false}};
+    if($("#m-done")){$("#m-done").onclick=settle("accepted");$("#m-disp").onclick=settle("disputed")}
     $("#m-copy").onclick=()=>navigator.clipboard.writeText(JSON.stringify(envelope,null,1)).then(()=>$("#m-copy").textContent="Copied");
     refresh()}catch(err){$("#m-out").innerHTML=`<div class="msg err">${esc(err.message)}</div>`}});
-$("#m-pp-go").onclick=e=>busy(e.target,async()=>{const a=$("#m-pp").value;if(!a)return say("#m-l-msg","Create an agent first.",false);
-  say("#m-l-msg","Solving the registration puzzle…");
-  try{const r=await K.passport(a);say("#m-l-msg",r.result==="ok"?`Passport for ${a} is in block ${r.height}.`:`${a}: ${r.result}.`);refresh()}catch(err){say("#m-l-msg",err.message,false)}});
-$("#m-tr-go").onclick=e=>busy(e.target,async()=>{const s=$("#m-sel").value,b=$("#m-buy").value;
-  if(!s||!b||s===b)return say("#m-l-msg","Pick two different agents, each with a passport.",false);
-  try{const r=await K.trade(s,b,"trade-"+K.nonce().slice(0,10),Number($("#m-tamt").value)||0,$("#m-st").value);say("#m-l-msg",`Trade recorded in block ${r.height}, signed by both ${s} and ${b}.`);refresh()}catch(err){say("#m-l-msg",err.message,false)}});
 $("#m-dl").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(K.list(),null,1)],{type:"application/json"}));a.download="attest-keys.json";a.click()};
 $("#m-forget").onclick=()=>{if(!K.list().length)return;$("#m-forget").textContent="Click again to delete every key in this browser";
   $("#m-forget").onclick=()=>{K.forget();idsChanged();$("#m-forget").textContent="Forget all keys"}};

@@ -78,9 +78,12 @@ def test_history_survives_a_restart(world, monkeypatch):
     at.register_passport(op, s)
     at.register_passport(op, b)
     at.record_trade(s, b, "r1", 250)
+    before = at.ledger_info()
     import gate.ledger_api as api
-    api._svc = None                                        # a fresh process reading the saved records
+    api._svc = None                                        # a fresh process reading the saved blocks
     assert at.history(s["pub"])["volume"] == 250
+    after = at.ledger_info()
+    assert (after["height"], after["final"]) == (before["height"], before["final"])   # the same chain, not re-mined
 
 
 def test_cli_ledger_flow(world, capsys):
