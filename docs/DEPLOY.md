@@ -31,6 +31,8 @@ or the gate forgets everyone on restart.
 |---|---|---|
 | `ATTEST_SANDBOX` | `1` in the Docker image | Turns on self-registration and the guards below. Off means a private gate. |
 | `ATTEST_DEMO` | `1` in the Docker image | Lets the page act as the seeded demo agents. They hold test keys only. |
+| `ATTEST_LEDGER` | `1` in the Docker image | Turns on the agent history ledger (`/ledger/*`). Four validators run inside the one gate process. |
+| `ATTEST_MAX_LEDGER_RECORDS` | 5000 | Cap on stored passports and trades |
 | `ATTEST_SANDBOX_STAKE` | 10000 | Free stake per new operator |
 | `ATTEST_RATE_WRITE` / `ATTEST_RATE_CHECK` | 20 / 120 | Requests per minute per IP, for registration and for checks |
 | `ATTEST_MAX_ISSUERS` / `ATTEST_MAX_RECEIVERS` | 500 | Caps so the state file cannot grow without limit |
@@ -38,6 +40,9 @@ or the gate forgets everyone on restart.
 | `ATTEST_TRUST_PROXY` | `1` in the Docker image | Read the client IP from `X-Forwarded-For` (needed behind a host's proxy) |
 
 ## What the sandbox is not
+
+- Not independent nodes. The ledger's four validators live in the same process as the gate, so the gate operator can
+  still read and restart everything. It shows the protocol; independence needs other teams to run nodes.
 
 - Not real security. Anyone can mint stake, so a sandbox decision proves the logic works, not that an operator
   has money behind it. Real stake means reading it from a chain (Base) or an escrow.

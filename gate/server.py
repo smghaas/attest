@@ -92,7 +92,7 @@ def _num(var: str, default: float) -> float:
 
 # Sandbox guards: body size, per-IP rate limits, no demo inbox, open CORS so browser agents can call.
 _hits: dict = defaultdict(deque)
-WRITE_PATHS = ("/sandbox/", "/register/", "/claims", "/revoke")
+WRITE_PATHS = ("/sandbox/", "/register/", "/claims", "/revoke", "/ledger/records")
 
 
 @app.middleware("http")
@@ -119,6 +119,9 @@ async def sandbox_guards(request: Request, call_next):
     return await call_next(request)
 
 
+from .ledger_api import router as ledger_router  # noqa: E402  (endpoints live in their own file)
+
+app.include_router(ledger_router)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 

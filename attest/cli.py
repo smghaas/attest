@@ -61,6 +61,18 @@ def main(argv=None) -> int:
     ag.add_argument("--actions", default="request_quote", help="comma separated, e.g. request_quote,place_order")
     ag.add_argument("--max", type=float, default=1000, dest="max_amount", help="largest amount per mandate, USD")
     ag.add_argument("--days", type=float, default=30)
+    sub.add_parser("ledger", help="the ledger: height, agents with passports and their history")
+    pp = sub.add_parser("passport", help="register an agent's passport on the ledger")
+    pp.add_argument("action", choices=["create"])
+    pp.add_argument("agent")
+    hs = sub.add_parser("history", help="what an agent has done, from the ledger (local name or public key)")
+    hs.add_argument("agent")
+    tr = sub.add_parser("trade", help="record a trade both sides sign (both identities must be on this machine)")
+    tr.add_argument("provider")
+    tr.add_argument("buyer")
+    tr.add_argument("request_id")
+    tr.add_argument("amount", type=float)
+    tr.add_argument("--disputed", action="store_true", help="record it as disputed (we record, we do not judge)")
     rq = sub.add_parser("request", help="sign a request as an agent; --check also asks the gate")
     rq.add_argument("agent")
     rq.add_argument("receiver")
@@ -75,6 +87,29 @@ def main(argv=None) -> int:
             _table([{"name": d["name"], "kind": d.get("kind", "?"), "key": d["pub"][:16],
                      "operator": d.get("operator", ""), "parent": d.get("delegated_by", "")}
                     for d in identity.ids()], ["name", "kind", "operator", "parent", "key"])
+        elif a.cmd == "ledger":
+            info = at.ledger_info()
+            print(f"height {info['height']}, final {info['final']}, {info['records']} records, "
+                  f"{info['validators']} validators\n{info['note']}\n")
+            _table([{"agent": x["name"], "trades": x["trades"], "accepted": x["accepted"], "disputed": x["disputed"],
+                     "volume": f"{x['volume']:,.0f}", "decision": x["decision"]} for x in at.ledger_agents()],
+                   ["agent", "trades", "accepted", "disputed", "volume", "decision"])
+        elif a.cmd == "passport":
+            ag = identity.load(a.agent)
+            out = at.register_passport(identity.load(ag["operator"]), ag)
+            print(f"passport for {a.agent} is on the ledger (block {out['height']})")
+        elif a.cmd == "history":
+            pub = identity.load(a.agent)["pub"] if (identity.home() / f"{a.agent}.json").exists() else a.agent
+            h = at.history(pub)
+            _print(h) if a.json else print(f"{a.agent}: passport {'yes' if h['passport'] else 'no'}, {h['trades']} trades, "
+                                           f"{h['accepted']} accepted, {h['disputed']} disputed, volume ${h['volume']:,.0f}")
+            if not a.json:
+                _table([{"block": e["height"], "request": e["record"]["request"], "status": e["record"]["status"],
+                         "amount": e["record"]["amount"]} for e in h["entries"]], ["block", "request", "status", "amount"])
+        elif a.cmd == "trade":
+            out = at.record_trade(identity.load(a.provider), identity.load(a.buyer), a.request_id, a.amount,
+                                  "disputed" if a.disputed else "accepted")
+            print(f"recorded in block {out['height']} (signed by both {a.provider} and {a.buyer})")
         elif a.cmd == "info":
             _print(at.info())
         elif a.cmd == "operator":

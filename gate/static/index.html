@@ -77,6 +77,14 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
   <section class="card"><h2>Receivers</h2><div id="rcvs"></div><h2 style="margin-top:16px">Slashing claims</h2><div id="claims"></div></section>
 </div>
 
+<section class="card" id="ledger" style="margin-top:14px" hidden>
+  <h2>Agent history ledger</h2>
+  <div class="sub" id="linfo" style="margin-bottom:8px"></div>
+  <div id="lagents"></div>
+  <h2 style="margin-top:16px">Latest blocks</h2>
+  <div id="lblocks"></div>
+</section>
+
 <section class="card" id="start" style="margin-top:14px" hidden>
   <h2>Use it yourself</h2>
   <p class="sub" style="margin:0 0 8px">Your keys stay on your machine; the gate only sees signatures. Needs <span class="mono">pip install git+https://github.com/smghaas/attest</span>.</p>
@@ -107,6 +115,13 @@ async function refresh(){
     const names=Object.keys(rv);
     for(const id of ["#rcv","#rcv2"]){const s=$(id),cur=s.value;s.innerHTML=names.map(n=>`<option>${esc(n)}</option>`).join("");if(names.includes(cur))s.value=cur}
     demo=st.demo;
+    try{
+      const [li,la,lb]=await Promise.all([get("/ledger/info"),get("/ledger/agents"),get("/ledger/blocks?limit=5")]);
+      $("#ledger").hidden=false;
+      $("#linfo").textContent=`Height ${li.height}, final to ${li.final}, ${li.records} records, ${li.validators} validators. Blocks need a ${li.block_puzzle_bits}-bit puzzle and a staked validator's signature; a block is final once more than 2/3 of stake voted for it. ${li.note}.`;
+      $("#lagents").innerHTML=tbl(la,[["Agent",r=>esc(r.name)],["Trades",r=>r.trades],["Accepted",r=>r.accepted],["Disputed",r=>r.disputed],["Volume",r=>"$"+Number(r.volume).toLocaleString()],["Light client says",r=>pill(r.decision)+`<div class="sub">${esc(r.why)}</div>`]]);
+      $("#lblocks").innerHTML=tbl(lb,[["Block",r=>r.height],["Records",r=>r.records],["Proposer",r=>`<span class="mono">${esc(r.proposer)}</span>`],["Merkle root",r=>`<span class="mono">${esc(r.root.slice(0,16))}…</span>`]]);
+    }catch(e){}
     if(st.sandbox&&!$("#banner").dataset.set){
       $("#banner").dataset.set=1;$("#banner").hidden=false;
       $("#banner").innerHTML="<b>Public sandbox.</b> Stake here is free test credit, not money. Every decision is public. Decisions, signatures and receipts are real.";

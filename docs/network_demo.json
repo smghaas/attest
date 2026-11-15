@@ -1,0 +1,1457 @@
+{
+ "puzzle_bits": 12,
+ "reg_bits": 10,
+ "steps": [
+  {
+   "title": "Four teams start a node each",
+   "text": "Each team runs a node and holds stake: Acme 25k, Beta 25k, Gamma 20k, Delta 20k. To add a block a node must solve a 12-bit puzzle and sign as a staked validator.",
+   "events": [],
+   "result": [],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 0,
+     "final": 0,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 0,
+     "final": 0,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 0,
+     "final": 0,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 0,
+     "final": 0,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "Agents register a passport",
+   "text": "Each operator signs a passport, and each agent signs it too. Registering costs a hashcash puzzle (10 bits). The block is mined, gossiped, and voted on by all four stakers. Took 0.01s.",
+   "events": [
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "mined",
+     "detail": "block 1 with 4 records, puzzle 12 bits"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 1 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 1 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 1 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 1 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 1 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 1 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 1 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 1 is final (100% of stake voted)"
+    }
+   ],
+   "result": [],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 1,
+     "final": 1,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 1,
+     "final": 1,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 1,
+     "final": 1,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 1,
+     "final": 1,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "The ledger records what the agent did",
+   "text": "Four trades, each signed by BOTH sides. Nobody judged them. This is the agent's history, readable by anyone.",
+   "events": [
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "mined",
+     "detail": "block 2 with 4 records, puzzle 12 bits"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 2 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 2 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 2 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 2 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 2 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 2 is final (78% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 2 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 2 is final (100% of stake voted)"
+    }
+   ],
+   "result": [
+    "acme-quotes: 4 accepted, 0 disputed, volume $5,300, in blocks [2]"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "A stranger seller checks the agent, with no call to us",
+   "text": "The seller keeps only block headers and checks each record against a Merkle branch.",
+   "events": [],
+   "result": [
+    "acme-quotes: ALLOW (4 credit from 3 counterparties, 0 disputed)",
+    "delta-buyer: UNKNOWN (history credit 1 of 3 needed (at most 2 per counterparty))"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "Attack: edit a past record",
+   "text": "An attacker changes an amount inside a block. Each record's id is a hash of its content, and the block header commits to all the ids with a Merkle root, so one changed byte is caught.",
+   "events": [],
+   "result": [
+    "every peer refuses it: a record's content does not match its id"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 2,
+     "final": 2,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "Attack: back two sellers with the same stake",
+   "text": "Delta stakes 20,000 and promises 15,000 to SellerA, then 15,000 to SellerB. This is the double spend.",
+   "events": [
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "pledge queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "pledge queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "pledge queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "pledge queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "reject_record",
+     "detail": "pledge: overpledge: 30,000 committed against a stake of 20,000"
+    },
+    {
+     "node": "Delta",
+     "kind": "mined",
+     "detail": "block 3 with 1 records, puzzle 12 bits"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 3 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 3 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 3 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 3 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 3 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 3 is final (78% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 3 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 3 is final (100% of stake voted)"
+    }
+   ],
+   "result": [
+    "second pledge refused: overpledge: 30,000 committed against a stake of 20,000"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 3,
+     "final": 3,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 3,
+     "final": 3,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 3,
+     "final": 3,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 3,
+     "final": 3,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "Attack: two agents trade with each other to fake a history",
+   "text": "Eight 'accepted' trades between shady-1 and shady-2. At most 2 credits count per counterparty.",
+   "events": [
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "mined",
+     "detail": "block 4 with 2 records, puzzle 12 bits"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 4 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 4 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 4 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 4 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 4 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 4 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 4 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 4 is final (100% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "mined",
+     "detail": "block 5 with 8 records, puzzle 12 bits"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 5 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 5 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 5 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 5 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 5 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 5 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 5 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 5 is final (100% of stake voted)"
+    }
+   ],
+   "result": [
+    "shady-1: UNKNOWN (history credit 2 of 3 needed (at most 2 per counterparty))"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 5,
+     "final": 5,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 5,
+     "final": 5,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 5,
+     "final": 5,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 5,
+     "final": 5,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "Attack: a node hides the bad record",
+   "text": "Acme's node hides the disputes against the cheater. Asking one node is not safe. Asking two is.",
+   "events": [
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "mined",
+     "detail": "block 6 with 2 records, puzzle 12 bits"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 6 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 6 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 6 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 6 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 6 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 6 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 6 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 6 is final (100% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "outcome queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "mined",
+     "detail": "block 7 with 3 records, puzzle 12 bits"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 7 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 7 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 7 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 7 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 7 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 7 is final (78% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 7 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 7 is final (100% of stake voted)"
+    }
+   ],
+   "result": [
+    "asked 1 node: cheater: ALLOW (1 credit from 1 counterparties, 0 disputed)",
+    "asked 2 nodes: cheater: REFUSE (2 of 3 trades disputed)"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 7,
+     "final": 7,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 7,
+     "final": 7,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 7,
+     "final": 7,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 7,
+     "final": 7,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "A node goes down and comes back",
+   "text": "Gamma is switched off while a new block is mined. The seller still verifies. Gamma restarts and catches up by itself.",
+   "events": [
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "passport queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "mined",
+     "detail": "block 8 with 1 records, puzzle 12 bits"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 8 accepted"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 8 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 8 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 8 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 8 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 8 is final (78% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 8 is final (78% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "online",
+     "detail": "synced to height 8"
+    }
+   ],
+   "result": [
+    "acme-quotes: ALLOW (4 credit from 3 counterparties, 0 disputed)"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 8,
+     "final": 8,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 8,
+     "final": 8,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 8,
+     "final": 8,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 8,
+     "final": 8,
+     "stake": 20000,
+     "suspended": false
+    }
+   ]
+  },
+  {
+   "title": "A validator votes for two different blocks",
+   "text": "Delta signs two conflicting blocks at one height. Any node can publish the two signatures as proof. The chain halves Delta's stake and suspends it. Proof of stake needs a punishment, and this is it.",
+   "events": [
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 9 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 9 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 9 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 9 is final (78% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 9 is final (78% of stake voted)"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 9 is final (78% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 9 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 9 is final (100% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "equivocation",
+     "detail": "validator 392bcfc8 signed two blocks at height 9"
+    },
+    {
+     "node": "Delta",
+     "kind": "record",
+     "detail": "slash queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "record",
+     "detail": "slash queued"
+    },
+    {
+     "node": "Beta",
+     "kind": "record",
+     "detail": "slash queued"
+    },
+    {
+     "node": "Gamma",
+     "kind": "record",
+     "detail": "slash queued"
+    },
+    {
+     "node": "Acme",
+     "kind": "equivocation",
+     "detail": "validator 392bcfc8 signed two blocks at height 9"
+    },
+    {
+     "node": "Beta",
+     "kind": "equivocation",
+     "detail": "validator 392bcfc8 signed two blocks at height 9"
+    },
+    {
+     "node": "Gamma",
+     "kind": "equivocation",
+     "detail": "validator 392bcfc8 signed two blocks at height 9"
+    },
+    {
+     "node": "Acme",
+     "kind": "mined",
+     "detail": "block 10 with 1 records, puzzle 12 bits"
+    },
+    {
+     "node": "Acme",
+     "kind": "block",
+     "detail": "height 10 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "block",
+     "detail": "height 10 accepted"
+    },
+    {
+     "node": "Beta",
+     "kind": "final",
+     "detail": "block 10 is final (71% of stake voted)"
+    },
+    {
+     "node": "Acme",
+     "kind": "final",
+     "detail": "block 10 is final (71% of stake voted)"
+    },
+    {
+     "node": "Gamma",
+     "kind": "block",
+     "detail": "height 10 accepted"
+    },
+    {
+     "node": "Gamma",
+     "kind": "final",
+     "detail": "block 10 is final (100% of stake voted)"
+    },
+    {
+     "node": "Delta",
+     "kind": "block",
+     "detail": "height 10 accepted"
+    },
+    {
+     "node": "Delta",
+     "kind": "final",
+     "detail": "block 10 is final (100% of stake voted)"
+    }
+   ],
+   "result": [],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 10000.0,
+     "suspended": true
+    }
+   ]
+  },
+  {
+   "title": "The ledger after all that",
+   "text": "Everything the agent did is still there, in order, and nobody can edit it.",
+   "events": [],
+   "result": [
+    "acme-quotes: 4 trades, 4 accepted, $5,300 volume",
+    "chain height 10, final up to 10"
+   ],
+   "nodes": [
+    {
+     "name": "Acme",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Beta",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 25000,
+     "suspended": false
+    },
+    {
+     "name": "Gamma",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 20000,
+     "suspended": false
+    },
+    {
+     "name": "Delta",
+     "online": true,
+     "height": 10,
+     "final": 10,
+     "stake": 10000.0,
+     "suspended": true
+    }
+   ]
+  }
+ ]
+}

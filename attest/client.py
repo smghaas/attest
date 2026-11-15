@@ -125,6 +125,41 @@ class Attest:
         _raise(r)
         return r.json()
 
+    # -- the ledger: passports and agent history (the gate must run with ATTEST_LEDGER=1) ------------
+    def ledger_info(self) -> dict:
+        return self._get("/ledger/info")
+
+    def ledger_agents(self) -> list:
+        return self._get("/ledger/agents")
+
+    def history(self, agent_pub: str) -> dict:
+        return self._get(f"/ledger/agents/{agent_pub}/history")
+
+    def ledger_decision(self, agent_pub: str) -> dict:
+        return self._get(f"/ledger/agents/{agent_pub}/decision")
+
+    def ledger_blocks(self, limit: int = 10) -> list:
+        return self._get("/ledger/blocks", limit=limit)
+
+    def submit_record(self, record: dict) -> dict:
+        r = self.http.post("/ledger/records", json=record)
+        _raise(r)
+        return r.json()
+
+    def register_passport(self, operator: dict, agent: dict) -> dict:
+        """The operator and the agent both sign; registering costs a small proof-of-work puzzle."""
+        from network import ledger as L
+        scope = agent["chain"][0]["scope"]
+        return self.submit_record(L.make_passport(operator["priv"], operator["pub"], agent["priv"], agent["pub"],
+                                                  agent["name"], scope["actions"], scope["max_amount"]))
+
+    def record_trade(self, provider: dict, buyer: dict, request: str, amount: float, status: str = "accepted") -> dict:
+        """Both parties sign the outcome. Here both identities are on this machine; across machines the
+        provider sends network.ledger.propose_outcome(...) to the buyer, who calls countersign(...)."""
+        from network import ledger as L
+        return self.submit_record(L.make_outcome(provider["priv"], provider["pub"], buyer["priv"], buyer["pub"],
+                                                 request, amount, status))
+
 
 def _raise(r: httpx.Response):
     if r.status_code >= 400:

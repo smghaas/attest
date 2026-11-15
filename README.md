@@ -83,6 +83,26 @@ The same steps exist in Python (`attest.identity`, `Attest.faucet`, `Attest.regi
 To run your own sandbox, see [docs/DEPLOY.md](docs/DEPLOY.md) (Dockerfile and a Render blueprint are included).
 The sandbox proves the decision logic. It does not prove an operator has money, because anyone can mint test stake.
 
+## Agent history ledger (Bitcoin's ideas applied to agent history)
+
+`network/` is a small chain that records what agents have done, with no referee. A **passport** (operator and
+agent both sign, plus a registration puzzle) says who an agent is. An **outcome** is a trade signed by both sides,
+recorded as accepted or disputed: we record, we do not judge. Blocks need a hashcash puzzle and a staked validator's
+signature, and become final once validators holding more than 2/3 of stake voted for them. Nobody can reorganise below
+a final block. A validator that signs two blocks at one height is slashed. A light client keeps only block headers,
+checks each record against a Merkle branch, and asks several nodes so one lying node cannot hide a bad record.
+
+```
+python network_demo.py                       # 4 nodes, 11 steps, writes docs/network_demo.json
+ATTEST_LEDGER=1 uvicorn gate.server:app      # serve it: /ledger/info, /ledger/agents, /ledger/agents/{pub}/history
+attest passport create my-buyer              # then: attest trade SELLER BUYER REQ AMOUNT, attest history, attest ledger
+```
+
+Limits, stated plainly: the gate runs all four validators in one process, so this shows the protocol, not independent
+nodes. The chain proves two parties signed an outcome, not that the service was good. Wash trading is capped
+(2 credits per counterparty), not solved. A buyer can mark honest trades disputed and drag a seller's record down;
+this is the next thing to design. The stake table is a stand-in for a public chain.
+
 ## Layout
 
 ```
@@ -90,6 +110,8 @@ gate/crypto.py       Ed25519 keys, canonical JSON, sign and verify
 gate/core.py         the verify logic, revocation, receipts (read this first)
 attest/              SDK (client.py), CLI (cli.py) and MCP server (mcp_server.py)
 gate/static/         the web dashboard, served at /
+network/             the history ledger: ledger.py (records, blocks, Merkle), node.py (nodes, finality, light client)
+gate/ledger_api.py   the ledger over HTTP
 gate/server.py       FastAPI: /pubkey /verify/{receiver} /revoke /claims /receipts, plus a demo inbox
 agents/kya_tools.py  MCP tools for Hermes agents (buyer role and supplier role)
 setup_demo.py        creates operators, agents, receiver and arbiter keys, credentials, mandates in state/agents/

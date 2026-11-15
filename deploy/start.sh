@@ -5,6 +5,7 @@ export ATTEST_STATE_DIR="${ATTEST_STATE_DIR:-/data/state}"
 export ATTEST_LOG_DIR="${ATTEST_LOG_DIR:-/data/logs}"
 export ATTEST_SANDBOX="${ATTEST_SANDBOX:-1}"
 export ATTEST_DEMO="${ATTEST_DEMO:-1}"
+export ATTEST_LEDGER="${ATTEST_LEDGER:-1}"
 export ATTEST_TRUST_PROXY="${ATTEST_TRUST_PROXY:-1}"
 mkdir -p "$ATTEST_STATE_DIR" "$ATTEST_LOG_DIR"
 if [ ! -f "$ATTEST_STATE_DIR/agents/supplierco.json" ] && [ ! -f "$ATTEST_STATE_DIR/agents/rcv-supplierco.json" ]; then
