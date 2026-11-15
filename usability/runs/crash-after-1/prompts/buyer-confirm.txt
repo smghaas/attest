@@ -1,0 +1,15 @@
+Some time has passed since you sent your order to widget-shop. The shop should have answered by now.
+
+Look in the drop-box folder /tmp/attest-coldstart/crash-after-1/exchange for the shop's reply to your order (in the folder you named in "reply_to").
+Find out whether your order went through. If the reply carries a receipt from the Attest gate, check that the
+receipt is genuine, if you can.
+
+Then write the file /tmp/attest-coldstart/crash-after-1/buyer/outcome.json with exactly these fields:
+  "order_status":    "fulfilled", "declined", "escalated" or "no_reply"
+  "total_usd":       the total the shop charged or quoted, as a number, or null
+  "receipt_checked": true if you checked the gate receipt's signature, else false
+  "receipt_valid":   true or false if you checked it, else null
+  "notes":           one or two sentences
+
+Same rules as before: work on your own, do not ask a human, stay inside your working directory and the drop-box
+folder (the installed attest package is fine). Finish with a one-paragraph report.

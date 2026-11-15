@@ -89,10 +89,13 @@ def delegate(parent: dict, name: str, actions: list[str], max_amount: float, day
     _fresh(name)
     priv, pub = crypto.keygen()
     now = time.time()
+    # A child may not outlive its parent (the gate refuses that as an attenuation violation), so the
+    # requested lifetime is cut at the parent's expiry.
+    expires = min(now + days * DAY, float(parent["chain"][-1]["expires_at"]))
     child = crypto.signed(parent["priv"], {
         "type": "kya.mandate/1", "subject": pub, "issuer": parent["pub"], "parent": parent["chain"][-1]["id"],
         "scope": {"actions": actions, "max_amount": float(max_amount), "currency": "USD"},
-        "expires_at": now + days * DAY})
+        "expires_at": expires})
     doc = {"kind": "agent", "name": name, "priv": priv, "pub": pub, "operator": parent["operator"],
            "delegated_by": parent["name"], "credential": parent["credential"], "chain": parent["chain"] + [child]}
     save(doc)

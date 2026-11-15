@@ -140,11 +140,15 @@ def test_duplicate_delivery_with_journal_serves_once(gate, tmp_path, monkeypatch
     assert notes[0]["attest_decision"] == "allow" and notes[1]["duplicate"] is True
 
 
-def test_duplicate_delivery_without_journal_hits_gate_replay_refusal(gate, tmp_path, monkeypatch):
+def test_duplicate_delivery_without_journal_is_caught_by_the_gate_repeat(gate, tmp_path, monkeypatch):
+    # Before the gate answered repeats, the second delivery got `refuse` / `replay`. Now it gets the original
+    # answer marked repeat, the seller does not apply it again, and Town sees one application.
     r = _run(tmp_path, monkeypatch, "quote-duplicate-delivery", journal=False)
     notes = _seller(r)
-    assert notes[0]["attest_decision"] == "allow"
-    assert notes[1]["attest_decision"] == "refuse" and notes[1]["attest_reason"] == "replay"
+    assert notes[0]["attest_decision"] == "allow" and notes[0]["applied"] is True
+    assert notes[1]["attest_repeat"] is True and notes[1]["duplicate"] is True
+    assert notes[1]["attest_receipt_id"] == notes[0]["attest_receipt_id"]
+    assert r.stages["processed"] == "passed"
 
 
 # ---- the rest of the gate: delegation, scope, limits, escalation, revocation, slashing,

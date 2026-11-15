@@ -1,0 +1,20 @@
+{
+ "type": "attest.receipt/1",
+ "receiver": "widget-shop",
+ "request_id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+ "from": "2ef1d514050db52c368955427647319e0479e9de2e7eb2899e73435c6d393a0b",
+ "action": "place_order",
+ "amount": 487.5,
+ "decision": "refuse",
+ "reason": "unstaked_money_action",
+ "detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+ "credential_id": "87342afcba150ed7f9c00bfe4f9cfdbc41dbfaf6b2555c885cc181b43a01750b",
+ "issuer": "8d0661e497c3741c0abed2fa5daa5c42dde710d9b38dddac5502c123e177b4b7",
+ "chain_ids": [
+  "0d0aff51b3beeb6149ada9c5883797a93c6d1b76a5f531a6ac7f939d07db3443"
+ ],
+ "ts": 1794773366.4229472,
+ "gate": "e6bc366ddf7880b5fdbee10b1af0749bf441afd81c8f54dbccc6b11c536ce060",
+ "id": "5c130b31368c02bec3df38538d056ee06eeeceae75112e4319ef064973eefa83",
+ "sig": "ed3f84250246369603ad55fd0d7be2d27025056df036102590501091cc48d29bae82a256ab9505a13f7df0edcdf60668e01d35c8c4f1696b2d9e9b8eb501c10c"
+}

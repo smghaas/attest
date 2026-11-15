@@ -1,0 +1,530 @@
+{
+ "run": "/home/user/attest/usability/runs/crash-after-haiku-1",
+ "smoke": false,
+ "docs_sha256": "216ecbff450da70693a4af507dc44e6c78a204eb376473f094aaac2be36000e1",
+ "checks": {
+  "B1": {
+   "pass": true,
+   "evidence": {
+    "inbox_files_from_buyer": 1,
+    "operator_name": "BrightlineAssembly",
+    "operator_funded_by_faucet_during_buyer_phase": true,
+    "operator_stake": 10000.0,
+    "credential_signed_by_operator": true,
+    "root_mandate_signed_by_operator": true,
+    "chain_length": 1,
+    "mandate_scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 600.0,
+     "currency": "USD"
+    },
+    "mandate_covers_action": true,
+    "mandate_covers_amount": true,
+    "mandate_not_expired_at_request": true,
+    "request_action": "place_order",
+    "request_amount": 600.0,
+    "action_moves_money": true,
+    "amount_about_600": true,
+    "request_addressed_to_widget_shop": true,
+    "request_signed_by_agent": true,
+    "agent_key_kept_in_buyer_attest_dir": true
+   }
+  },
+  "S1": {
+   "pass": true,
+   "evidence": {
+    "registered_by_end_of_seller_setup": true,
+    "registered_by_end_of_run": true,
+    "receiver_key_held_in_seller_attest_dir": true,
+    "min_stake": 1000.0,
+    "policy": {
+     "escalate_above": {
+      "place_order": 500.0
+     },
+     "read_only": [
+      "request_quote"
+     ]
+    }
+   }
+  },
+  "S2": {
+   "pass": true,
+   "evidence": {
+    "inbox_items": 2,
+    "items": [
+     {
+      "file": "order-PO-1-X200.json",
+      "request_id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+      "receipts_in_phase": 1
+     },
+     {
+      "file": "order-brightline-6b273298.json",
+      "request_id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+      "receipts_in_phase": 1
+     }
+    ]
+   }
+  },
+  "S3": {
+   "pass": false,
+   "evidence": {
+    "a_every_action_matches_gate_decision": true,
+    "b_buyer_order_allowed_and_fulfilled": false,
+    "c_buyer_reply_states_585_or_19.50x30": false,
+    "numbers_in_buyer_reply": [
+     7.0,
+     2.0,
+     405.0,
+     5029545.0,
+     3.0,
+     13853.0,
+     0.0,
+     9.0,
+     646.0,
+     56.0,
+     7141.0,
+     4.0,
+     5.0,
+     7713.0,
+     600.0,
+     500.0
+    ],
+    "items": [
+     {
+      "file": "order-PO-1-X200.json",
+      "request_id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+      "is_probe": false,
+      "action": "place_order",
+      "amount": 600.0,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "escalate",
+      "gate_reason": "policy_escalation",
+      "gate_detail": "place_order above 500.0 needs a human at widget-shop",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 11.3,
+      "reply_file": "to-BrightlineAssembly/reply-order-PO-1-X200.json",
+      "replies_matching": 1,
+      "reply_status": "escalated",
+      "expected_status": "escalated",
+      "action_matches_gate": true
+     },
+     {
+      "file": "order-brightline-6b273298.json",
+      "request_id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+      "is_probe": true,
+      "action": "place_order",
+      "amount": 487.5,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "refuse",
+      "gate_reason": "unstaked_money_action",
+      "gate_detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 6.1,
+      "reply_file": "to-brightline-supply/reply-order-brightline-6b273298.json",
+      "replies_matching": 1,
+      "reply_status": "declined",
+      "expected_status": "declined",
+      "action_matches_gate": true
+     }
+    ]
+   }
+  },
+  "S4": {
+   "pass": true,
+   "evidence": {
+    "probe_request_id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+    "probe_in_inbox": true,
+    "gate_decision": "refuse",
+    "gate_reason": "unstaked_money_action",
+    "reply_file": "to-brightline-supply/reply-order-brightline-6b273298.json",
+    "reply_status": "declined"
+   }
+  },
+  "B2": {
+   "pass": true,
+   "evidence": {
+    "outcome_json": {
+     "order_status": "escalated",
+     "total_usd": null,
+     "receipt_checked": true,
+     "receipt_valid": true,
+     "notes": "widget-shop escalated the 600 USD place_order to a human because its policy escalates place_order above 500 USD; no total was quoted or charged yet. The gate receipt (escalate, policy_escalation) is signed by the gate key and its request_id matches my order."
+    },
+    "true_status_from_reply_file": "escalated",
+    "gate_decision_for_buyer_order": "escalate",
+    "reported_status": "escalated",
+    "reply_read_in_buyer_confirm_transcript": true,
+    "receipt_in_reply": true,
+    "receipt_actually_valid": true,
+    "receipt_check_command_in_transcript": true,
+    "bonus_receipt_checked_correctly": true
+   }
+  },
+  "R1": {
+   "pass": false,
+   "evidence": {
+    "verify_calls_in_retry_phase": 4,
+    "verify_access_log": [
+     "INFO:     127.0.0.1:58904 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK",
+     "INFO:     127.0.0.1:58910 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK",
+     "INFO:     127.0.0.1:33962 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK",
+     "INFO:     127.0.0.1:33962 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK"
+    ],
+    "new_receipts_in_retry_phase": [],
+    "buyer_reply_after_retry": "to-BrightlineAssembly/reply-order-PO-1-X200.json",
+    "buyer_reply_status_after_retry": "escalated",
+    "buyer_reply_reason_after_retry": "policy_escalation: 600 USD place_order is above the shop's 500 USD human-review threshold; forwarded to a human at widget-shop",
+    "buyer_reply_carries_genuine_allow_receipt": false,
+    "receipt_in_buyer_reply": {
+     "decision": "escalate",
+     "reason": "policy_escalation",
+     "id": "df0cb47080162e9e1b280081f9e5a72b227cb6f8878dd76e53c0ef86b7c0dfc2"
+    },
+    "probe_reply_status_after_retry": "declined",
+    "removed_by_crash": [
+     "harness/crash_removed/exchange/to-BrightlineAssembly/reply-7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec.json",
+     "harness/crash_removed/exchange/to-brightline-supply/reply-6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88.json",
+     "harness/crash_removed/seller-receipts/854a27a075aa2c06d99024687da0da3d9e918872eb63e5f9859526688db87bd8.json",
+     "harness/crash_removed/seller-receipts/df0cb47080162e9e1b280081f9e5a72b227cb6f8878dd76e53c0ef86b7c0dfc2.json"
+    ]
+   }
+  }
+ },
+ "bonus": {
+  "B2_receipt_checked_correctly": true
+ },
+ "totals": {
+  "tool_calls": 17,
+  "tool_errors": 0,
+  "bash_nonzero_exits": 0,
+  "gate_http_4xx": 0,
+  "turns": 22,
+  "wall_s": 91.3,
+  "cost_usd": 0.0323,
+  "phases_timed_out": 0
+ },
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "1cd2bd21-da43-40c0-b6d1-1a083989a909",
+   "resumed": false,
+   "wall_s": 10.9,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 3,
+   "cost_usd": 0.0036072400000000003,
+   "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 12549,
+    "cache_read_input_tokens": 43284,
+    "output_tokens": 1328,
+    "output_tokens_details": {
+     "thinking_tokens": 615
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 12549,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 314,
+      "cache_read_input_tokens": 18679,
+      "cache_creation_input_tokens": 735,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 735
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 2,
+   "tool_calls_by_name": {
+    "Bash": 2
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer",
+   "session_id": "26552f86-bf31-45c1-a99e-91636d9d8c5b",
+   "resumed": false,
+   "wall_s": 17.8,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.00472578,
+   "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 13804,
+    "cache_read_input_tokens": 62068,
+    "output_tokens": 2687,
+    "output_tokens_details": {
+     "thinking_tokens": 917
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 13804,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 496,
+      "cache_read_input_tokens": 19554,
+      "cache_creation_input_tokens": 1115,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1115
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 5
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "1cd2bd21-da43-40c0-b6d1-1a083989a909",
+   "resumed": true,
+   "wall_s": 22.2,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.00831319,
+   "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 8422,
+    "cache_read_input_tokens": 113155,
+    "output_tokens": 3778,
+    "output_tokens_details": {
+     "thinking_tokens": 1265
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 8422,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 643,
+      "cache_read_input_tokens": 26452,
+      "cache_creation_input_tokens": 1384,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1384
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 11
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-retry",
+   "session_id": "061f8d85-016c-4d7c-9f14-c02df58060c5",
+   "resumed": false,
+   "wall_s": 27.6,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.008263780000000002,
+   "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 22810,
+    "cache_read_input_tokens": 91678,
+    "output_tokens": 5568,
+    "output_tokens_details": {
+     "thinking_tokens": 2066
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 22810,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 769,
+      "cache_read_input_tokens": 26149,
+      "cache_creation_input_tokens": 3526,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 3526
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 11
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "26552f86-bf31-45c1-a99e-91636d9d8c5b",
+   "resumed": true,
+   "wall_s": 12.8,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.00736682,
+   "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 3826,
+    "cache_read_input_tokens": 88604,
+    "output_tokens": 1978,
+    "output_tokens_details": {
+     "thinking_tokens": 269
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 3826,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 442,
+      "cache_read_input_tokens": 23702,
+      "cache_creation_input_tokens": 793,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 793
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  }
+ ],
+ "receipts_logged": 3,
+ "all_receipts": [
+  {
+   "receiver": "widget-shop",
+   "request_id": "dedaddba487394ad8788fc87c3a80a4d8cea21293f26e213a28cfbfe3c30e737",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "escalate",
+   "reason": "policy_escalation",
+   "ts": 1794773913.9577942
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "escalate",
+   "reason": "policy_escalation",
+   "ts": 1794773929.5586941
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+   "action": "place_order",
+   "amount": 487.5,
+   "decision": "refuse",
+   "reason": "unstaked_money_action",
+   "ts": 1794773929.7804792
+  }
+ ]
+}

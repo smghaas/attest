@@ -1,0 +1,20 @@
+{
+  "type": "attest.receipt/1",
+  "receiver": "widget-shop",
+  "request_id": "9702053a2042d1974b30f65a50f1b2cb4d526f065b2c41214df76bd8691e4f72",
+  "from": "07c19d9a39cc7206cdd10bde53a675a91a5c6f548bae9b1c9fddb998ad48de5f",
+  "action": "place_order",
+  "amount": 600.0,
+  "decision": "allow",
+  "reason": "ok",
+  "detail": "issuer BrightforgeIndustries staked 10,000 (threshold 5,000), chain depth 1, place_order 600 within limit 700.0",
+  "credential_id": "b77067b46d22a435b402d2e6d5884b3ecc2de35a625b3afbbf0bf50be15bcf36",
+  "issuer": "310617c449959ba56c14615cc7d917cdfe5f98db8e438184409a9eb04663fa6e",
+  "chain_ids": [
+    "c1ddd81272a5c918d068fba669400b29b18c83b3181f29a09263811220d929d8"
+  ],
+  "ts": 1794773016.7012005,
+  "gate": "73eb248b0b74191862a36a8ecf7a7ca49549ab28fc170c982151301590d80edd",
+  "id": "c0f6942743a88c6df51070729defdc6792b3f0b92273b1881278a10fffce3901",
+  "sig": "de7af53511cc6d0ba12e04ca1ea49ce60b576aa81c42bb8c9315cd5974126ac1cf9d5228dbc7e5f0d5f49d4b3f6ee2fc1fa14d4a7eb4b8f6a752d0d1cd29b80d"
+}

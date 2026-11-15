@@ -1,0 +1,525 @@
+{
+ "run": "/home/user/attest/usability/runs/crash-after-1",
+ "smoke": false,
+ "docs_sha256": "216ecbff450da70693a4af507dc44e6c78a204eb376473f094aaac2be36000e1",
+ "checks": {
+  "B1": {
+   "pass": true,
+   "evidence": {
+    "inbox_files_from_buyer": 1,
+    "operator_name": "BrightlineFabrication",
+    "operator_funded_by_faucet_during_buyer_phase": true,
+    "operator_stake": 10000.0,
+    "credential_signed_by_operator": true,
+    "root_mandate_signed_by_operator": true,
+    "chain_length": 1,
+    "mandate_scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 700.0,
+     "currency": "USD"
+    },
+    "mandate_covers_action": true,
+    "mandate_covers_amount": true,
+    "mandate_not_expired_at_request": true,
+    "request_action": "place_order",
+    "request_amount": 600.0,
+    "action_moves_money": true,
+    "amount_about_600": true,
+    "request_addressed_to_widget_shop": true,
+    "request_signed_by_agent": true,
+    "agent_key_kept_in_buyer_attest_dir": true
+   }
+  },
+  "S1": {
+   "pass": true,
+   "evidence": {
+    "registered_by_end_of_seller_setup": true,
+    "registered_by_end_of_run": true,
+    "receiver_key_held_in_seller_attest_dir": true,
+    "min_stake": 5000.0,
+    "policy": {
+     "escalate_above": {
+      "*": 1000.0
+     },
+     "read_only": [
+      "check_stock"
+     ]
+    }
+   }
+  },
+  "S2": {
+   "pass": true,
+   "evidence": {
+    "inbox_items": 2,
+    "items": [
+     {
+      "file": "brightline-fabrication-PO-BF-0001.json",
+      "request_id": "1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae",
+      "receipts_in_phase": 1
+     },
+     {
+      "file": "order-brightline-8b54b502.json",
+      "request_id": "8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010",
+      "receipts_in_phase": 1
+     }
+    ]
+   }
+  },
+  "S3": {
+   "pass": true,
+   "evidence": {
+    "a_every_action_matches_gate_decision": true,
+    "b_buyer_order_allowed_and_fulfilled": true,
+    "c_buyer_reply_states_585_or_19.50x30": true,
+    "numbers_in_buyer_reply": [
+     1174.0,
+     9.0,
+     659.0,
+     4.0,
+     22.0,
+     22.0,
+     20.0,
+     4.0,
+     6.0,
+     752969.0,
+     5.0,
+     46.0,
+     6.0,
+     4.0,
+     1.0,
+     30.0,
+     200.0,
+     19.5,
+     585.0,
+     600.0
+    ],
+    "items": [
+     {
+      "file": "brightline-fabrication-PO-BF-0001.json",
+      "request_id": "1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae",
+      "is_probe": false,
+      "action": "place_order",
+      "amount": 600.0,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "allow",
+      "gate_reason": "ok",
+      "gate_detail": "issuer BrightlineFabrication staked 10,000 (threshold 5,000), chain depth 1, place_order 600 within limit 700.0",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 23.2,
+      "reply_file": "to-brightline-fabrication/reply-1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae.json",
+      "replies_matching": 1,
+      "reply_status": "fulfilled",
+      "expected_status": "fulfilled",
+      "action_matches_gate": true
+     },
+     {
+      "file": "order-brightline-8b54b502.json",
+      "request_id": "8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010",
+      "is_probe": true,
+      "action": "place_order",
+      "amount": 487.5,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "refuse",
+      "gate_reason": "unstaked_money_action",
+      "gate_detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 13.9,
+      "reply_file": "to-brightline-supply/reply-8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010.json",
+      "replies_matching": 1,
+      "reply_status": "declined",
+      "expected_status": "declined",
+      "action_matches_gate": true
+     }
+    ]
+   }
+  },
+  "S4": {
+   "pass": true,
+   "evidence": {
+    "probe_request_id": "8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010",
+    "probe_in_inbox": true,
+    "gate_decision": "refuse",
+    "gate_reason": "unstaked_money_action",
+    "reply_file": "to-brightline-supply/reply-8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010.json",
+    "reply_status": "declined"
+   }
+  },
+  "B2": {
+   "pass": true,
+   "evidence": {
+    "outcome_json": {
+     "order_status": "fulfilled",
+     "total_usd": 585.0,
+     "receipt_checked": true,
+     "receipt_valid": true,
+     "notes": "widget-shop fulfilled PO-BF-0001 (30 x X-200) at its list price of $19.50/unit, $585 total, under the $600 authorized. The gate's allow receipt is genuine: its signature and id check out, the gate key matches GET /pubkey, and it refers to our own request, credential and mandate."
+    },
+    "true_status_from_reply_file": "fulfilled",
+    "gate_decision_for_buyer_order": "allow",
+    "reported_status": "fulfilled",
+    "reply_read_in_buyer_confirm_transcript": true,
+    "receipt_in_reply": true,
+    "receipt_actually_valid": true,
+    "receipt_check_command_in_transcript": true,
+    "bonus_receipt_checked_correctly": true
+   }
+  },
+  "R1": {
+   "pass": true,
+   "evidence": {
+    "verify_calls_in_retry_phase": 2,
+    "verify_access_log": [
+     "INFO:     127.0.0.1:57376 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK",
+     "INFO:     127.0.0.1:57384 - \"POST /verify/widget-shop HTTP/1.1\" 200 OK"
+    ],
+    "new_receipts_in_retry_phase": [],
+    "buyer_reply_after_retry": "to-brightline-fabrication/reply-1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae.json",
+    "buyer_reply_status_after_retry": "fulfilled",
+    "buyer_reply_reason_after_retry": "Vetted by Attest (allow). 30 x X-200 at our list price $19.50 = $585.00, within the $600 authorized (your PO assumed $20/unit).",
+    "buyer_reply_carries_genuine_allow_receipt": true,
+    "receipt_in_buyer_reply": {
+     "decision": "allow",
+     "reason": "ok",
+     "id": "5ceeac0a71593636598ecf5ae1f7d3376e414d5b5da8f75648ef981129fa9217"
+    },
+    "probe_reply_status_after_retry": "declined",
+    "removed_by_crash": [
+     "harness/crash_removed/exchange/to-brightline-fabrication/reply-1174ace9acbf.json",
+     "harness/crash_removed/exchange/to-brightline-supply/reply-8b54b5028220.json",
+     "harness/crash_removed/seller-receipts/1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae.json",
+     "harness/crash_removed/seller-receipts/8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010.json"
+    ]
+   }
+  }
+ },
+ "bonus": {
+  "B2_receipt_checked_correctly": true
+ },
+ "totals": {
+  "tool_calls": 16,
+  "tool_errors": 1,
+  "bash_nonzero_exits": 1,
+  "gate_http_4xx": 0,
+  "turns": 21,
+  "wall_s": 124.4,
+  "cost_usd": 0.9248,
+  "phases_timed_out": 0
+ },
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "4db86e2e-761d-4057-af01-35a8f955abc0",
+   "resumed": false,
+   "wall_s": 15.0,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 3,
+   "cost_usd": 0.12174360000000001,
+   "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 12120,
+    "cache_read_input_tokens": 40598,
+    "output_tokens": 832,
+    "output_tokens_details": {
+     "thinking_tokens": 89
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 12120,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 396,
+      "cache_read_input_tokens": 17600,
+      "cache_creation_input_tokens": 533,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 533
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 2,
+   "tool_calls_by_name": {
+    "Bash": 2
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 4
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer",
+   "session_id": "b401798f-915e-4794-a770-e141474dce61",
+   "resumed": false,
+   "wall_s": 24.9,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.1455886,
+   "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 12761,
+    "cache_read_input_tokens": 57243,
+    "output_tokens": 1601,
+    "output_tokens_details": {
+     "thinking_tokens": 270
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 12761,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 565,
+      "cache_read_input_tokens": 17606,
+      "cache_creation_input_tokens": 1168,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1168
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "4db86e2e-761d-4057-af01-35a8f955abc0",
+   "resumed": true,
+   "wall_s": 31.3,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.2263066,
+   "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 5022,
+    "cache_read_input_tokens": 101995,
+    "output_tokens": 2197,
+    "output_tokens_details": {
+     "thinking_tokens": 389
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 5022,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 495,
+      "cache_read_input_tokens": 22338,
+      "cache_creation_input_tokens": 817,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 817
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 5
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-retry",
+   "session_id": "695591b8-ab62-4515-a12a-7c084ac04113",
+   "resumed": false,
+   "wall_s": 29.7,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.1973664,
+   "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 17524,
+    "cache_read_input_tokens": 65412,
+    "output_tokens": 2203,
+    "output_tokens_details": {
+     "thinking_tokens": 411
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 17524,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 500,
+      "cache_read_input_tokens": 22302,
+      "cache_creation_input_tokens": 1235,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1235
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 8
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "b401798f-915e-4794-a770-e141474dce61",
+   "resumed": true,
+   "wall_s": 23.5,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.23377160000000002,
+   "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 3771,
+    "cache_read_input_tokens": 103535,
+    "output_tokens": 1863,
+    "output_tokens_details": {
+     "thinking_tokens": 65
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 3771,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 368,
+      "cache_read_input_tokens": 22257,
+      "cache_creation_input_tokens": 288,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 288
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 1,
+   "bash_nonzero_exits": 1,
+   "tool_error_samples": [
+    "Exit code 1\n{\"gate\":\"35e0c9bd5e493d062dd8de6efbdc2e6be57faf1be1a80856822e519ae312cb0d\",\"alg\":\"ed25519\"}\nvalid\nexit 0\nTraceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\nModuleNotFoundError: No module named 'nacl'"
+   ],
+   "gate_http_by_status": {
+    "200": 2
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  }
+ ],
+ "receipts_logged": 2,
+ "all_receipts": [
+  {
+   "receiver": "widget-shop",
+   "request_id": "1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "allow",
+   "reason": "ok",
+   "ts": 1794773822.5853007
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010",
+   "action": "place_order",
+   "amount": 487.5,
+   "decision": "refuse",
+   "reason": "unstaked_money_action",
+   "ts": 1794773822.5936213
+  }
+ ]
+}

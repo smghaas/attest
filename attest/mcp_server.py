@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 """MCP server: lets any MCP client (Claude, Hermes, Cursor) use Attest.
 
-    ATTEST_URL=http://127.0.0.1:8402 python -m attest.mcp_server
+    ATTEST_URL=http://127.0.0.1:8402 ATTEST_RECEIVER_KEY=~/.attest/my-desk.json python -m attest.mcp_server
+
+ATTEST_RECEIVER_KEY is your receiver identity file (as `attest receiver create` writes it). check_agent signs
+each check with it; a sandbox gate refuses unsigned checks (HTTP 401).
 
 Tools: check_agent, verify_receipt, list_receivers, get_stakes, recent_decisions.
 A receiving agent calls check_agent with the envelope it got from the sender before it acts.
 """
 from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
 
@@ -16,6 +23,14 @@ mcp = MCPServer("attest")
 _at = Attest()
 
 
+def _receiver_key(receiver: str) -> dict | None:
+    path = os.environ.get("ATTEST_RECEIVER_KEY")
+    if not path:
+        return None
+    key = json.loads(Path(path).expanduser().read_text())
+    return key if key.get("name") == receiver else None
+
+
 @mcp.tool()
 def check_agent(receiver: str, envelope: dict) -> dict:
     """Ask Attest whether the agent that sent this envelope is who it claims, is backed by a staked
@@ -23,13 +38,25 @@ def check_agent(receiver: str, envelope: dict) -> dict:
     received. `receiver` is your own registered name at the gate.
     Returns decision (allow, refuse, escalate or unknown), the reason, and receipt_verified.
     allow: act. refuse: do not act. escalate: ask a human. unknown: no staked operator behind the
-    sender, treat as public and read-only. Never act on a decision whose receipt_verified is false."""
-    d = _at.check(receiver, envelope)
+    sender, treat as public and read-only. Never act on a decision whose receipt_verified is false.
+    repeat true: the gate already answered this exact request for you (same receipt); act on a request at most once."""
+    d = _at.check(receiver, envelope, _receiver_key(receiver))
     out = {"decision": d.decision, "reason": d.reason, "detail": d.detail, "receipt_id": d.receipt["id"],
-           "receipt_verified": d.receipt_verified}
+           "receipt_verified": d.receipt_verified, "repeat": d.repeat}
     if d.challenge:
         out["puzzle_required_bits"] = d.challenge.get("bits")
     return out
+
+
+@mcp.tool()
+def check_for_task(envelope: dict, checker: str, require: dict) -> dict:
+    """Check an agent (or a person) for one task, choosing what must be true. Spends nothing; anyone may ask.
+    `checker` is your name: the request inside the envelope must be addressed to it. `require` may hold:
+    backer (someone else vouches), allowed (may do this action at this amount), min_stake, work_bits,
+    either (money down or proof of work), min_deals, max_disputed, human_above.
+    Returns verdict (pass, fail or wait) and one line per requirement, signed by the gate."""
+    out = _at.check_task(envelope, checker, **require)
+    return {"verdict": out["verdict"], "items": out["items"], "verified_signature": out["verified_signature"]}
 
 
 @mcp.tool()

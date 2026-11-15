@@ -1,0 +1,37 @@
+{
+ "kind": "agent",
+ "name": "halcyon-buyer",
+ "priv": "212cbb04eab26a016ceda957dbe731bae5f96768d63d1f2d696e5ca4e6f9056b",
+ "pub": "f3b8be0d7148f54d46319ca1191375e60e4dcf33cef916e2ec6712ec86fde878",
+ "operator": "Halcyon Manufacturing",
+ "credential": {
+  "type": "kya.credential/1",
+  "agent": "f3b8be0d7148f54d46319ca1191375e60e4dcf33cef916e2ec6712ec86fde878",
+  "operator": "Halcyon Manufacturing",
+  "issuer": "5463d2815ac8bbe9c1fa583fcaa5ec865084933c1c3c354c9a84b594f83342e3",
+  "purpose": "agent",
+  "issued_at": 1794773492.3816035,
+  "expires_at": 1797365492.3816035,
+  "id": "94a887727c473448ff3ba7fe0271f1502c003da3149f0ba0b70d37fa98770d11",
+  "sig": "6439c0cac03bbb762bd760640e4337273188617e31c82ed8c7fe54645125b3fe3b4fe15370f247bb6577d98005621d99b8b1f5928fc59eef18c90e1efd1ac503"
+ },
+ "chain": [
+  {
+   "type": "kya.mandate/1",
+   "subject": "f3b8be0d7148f54d46319ca1191375e60e4dcf33cef916e2ec6712ec86fde878",
+   "issuer": "5463d2815ac8bbe9c1fa583fcaa5ec865084933c1c3c354c9a84b594f83342e3",
+   "parent": null,
+   "scope": {
+    "actions": [
+     "place_order",
+     "check_stock"
+    ],
+    "max_amount": 700.0,
+    "currency": "USD"
+   },
+   "expires_at": 1797365492.3816035,
+   "id": "ab478e7f8cbf1262314a3c9990ee5855bac1a4fadf3e77c45e0d06e236857562",
+   "sig": "65fee6f70dd71daadb222e8054d0ded98c207fbda8621f4267617954a9eb8b8e9a9be4731c9b9b1467d2eb891e0df68b1ecee8b6e3b32f07fcf150e07a82160b"
+  }
+ ]
+}

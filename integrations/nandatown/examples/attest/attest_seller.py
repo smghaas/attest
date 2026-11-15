@@ -23,9 +23,10 @@ name and the envelope to attach. An agent that has never heard of Attest can rea
 come back with an envelope, and (with no stake behind it) solve the gate's puzzle for
 a public quote. Nothing in it is secret.
 
-Town delivers at least once and the gate refuses a repeated nonce as a replay,
-so the two meet on every redelivery. The journal is what reconciles them: a
-request already decided is answered from the record, never sent to the gate again.
+Town delivers at least once. The journal answers a redelivered request from the
+record, without asking the gate again. Without the journal (ATTEST_JOURNAL=0) the
+gate still catches it: a second check of the same request comes back with the
+original answer marked `repeat`, and the seller treats it as a duplicate.
 """
 from __future__ import annotations
 
@@ -109,6 +110,10 @@ def build_handler(journal: Journal | None):
         note = {"attest_decision": decision, "attest_reason": verdict["reason"],
                 "attest_receipt_id": (receipt or {}).get("id"),
                 "runtime": "attest-gated-seller"}
+        if verdict.get("repeat"):
+            # The gate already answered this exact request for this seller: it was handled before (the journal
+            # is off or was lost). Say so, and do not apply it a second time.
+            return "processed", {"duplicate": True, "attest_repeat": True, **note}, []
         # `unknown` + `pow_ok` is Attest's answer for an unstaked sender that solved the
         # puzzle: read-only, so a quote is fine, an order never reaches this branch.
         serve = decision == "allow" or (decision == "unknown" and verdict["reason"] == "pow_ok")

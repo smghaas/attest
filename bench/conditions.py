@@ -40,6 +40,9 @@ def attest_only(world, envelope, state):
     r = world.gate.verify(RECEIVER, envelope)
     state.setdefault("gate_ms", []).append((time.perf_counter() - t0) * 1000)
     d = r["decision"]
+    if r.get("repeat"):
+        # the gate already answered this exact request; a receiver that acted on it then must not act again
+        return "decline", f"repeat of an earlier check ({d} / {r['reason']}): duplicate, not served again"
     action = {"allow": "fulfil", "refuse": "decline", "escalate": "escalate"}.get(d)
     if d == "unknown":
         is_read_only = (envelope.get("request") or {}).get("action") in READ_ONLY

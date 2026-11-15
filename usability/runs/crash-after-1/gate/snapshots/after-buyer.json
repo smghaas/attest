@@ -1,0 +1,43 @@
+{
+ "gate_key": {
+  "priv": "72c9947b0055903efaf355c69f194077cb74c85be07b50fb160cf1c4cdabcdf7",
+  "pub": "35e0c9bd5e493d062dd8de6efbdc2e6be57faf1be1a80856822e519ae312cb0d"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 5000.0,
+   "policy": {
+    "escalate_above": {
+     "*": 1000.0
+    },
+    "read_only": [
+     "check_stock"
+    ]
+   },
+   "pubkey": "c156b9d39bf01f7c8a11b27f04f6f270e87007c7ecf03b41f781c71ea291d40c"
+  }
+ },
+ "stakes": {
+  "f915eb697af164f1f6c3eb0df2de9268db2be3d545ff7e35100c7f19a812496f": {
+   "name": "BrightlineFabrication",
+   "stake": 10000.0,
+   "suspended": false,
+   "slashes": [],
+   "sandbox": true
+  }
+ },
+ "revoked": {},
+ "nonces_seen": {},
+ "answered": {},
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}

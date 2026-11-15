@@ -1,0 +1,84 @@
+{
+ "run_id": "crash-before-1",
+ "smoke": false,
+ "docs_sha256": "df57966c20088a8b0096a86c2f7111b259a05c2787331e84b229df81f4308dba",
+ "repo_commit": "1576ca943b9e0f991aca216faf4b13c6f9feee18",
+ "chaining": "resume",
+ "checks": {
+  "B1": true,
+  "S1": true,
+  "S2": true,
+  "S3": true,
+  "S4": true,
+  "B2": true,
+  "R1": true
+ },
+ "totals": {
+  "tool_calls": 18,
+  "tool_errors": 1,
+  "bash_nonzero_exits": 1,
+  "gate_http_4xx": 0,
+  "turns": 23,
+  "wall_s": 130.1,
+  "cost_usd": 1.0309,
+  "phases_timed_out": 0
+ },
+ "isolation_verdict": "clean",
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+   "resumed": false,
+   "wall_s": 14.9,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 3,
+   "total_cost_usd": 0.1198846,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "buyer",
+   "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+   "resumed": false,
+   "wall_s": 31.5,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 6,
+   "total_cost_usd": 0.1724274,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+   "resumed": true,
+   "wall_s": 25.3,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 5,
+   "total_cost_usd": 0.25402,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "seller-retry",
+   "session_id": "74be980d-c277-4021-be4d-c8995a5be5ae",
+   "resumed": false,
+   "wall_s": 38.0,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 5,
+   "total_cost_usd": 0.2341386,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+   "resumed": true,
+   "wall_s": 20.4,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 4,
+   "total_cost_usd": 0.2504076,
+   "result_subtype": "success"
+  }
+ ]
+}

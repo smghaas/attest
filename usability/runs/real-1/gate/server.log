@@ -1,0 +1,26 @@
+INFO:     Started server process [4900]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:39889 (Press CTRL+C to quit)
+INFO:     127.0.0.1:38434 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48386 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48402 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48406 - "POST /register/receiver HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48416 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44900 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44916 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56378 - "POST /sandbox/faucet HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47134 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47134 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47146 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47146 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47162 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47168 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47182 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45772 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45774 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45776 - "GET /receipts?limit=50 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4900]

@@ -1,0 +1,30 @@
+{
+ "run_id": "crash-after-haiku-1",
+ "smoke": false,
+ "started": 1794773893.5435307,
+ "repo_commit": "df786446b39fdc163b33c0809f10d5aaf19082a9",
+ "docs_path": "/home/user/attest/AGENTS.md",
+ "docs_sha256": "216ecbff450da70693a4af507dc44e6c78a204eb376473f094aaac2be36000e1",
+ "docs_differs_from_commit": false,
+ "claude_bin": "/opt/node22/bin/claude",
+ "claude_version": "2.1.325 (Claude Code)",
+ "model_override": "claude-haiku-5-5",
+ "max_turns": 40,
+ "timeout_s": 1500,
+ "chaining": "resume",
+ "venv_install": "copy",
+ "work_dir": "/tmp/attest-coldstart/crash-after-haiku-1",
+ "dirs": {
+  "buyer": "/tmp/attest-coldstart/crash-after-haiku-1/buyer",
+  "seller": "/tmp/attest-coldstart/crash-after-haiku-1/seller",
+  "exchange": "/tmp/attest-coldstart/crash-after-haiku-1/exchange",
+  "venv": "/tmp/attest-coldstart/crash-after-haiku-1/venv"
+ },
+ "receiver": "widget-shop",
+ "tools": "Bash,Read,Write,Edit,Glob,Grep",
+ "disallowed_tools": "WebFetch,WebSearch",
+ "permission_flags": "--permission-mode bypassPermissions",
+ "gate_url": "http://127.0.0.1:42155",
+ "gate_pubkey": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991",
+ "finished": 1794773986.465845
+}

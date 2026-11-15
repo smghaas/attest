@@ -17,7 +17,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["attest", "gate"]
+packages = ["attest", "gate", "network"]
 
 [tool.setuptools.package-data]
-gate = ["static/*"]
+gate = ["static/*", "static/*/*"]

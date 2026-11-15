@@ -3,6 +3,9 @@
 A Know-Your-Agent (KYA) check that one agent calls before it acts on a request from another agent.
 MAS.665 AI Studio, MIT, fall 2026. Samuel Haas and Eduard Alsina.
 
+**Building an agent that uses Attest?** Everything it needs (access, inputs, outputs, limits, a worked example) is in
+[AGENTS.md](AGENTS.md).
+
 ## What it does
 
 Before a receiving agent trusts a request, it asks the gate three questions about the sender:
@@ -185,6 +188,16 @@ bench/run_llm_subscription.sh --smoke      # same, on a Claude subscription via 
 
 Every run writes its config, per-request decisions, per-episode costs, LLM transcripts and a
 summary to `bench/results/<run>/`.
+
+## Agent usability (HW9)
+
+Fresh Claude Code sessions use Attest from `AGENTS.md` alone (a buyer and a shop, through a shared drop-box), scored
+against checks registered before each run. Harness and evidence: `usability/`. What changed and why, with results:
+`docs/HW9.md`.
+
+```
+python usability/run_coldstart.py --run-id <id> [--crash-retry]   # needs the `claude` CLI
+```
 
 ## Documents
 

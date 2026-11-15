@@ -1,0 +1,7 @@
+{
+  "order_status": "escalated",
+  "total_usd": null,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop escalated the $600 order to a human (policy: orders above $200 need a human) and did not accept or quote it. The gate receipt's gate key matches GET /pubkey and its signature verified."
+}

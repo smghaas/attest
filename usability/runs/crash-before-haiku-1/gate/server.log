@@ -1,0 +1,37 @@
+INFO:     Started server process [5822]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:37883 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50516 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33010 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33012 - "POST /register/receiver HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33018 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37122 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37126 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37140 - "GET /stakes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37150 - "POST /sandbox/faucet HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37718 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37718 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33076 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33080 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33094 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42694 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42706 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42718 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36092 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36100 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36106 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36106 - "GET /stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36114 - "GET /stakes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36126 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47372 - "GET /receipts?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47388 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51720 - "GET /receipts?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51722 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51730 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37258 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37268 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5822]

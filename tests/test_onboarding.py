@@ -182,3 +182,39 @@ def test_only_the_receiver_can_ask_about_requests_sent_to_it(sandbox):
     sig = crypto.sign(desk["priv"], {"verify": env["request"]["id"], "receiver": "pied-desk"})
     r = c.post("/verify/pied-desk", json=other, headers={"X-Attest-Receiver-Sig": sig})
     assert r.status_code == 401                                                   # signature reused on another request
+
+
+def test_a_delegated_sub_agent_made_with_the_cli_defaults_is_accepted(sandbox, capsys):
+    # Before the fix, `attest agent delegate` gave the child a fresh lifetime that outlived its parent,
+    # so every sub-agent made with the defaults was refused (attenuation_violation).
+    assert run("operator", "create", "Umbrella") == 0
+    assert run("receiver", "create", "umbrella-desk", "--min-stake", "5000") == 0
+    assert run("agent", "create", "umbrella-buyer", "--operator", "Umbrella", "--actions", "request_quote,place_order",
+               "--max", "2000") == 0
+    assert run("agent", "delegate", "umbrella-sub", "--parent", "umbrella-buyer", "--actions", "request_quote",
+               "--max", "500") == 0
+    parent, child = identity.load("umbrella-buyer"), identity.load("umbrella-sub")
+    assert child["chain"][-1]["expires_at"] <= parent["chain"][-1]["expires_at"]
+    capsys.readouterr()
+    assert run("request", "umbrella-sub", "umbrella-desk", "request_quote", "100", "--check") == 0
+    assert "ALLOW" in capsys.readouterr().out
+
+
+def test_the_mcp_tool_signs_its_checks_with_the_receiver_key_file(sandbox, monkeypatch):
+    from attest import build_request
+    import attest.mcp_server as mcp_server
+    c, at = sandbox
+    monkeypatch.setattr(mcp_server, "_at", at)
+    run("operator", "create", "Mcpco")
+    run("receiver", "create", "mcp-desk")
+    run("agent", "create", "mcp-bot", "--operator", "Mcpco", "--actions", "request_quote", "--max", "100")
+    env = lambda: build_request(identity.load("mcp-bot"), "mcp-desk", "request_quote", 10)
+    monkeypatch.delenv("ATTEST_RECEIVER_KEY", raising=False)
+    with pytest.raises(Exception, match="only mcp-desk"):
+        mcp_server.check_agent("mcp-desk", env())                                  # no key: the sandbox says no
+    monkeypatch.setenv("ATTEST_RECEIVER_KEY", str(identity.home() / "mcp-desk.json"))
+    out = mcp_server.check_agent("mcp-desk", env())
+    assert out["decision"] == "allow" and out["receipt_verified"]
+    task = mcp_server.check_for_task(build_request(identity.load("mcp-bot"), "carol", "request_quote", 10), "carol",
+                                     {"allowed": True})
+    assert task["verdict"] == "pass" and task["verified_signature"]

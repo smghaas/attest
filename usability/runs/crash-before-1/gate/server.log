@@ -1,0 +1,35 @@
+INFO:     Started server process [5471]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:44355 (Press CTRL+C to quit)
+INFO:     127.0.0.1:40938 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40940 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40954 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46020 - "POST /register/receiver HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46030 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37468 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37484 - "GET /stakes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39820 - "POST /sandbox/faucet HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33182 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46892 - "GET /receipts?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46906 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46920 - "GET /stakes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47592 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47592 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47592 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33804 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33814 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33830 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33834 - "GET /receipts?limit=200 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35022 - "GET /receipts?limit=200 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35032 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35034 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35042 - "GET /stakes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40936 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40940 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40946 - "GET /receipts?limit=50 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5471]

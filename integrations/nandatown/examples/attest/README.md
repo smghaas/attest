@@ -78,7 +78,7 @@ quote only when the gate allows that action, or answers `unknown`/`pow_ok` (read
 | discovery | stranger told nothing about Attest asks plainly, then follows the refusal | gate learned from the seller; public quote | `refuse`, then `unknown`/`pow_required`, then `unknown`/`pow_ok`; quote 3,990; receipt verifies |
 | self-registration | operator and seller sign themselves up on a sandbox gate (SDK: faucet, register receiver, agent) | quote served; order above the seller's own policy escalated | `allow` (after one plain ask); then `escalate` / `policy_escalation` |
 | delivery semantics | `quote-duplicate-delivery`, journal on | one application | `processed` and `correct` pass |
-| boundary case | same, journal off | (boundary) | second delivery gets `refuse` / `replay` for a request already served |
+| boundary case | same, journal off | one application | before HW9: second delivery got `refuse` / `replay`. Now the gate answers it as a `repeat` of the first check (same receipt) and the seller records a duplicate; `processed` passes |
 
 Discovery takes two quote requests (plain, then with an envelope). Town's `quote-clean` grading expects one
 request and one response, matched to the first request, so Town's own `correct` stage does not pass on those

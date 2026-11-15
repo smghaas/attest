@@ -1,0 +1,108 @@
+{
+ "gate_key": {
+  "priv": "5417a6e883054926bb2eaa400cbd3294485d5c0af65320b9bc124c298c4c6af2",
+  "pub": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 1000.0,
+   "policy": {
+    "escalate_above": {
+     "place_order": 500.0
+    },
+    "read_only": [
+     "request_quote"
+    ]
+   },
+   "pubkey": "0c053c2cd57ea1448fb88e08259d7505acfde7efd637bec0d305440440fae193"
+  }
+ },
+ "stakes": {
+  "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb": {
+   "name": "BrightlineAssembly",
+   "stake": 10000.0,
+   "suspended": false,
+   "slashes": [],
+   "sandbox": true
+  }
+ },
+ "revoked": {},
+ "nonces_seen": {
+  "b62aa6f4896f4f08a0e6626e34c17f45": 1794773913.956729,
+  "994011b6c7e141cc8054dd43d10ed3eb": 1794773929.5569537,
+  "67de8a39ba1147d897b4f2aba3745b70": 1794773929.7789547
+ },
+ "answered": {
+  "dedaddba487394ad8788fc87c3a80a4d8cea21293f26e213a28cfbfe3c30e737": {
+   "type": "attest.receipt/1",
+   "receiver": "widget-shop",
+   "request_id": "dedaddba487394ad8788fc87c3a80a4d8cea21293f26e213a28cfbfe3c30e737",
+   "from": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "escalate",
+   "reason": "policy_escalation",
+   "detail": "place_order above 500.0 needs a human at widget-shop",
+   "credential_id": "1139862d4bc8f9b9fcb8d7e2fcb8d2ccae7a248629ee1dad36772d12a98c8ce3",
+   "issuer": "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb",
+   "chain_ids": [
+    "4187b2e75353fe42c4cbb9ca4d398913a77ab210c666035d50d6a38fec377b64"
+   ],
+   "ts": 1794773913.9577942,
+   "gate": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991",
+   "id": "a72b10a3d681729bf2d88ecb022cf6ccf3dd7a9792c1b99e8c1d42e2cb9d54be",
+   "sig": "69472f20985365d2669f9137286c636cb10562143887671bb88dca3789f295182ad3345e5644deb9c2efd8c769866b36283f52af4567925d1ab0ebd95a3baa0f"
+  },
+  "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec": {
+   "type": "attest.receipt/1",
+   "receiver": "widget-shop",
+   "request_id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+   "from": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "escalate",
+   "reason": "policy_escalation",
+   "detail": "place_order above 500.0 needs a human at widget-shop",
+   "credential_id": "1139862d4bc8f9b9fcb8d7e2fcb8d2ccae7a248629ee1dad36772d12a98c8ce3",
+   "issuer": "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb",
+   "chain_ids": [
+    "4187b2e75353fe42c4cbb9ca4d398913a77ab210c666035d50d6a38fec377b64"
+   ],
+   "ts": 1794773929.5586941,
+   "gate": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991",
+   "id": "df0cb47080162e9e1b280081f9e5a72b227cb6f8878dd76e53c0ef86b7c0dfc2",
+   "sig": "bd6f2e1afe4a565ffef8aa29edf048bbc078088b375c6503612c21799bc178ed397909de3450298c32667136cec6c45d2112551be8b6776242d43b1942f5e90f"
+  },
+  "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88": {
+   "type": "attest.receipt/1",
+   "receiver": "widget-shop",
+   "request_id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+   "from": "431d67c638a29c348032c0ab42f8f6d652c1b8a49fe026a29d9d7ac938f936fe",
+   "action": "place_order",
+   "amount": 487.5,
+   "decision": "refuse",
+   "reason": "unstaked_money_action",
+   "detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+   "credential_id": "605486deaa0fd0fecc3d50bd8859391e944165d10c494d5bb42fc560e5407368",
+   "issuer": "7089bdf182e3f3dbcb6acd15ece375c5e646ab52747dfb376fb7221596205658",
+   "chain_ids": [
+    "ec3651c7b2acc486d9ab41ee65657833d568c9884302b816bde6d5292775c647"
+   ],
+   "ts": 1794773929.7804792,
+   "gate": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991",
+   "id": "854a27a075aa2c06d99024687da0da3d9e918872eb63e5f9859526688db87bd8",
+   "sig": "ed5b389da515bb5cf9c63c1e7811f28c87cb7ad8d357786eb37ac40ff20bdcc37e2c40ce2e4e3c74591b6508990c15d5fdb1f2de2dded4799d869761c0a4d10b"
+  }
+ },
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}
