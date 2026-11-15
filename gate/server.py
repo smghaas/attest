@@ -13,6 +13,12 @@ Gate endpoints (the product):
   POST /claims/{id}/dispute          {reason, sig}                 accused issuer contests it in the window
   POST /claims/{id}/resolve          {uphold, sig}                 arbiter rules on a disputed claim
   GET  /block                        latest Base Sepolia block the puzzles are seeded with
+  GET  /stats                        counts for the dashboard
+  GET  /                             the web dashboard (gate/static/index.html)
+
+Demo mode (only when ATTEST_DEMO=1; the gate signs on behalf of the demo agents in state/agents):
+  GET  /demo/agents                  names of the demo agents
+  POST /demo/try                     {agent, receiver, action, amount} -> the same answer as /verify
 
 Demo plumbing (not the product): a tiny message inbox so two agents on one laptop
 can talk to each other without a messaging network.
@@ -27,10 +33,14 @@ Run with a single worker: the gate's state is one JSON file guarded by an in-pro
 from __future__ import annotations
 
 import json
+import os
 import threading
 import time
+from collections import Counter
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from .core import Gate, STATE_DIR
@@ -55,6 +65,25 @@ def _ok(out: dict) -> dict:
     if not out.get("ok"):
         raise HTTPException(400, out.get("error"))
     return out
+
+
+STATIC = Path(__file__).parent / "static"
+DEMO = os.environ.get("ATTEST_DEMO") == "1"
+
+
+@app.get("/", include_in_schema=False)
+def dashboard():
+    return FileResponse(STATIC / "index.html")
+
+
+@app.get("/stats")
+def stats():
+    rs = gate.receipts(1000)
+    st, cl = gate.stakes(), gate.claims()
+    return {"decisions": len(rs), "by_decision": dict(Counter(r["decision"] for r in rs)),
+            "staked_total": sum(v["stake"] for v in st.values()), "issuers": len(st),
+            "suspended": sum(1 for v in st.values() if v.get("suspended")),
+            "claims": dict(Counter(c["status"] for c in cl)), "demo": DEMO}
 
 
 @app.get("/pubkey")
@@ -147,6 +176,38 @@ def revoke(r: Revoke):
 @app.get("/receipts")
 def receipts(limit: int = 20):
     return gate.receipts(limit)
+
+
+# ---------------- demo mode ----------------
+class Try(BaseModel):
+    agent: str
+    receiver: str = "supplierco"
+    action: str = "request_quote"
+    amount: float = 0
+
+
+def _demo_agents() -> list[str]:
+    d = STATE_DIR / "agents"
+    return sorted(f.stem for f in d.glob("*.json") if "credential" in json.loads(f.read_text())) if d.exists() else []
+
+
+@app.get("/demo/agents")
+def demo_agents():
+    if not DEMO:
+        raise HTTPException(404, "demo mode is off (start with ATTEST_DEMO=1)")
+    return _demo_agents()
+
+
+@app.post("/demo/try")
+def demo_try(t: Try):
+    if not DEMO:
+        raise HTTPException(404, "demo mode is off (start with ATTEST_DEMO=1)")
+    if t.agent not in _demo_agents():
+        raise HTTPException(404, "no such demo agent")
+    from attest.client import build_request
+    me = json.loads((STATE_DIR / "agents" / f"{t.agent}.json").read_text())
+    out = gate.verify(t.receiver, build_request(me, t.receiver, t.action, t.amount, "sent from the dashboard"))
+    return {**out, "agent": t.agent, "agent_key": me["pub"][:16], "chain_depth": len(me["chain"])}
 
 
 # ---------------- demo inbox ----------------

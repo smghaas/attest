@@ -28,11 +28,47 @@ A credential or mandate can only be revoked by the key that signed it (or the ga
 revoker sends the document itself so the gate can check. Revoking a mandate revokes everything
 delegated below it.
 
+## Use it
+
+Start a gate and open the dashboard (demo mode lets you try the demo agents from the page):
+
+```
+.venv/bin/python setup_demo.py
+ATTEST_DEMO=1 .venv/bin/uvicorn gate.server:app --port 8402     # http://127.0.0.1:8402/
+```
+
+**Human:** the dashboard at `/` shows live decisions, stake behind each operator, receivers and slashing
+claims, and has a "Check an agent" box (a demo agent, or a pasted envelope).
+
+**Terminal:** `pip install -e .` gives an `attest` command.
+
+```
+attest status
+attest receipts -n 10
+attest check supplierco envelope.json      # exit code 0 allow, 2 anything else
+attest verify-receipt receipt.json
+```
+
+**Python:**
+
+```python
+from attest import Attest
+d = Attest("http://127.0.0.1:8402").check("supplierco", envelope)   # envelope = {credential, chain, request}
+if d.allowed and d.receipt_verified:
+    ...                                                              # d.decision is allow, refuse, escalate or unknown
+```
+
+**Any agent (MCP):** `python -m attest.mcp_server` exposes `check_agent`, `verify_receipt`,
+`list_receivers`, `get_stakes` and `recent_decisions`. Set `ATTEST_URL` to point at your gate.
+Agents reading this repo should start with [AGENTS.md](AGENTS.md). The raw HTTP API is described at `/openapi.json`.
+
 ## Layout
 
 ```
 gate/crypto.py       Ed25519 keys, canonical JSON, sign and verify
 gate/core.py         the verify logic, revocation, receipts (read this first)
+attest/              SDK (client.py), CLI (cli.py) and MCP server (mcp_server.py)
+gate/static/         the web dashboard, served at /
 gate/server.py       FastAPI: /pubkey /verify/{receiver} /revoke /claims /receipts, plus a demo inbox
 agents/kya_tools.py  MCP tools for Hermes agents (buyer role and supplier role)
 setup_demo.py        creates operators, agents, receiver and arbiter keys, credentials, mandates in state/agents/

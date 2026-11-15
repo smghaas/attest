@@ -1,0 +1,23 @@
+[project]
+name = "attest"
+version = "0.4.0"
+description = "Know-Your-Agent gate: check who an agent is, who stands behind it, and what it may do."
+requires-python = ">=3.11"
+dependencies = ["fastapi", "uvicorn", "httpx", "cryptography", "pydantic"]
+
+[project.optional-dependencies]
+mcp = ["mcp>=2.0"]
+
+[project.scripts]
+attest = "attest.cli:main"
+attest-mcp = "attest.mcp_server:mcp.run"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["attest", "gate"]
+
+[tool.setuptools.package-data]
+gate = ["static/*"]
