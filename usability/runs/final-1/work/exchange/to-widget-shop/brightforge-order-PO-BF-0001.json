@@ -1,0 +1,46 @@
+{
+  "credential": {
+    "type": "kya.credential/1",
+    "agent": "9f62e1e873be49e0b7117a6162091f596a666fa7a1381a83e15a623549b4b1e1",
+    "operator": "Brightforge",
+    "issuer": "9d95d9068039e5b1ad86cba6304fedb3ed3a122e88d10ac8136141a2c92bcfb4",
+    "backer_kind": "company",
+    "purpose": "agent",
+    "issued_at": 1794775487.2886784,
+    "expires_at": 1797367487.2886784,
+    "id": "fad87ff11f5bb93ba1a0edc20e673f3d165ef18439531c40fac569fe8f5a7592",
+    "sig": "2ca6816b08a10eba30c9e3e2f6bc2c9e680225cc33e49729ad44109fee15729b91816ed7203a56de3f20e80a364cd55ee6924f225ec8ffd97944a1b2a3052c06"
+  },
+  "chain": [
+    {
+      "type": "kya.mandate/1",
+      "subject": "9f62e1e873be49e0b7117a6162091f596a666fa7a1381a83e15a623549b4b1e1",
+      "issuer": "9d95d9068039e5b1ad86cba6304fedb3ed3a122e88d10ac8136141a2c92bcfb4",
+      "parent": null,
+      "scope": {
+        "actions": [
+          "request_quote",
+          "place_order"
+        ],
+        "max_amount": 700.0,
+        "currency": "USD"
+      },
+      "expires_at": 1797367487.2886784,
+      "id": "b0e4c3d4c44999d782414bdf589d8c9e10c317c4ad2cccc8495144bc07404187",
+      "sig": "f37998cecf0960f6210b9d14594a0a0f329923446454b6ec8c543630689ab32e4fb0253b8e9ed144a110a1e6538c9b3370c25956060a1c3e0aefb5fd3166e40c"
+    }
+  ],
+  "request": {
+    "type": "kya.request/1",
+    "from": "9f62e1e873be49e0b7117a6162091f596a666fa7a1381a83e15a623549b4b1e1",
+    "to": "widget-shop",
+    "action": "place_order",
+    "amount": 600.0,
+    "message": "PO-BF-0001: 30 units of part X-200, about $20/unit, $600 total. Buyer: Brightforge.",
+    "ts": 1794775491.215115,
+    "nonce": "4b427890d71b4173b864ff26dc29185e",
+    "id": "974f1d0c9dc08137f550cb55d531796260ca82aaaad9bf84335881b5ac69fd89",
+    "sig": "354aa8f0592d7e402b0ce1353c5a4c7260840defeb2b8264508e856129ff599cfc149c4c31bfa873fb7ec1facbe669f2ef560948741c98ec2c1e353b0e98d801"
+  },
+  "reply_to": "to-brightforge"
+}

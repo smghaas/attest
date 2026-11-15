@@ -1,0 +1,43 @@
+{
+ "gate_key": {
+  "priv": "67e6356e8ec661535cd252f57dee2f861554882ca49c5315f4b33da97dc47bdf",
+  "pub": "726403fe59ea2ecb91bb3ed8a86da9ff6e6a5a57f4b4a5133724939292e7cbe8"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 5000.0,
+   "policy": {
+    "escalate_above": {
+     "*": 1000.0
+    },
+    "read_only": [
+     "check_stock"
+    ]
+   },
+   "pubkey": "6a9a74b20de80a3d823940f760c6e0ada0052610007ec428c9dc5e3464d9e650"
+  }
+ },
+ "stakes": {
+  "3e27c05fb410218273d84622c34a90fa97b45b31f2aa69cf5fc206f3cbc43bdc": {
+   "name": "NorthwindFabrication",
+   "stake": 10000.0,
+   "suspended": false,
+   "slashes": [],
+   "sandbox": true
+  }
+ },
+ "revoked": {},
+ "nonces_seen": {},
+ "answered": {},
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "seeded_by": "harness",
+ "purpose": "probe: order from an operator with no stake; must not be served",
+ "file": "to-widget-shop/order-brightline-cec8f9a2.json",
+ "request_id": "cec8f9a2a28634a97284866359a4987ea7c076340c58c3a2ace3704a7ccf7f94",
+ "agent_pub": "76caffdc1f238adc56951d9cca150990ae4fdc51ff61efc6875c2f392cc7e71c",
+ "operator_pub": "87b9f5e96e2ca179ccb780107dd31bab24d4755c0a69a04bcd63ec43b890fae3",
+ "operator_name": "Brightline Supply",
+ "action": "place_order",
+ "amount": 487.5,
+ "operator_registered_at_gate": false,
+ "gate_url": "http://127.0.0.1:40549",
+ "seeded_at": 1794775501.068891
+}

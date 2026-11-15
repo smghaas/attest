@@ -1,0 +1,7 @@
+{
+  "order_status": "fulfilled",
+  "total_usd": 585.0,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop fulfilled PO-NWF-0001 (30 x X-200 at $19.50/unit = $585, under the $600 authorized); the gate's allow receipt d23ecd9a… has a valid signature from the gate's published key, a correct id hash, and matches our request, credential and mandate. Note the gate counted the authorized $600 (not $585) against our $1,000 mandate."
+}

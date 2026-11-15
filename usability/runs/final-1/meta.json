@@ -1,0 +1,30 @@
+{
+ "run_id": "final-1",
+ "smoke": false,
+ "started": 1794775463.420169,
+ "repo_commit": "ab40abbe960c2bf772fbff09bb69bd7b65f05848",
+ "docs_path": "/home/user/attest/AGENTS.md",
+ "docs_sha256": "aded6849beb3255d44eba86122a52c4f3aa097f98b895e19b748094663e258ee",
+ "docs_differs_from_commit": false,
+ "claude_bin": "/opt/node22/bin/claude",
+ "claude_version": "2.1.325 (Claude Code)",
+ "model_override": null,
+ "max_turns": 40,
+ "timeout_s": 1500,
+ "chaining": "resume",
+ "venv_install": "copy",
+ "work_dir": "/tmp/attest-coldstart/final-1",
+ "dirs": {
+  "buyer": "/tmp/attest-coldstart/final-1/buyer",
+  "seller": "/tmp/attest-coldstart/final-1/seller",
+  "exchange": "/tmp/attest-coldstart/final-1/exchange",
+  "venv": "/tmp/attest-coldstart/final-1/venv"
+ },
+ "receiver": "widget-shop",
+ "tools": "Bash,Read,Write,Edit,Glob,Grep",
+ "disallowed_tools": "WebFetch,WebSearch",
+ "permission_flags": "--permission-mode bypassPermissions",
+ "gate_url": "http://127.0.0.1:40549",
+ "gate_pubkey": "35a0388f03571ae4feaaf5b96398d566caec805969c340b0e78f7b0feb2f24f8",
+ "finished": 1794775544.7683825
+}

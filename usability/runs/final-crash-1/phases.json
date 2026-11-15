@@ -1,0 +1,337 @@
+[
+ {
+  "phase": "seller-setup",
+  "cwd": "/tmp/attest-coldstart/final-crash-1/seller",
+  "session_id": "8eca62de-5d15-410b-a1dc-6c2735126764",
+  "resumed": false,
+  "start": 1794775546.4814548,
+  "end": 1794775561.5643933,
+  "wall_s": 15.1,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-setup.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 3,
+  "total_cost_usd": 0.1346906,
+  "usage": {
+   "input_tokens": 6,
+   "cache_creation_input_tokens": 13619,
+   "cache_read_input_tokens": 43473,
+   "output_tokens": 851,
+   "output_tokens_details": {
+    "thinking_tokens": 83
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 13619,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 378,
+     "cache_read_input_tokens": 19064,
+     "cache_creation_input_tokens": 568,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 568
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "Part 1 is done. The gate at http://127.0.0.1:58699 (sandbox mode) now lists `widget-shop` as a registered receiver.\n\n- **Receiver name:** `widget-shop`\n- **Minimum stake:** 5,000. A sender's operator needs at least this much test stake for any request that moves money. Senders with less stake can only get read-only answers, after solving the gate's puzzle.\n- **Policy:**\n  - `escalate_above: {\"*\": 1000}`: any request over $1,000, for any action, comes back as `escalate`, meaning a person at the shop decides. At $19.50 per X-200, that's anything above about 51 units.\n  - `read_only: [\"check_stock\"]`: `check_stock` doesn't count as moving money. The gate already treats `request_quote` and lookups as read-only.\n\nThe shop's signing key is in `/tmp/attest-coldstart/final-crash-1/seller/.attest/widget-shop.json`, readable only by its owner. The CLI uses it to sign the shop's checks when I process the inbox. I haven't processed the inbox or written anything to the drop-box folder.",
+  "gate_log_offset": [
+   254,
+   502
+  ]
+ },
+ {
+  "phase": "buyer",
+  "cwd": "/tmp/attest-coldstart/final-crash-1/buyer",
+  "session_id": "cf29df3d-720d-4109-882b-26303ca7ecfb",
+  "resumed": false,
+  "start": 1794775561.5675278,
+  "end": 1794775583.8247578,
+  "wall_s": 22.3,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.15823299999999998,
+  "usage": {
+   "input_tokens": 8,
+   "cache_creation_input_tokens": 14050,
+   "cache_read_input_tokens": 61505,
+   "output_tokens": 1675,
+   "output_tokens_details": {
+    "thinking_tokens": 273
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 14050,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 584,
+     "cache_read_input_tokens": 19035,
+     "cache_creation_input_tokens": 1028,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1028
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I placed the order for 30 units of X-200 (about $600 in total) with widget-shop, as the company **Northwind Fabrication**. I didn't check the order with the gate myself, because only the shop can run that check.\n\n**Dropped file:** `/tmp/attest-coldstart/final-crash-1/exchange/to-widget-shop/northwind-fabrication-PO-NWF-0001.json`\n\n**What I did**\n1. Confirmed the gate is a sandbox and that widget-shop is registered there. The shop requires an operator with at least 5,000 stake, sends anything over $1,000 to a human, and treats `check_stock` as read-only.\n2. Created the operator `NorthwindFabrication`, which got 10,000 free test stake.\n3. Created the buying agent `northwind-buyer`. It may only request quotes and place orders, up to $1,000, for 30 days. That covers this order but stays under the shop's $1,000 human-approval limit.\n4. Built a signed request addressed to `widget-shop`: `place_order`, amount 600, message \"PO-NWF-0001: 30 units of part X-200, about $600 total ($20/unit)\". Its request id starts `740656f6\u2026`.\n5. Wrote it as one JSON file. It holds the signed request with its credential and permission chain, plus `\"reply_to\": \"to-northwind-fabrication\"` and an `order` section with the order details. I also created the reply folder `exchange/to-northwind-fabrication/`.\n\n**One risk:** the gate only accepts a request within 10 minutes of when it was signed. If the shop handles its inbox later than that, it may be refused as `stale_request`. I would then need to sign a new request and send it again.\n\nI've stopped here as instructed and am not waiting for the reply.",
+  "gate_log_offset": [
+   502,
+   686
+  ]
+ },
+ {
+  "phase": "seller-inbox",
+  "cwd": "/tmp/attest-coldstart/final-crash-1/seller",
+  "session_id": "8eca62de-5d15-410b-a1dc-6c2735126764",
+  "resumed": true,
+  "start": 1794775583.9164467,
+  "end": 1794775611.6450326,
+  "wall_s": 27.7,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-inbox.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.2531834,
+  "usage": {
+   "input_tokens": 10,
+   "cache_creation_input_tokens": 6306,
+   "cache_read_input_tokens": 87424,
+   "output_tokens": 2526,
+   "output_tokens_details": {
+    "thinking_tokens": 331
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 6306,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 570,
+     "cache_read_input_tokens": 24510,
+     "cache_creation_input_tokens": 1428,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1428
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I processed both requests in the inbox. I checked each one with the gate as `widget-shop`, and both receipts passed the signature check and refer to the right request id. Neither check was a repeat.\n\n- **`740656f65279c76807cf1fcd7f320fab7013ccade69172c594e133b4281f3fc9`** (Northwind Fabrication, PO-NWF-0001, 30 \u00d7 X-200, $600 requested): the gate said **allow / ok**. The operator has 10,000 staked against our 5,000 minimum, and $600 is within their $1,000 limit. I marked it **fulfilled** at our list price of $19.50 per unit, so **$585.00**, which is less than the $600 they were authorised to spend. The reply is in `exchange/to-northwind-fabrication/`.\n- **`4267bbce23a126b85822202ceaa895a70e13779f728a4c69626e86709588d9bc`** (Brightline Supply, 25 \u00d7 X-200, $487.50): the gate said **refuse / unstaked_money_action**. Brightline Supply has no stake, and an order moves money. I marked it **declined** and gave them that reason. The reply is in `exchange/to-brightline-supply/`, a folder I created.\n\nEach reply includes the gate's receipt as the SDK returned it. The receipts are also saved in `seller/receipts/`, one file per request id. I added two files there as well: `_decisions.json`, the gate's full answers, and `actions-log.json`, a record of what I did with each request so a re-run won't act on either one twice. I didn't change any files in `to-widget-shop`.",
+  "gate_log_offset": [
+   686,
+   886
+  ]
+ },
+ {
+  "phase": "seller-retry",
+  "cwd": "/tmp/attest-coldstart/final-crash-1/seller",
+  "session_id": "bcf61e1a-2250-4848-aad2-8f24492bd5c8",
+  "resumed": false,
+  "start": 1794775611.6482673,
+  "end": 1794775642.6977487,
+  "wall_s": 31.0,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-retry.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.21321299999999999,
+  "usage": {
+   "input_tokens": 8,
+   "cache_creation_input_tokens": 19052,
+   "cache_read_input_tokens": 70025,
+   "output_tokens": 2338,
+   "output_tokens_details": {
+    "thinking_tokens": 368
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 19052,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 476,
+     "cache_read_input_tokens": 24014,
+     "cache_creation_input_tokens": 1051,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1051
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I processed both requests in the inbox, each exactly once.\n\nBoth had already been checked before the crash: the gate returned `repeat: true` with its original receipts. I couldn't find any earlier replies, so I acted on the gate's original decisions now. Both receipts are signed by the gate's key and match the request ids.\n\n- **`740656f65279c76807cf1fcd7f320fab7013ccade69172c594e133b4281f3fc9`** (Northwind Fabrication, PO-NWF-0001, place_order $600): the gate said **allow / ok**. I marked it **fulfilled**. I charged our list price, 30 \u00d7 X-200 at $19.50 = **$585.00**, which is less than the $600 they authorized (they had assumed $20 a unit). The reply is in `exchange/to-northwind-fabrication/reply-740656f6.json`.\n- **`4267bbce23a126b85822202ceaa895a70e13779f728a4c69626e86709588d9bc`** (Brightline Supply, place_order $487.50): the gate said **refuse / unstaked_money_action**, because Brightline Supply has no stake and placing an order moves value. I marked it **declined**. The reply is in `exchange/to-brightline-supply/reply-4267bbce.json`.\n\nBoth receipts are saved in `seller/receipts/`, one file per request id. I didn't change anything in `to-widget-shop/`.",
+  "gate_log_offset": [
+   886,
+   1261
+  ]
+ },
+ {
+  "phase": "buyer-confirm",
+  "cwd": "/tmp/attest-coldstart/final-crash-1/buyer",
+  "session_id": "cf29df3d-720d-4109-882b-26303ca7ecfb",
+  "resumed": true,
+  "start": 1794775642.701076,
+  "end": 1794775660.4632578,
+  "wall_s": 17.8,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer-confirm.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.23241359999999997,
+  "usage": {
+   "input_tokens": 10,
+   "cache_creation_input_tokens": 3295,
+   "cache_read_input_tokens": 86303,
+   "output_tokens": 1526,
+   "output_tokens_details": {
+    "thinking_tokens": 19
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 3295,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 400,
+     "cache_read_input_tokens": 23046,
+     "cache_creation_input_tokens": 312,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 312
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "The order went through: widget-shop fulfilled PO-NWF-0001 for 30 units of X-200 at $19.50 each, so **$585.00**, under the $600 I authorized. Its reply is `exchange/to-northwind-fabrication/reply-740656f6.json` and includes the Attest gate's receipt with decision `allow` / `ok`. I checked that receipt three ways and it is genuine. My own check of the id hash and signature against the gate's public key from `/pubkey` passed. The `attest verify-receipt` tool also returned `valid`. The receipt also appears in the gate's public `/receipts` list. It refers to my own request (id `740656f6\u2026`), my agent key, and the credential and permission I sent. One thing to know: the gate counted the authorized $600, not the $585 charged, against northwind-buyer's $1,000 limit, so only $400 of it remains. I recorded all this in `/tmp/attest-coldstart/final-crash-1/buyer/outcome.json` with `order_status: \"fulfilled\"`, `total_usd: 585.0`, `receipt_checked: true` and `receipt_valid: true`.",
+  "gate_log_offset": [
+   1261,
+   1446
+  ]
+ }
+]

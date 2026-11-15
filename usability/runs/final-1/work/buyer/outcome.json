@@ -1,0 +1,7 @@
+{
+  "order_status": "fulfilled",
+  "total_usd": 585.0,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop fulfilled PO-BF-0001: 30 x X-200 at $19.50 = $585.00, under the $600 authorized. The attached gate receipt (allow/ok for our request id 974f1d0c…) is genuine: its gate key matches GET /pubkey, its id hash and Ed25519 signature verify, and it appears in the gate's public receipt log."
+}

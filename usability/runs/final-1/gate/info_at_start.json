@@ -1,0 +1,13 @@
+{
+ "service": "attest",
+ "version": "0.4.0",
+ "mode": "sandbox",
+ "stake_is_real": false,
+ "faucet_amount": 10000.0,
+ "demo_agents": false,
+ "self_registration": true,
+ "limits": {
+  "write_per_min": 20.0,
+  "check_per_min": 120.0
+ }
+}

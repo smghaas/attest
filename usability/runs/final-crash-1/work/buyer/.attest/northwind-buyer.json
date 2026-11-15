@@ -1,0 +1,38 @@
+{
+ "kind": "agent",
+ "name": "northwind-buyer",
+ "priv": "340f3cd17d7c0469ad61497959e97223ecdce93f723c5f2f8fed104fb8cf44a7",
+ "pub": "a9d6f2e07c68423f7464e4554ea19dfc3fba8d2c647f1748afc9408a0c3ceb01",
+ "operator": "NorthwindFabrication",
+ "credential": {
+  "type": "kya.credential/1",
+  "agent": "a9d6f2e07c68423f7464e4554ea19dfc3fba8d2c647f1748afc9408a0c3ceb01",
+  "operator": "NorthwindFabrication",
+  "issuer": "3e27c05fb410218273d84622c34a90fa97b45b31f2aa69cf5fc206f3cbc43bdc",
+  "backer_kind": "company",
+  "purpose": "agent",
+  "issued_at": 1794775568.1332734,
+  "expires_at": 1797367568.1332734,
+  "id": "eaa190a73385bd7ee21a81a39087c522ddbd14ca42efa042ef73836cc6fdd352",
+  "sig": "a71c1a402035d528cd9d37caa988717d4e2140a03be3651285615a468b2393b0d07578775b876fea3d18e0776014c1c5a23a4073cc1cf809cbcf5cb7aa9d130f"
+ },
+ "chain": [
+  {
+   "type": "kya.mandate/1",
+   "subject": "a9d6f2e07c68423f7464e4554ea19dfc3fba8d2c647f1748afc9408a0c3ceb01",
+   "issuer": "3e27c05fb410218273d84622c34a90fa97b45b31f2aa69cf5fc206f3cbc43bdc",
+   "parent": null,
+   "scope": {
+    "actions": [
+     "request_quote",
+     "place_order"
+    ],
+    "max_amount": 1000.0,
+    "currency": "USD"
+   },
+   "expires_at": 1797367568.1332734,
+   "id": "834b5b99c138cbd5f7b98e825c72ec28beeef41d8051234440e201b36fe69ef6",
+   "sig": "9bec0dfdf83c973e4ea968953e77aff39f9c3ceb0294784735cb13987a84d8a1e93e1b88bc289b7dd46076bd2c8dd1e1407e7e50ca4377ea8f91fe4ad7970004"
+  }
+ ]
+}

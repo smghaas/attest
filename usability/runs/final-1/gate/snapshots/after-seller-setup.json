@@ -1,0 +1,35 @@
+{
+ "gate_key": {
+  "priv": "78bb0554b8d0728be8de61980c32ab028014f1fa8891b9f7a809e19cd1242f8b",
+  "pub": "35a0388f03571ae4feaaf5b96398d566caec805969c340b0e78f7b0feb2f24f8"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 5000.0,
+   "policy": {
+    "escalate_above": {
+     "*": 1000.0
+    },
+    "read_only": [
+     "check_stock"
+    ]
+   },
+   "pubkey": "76e9ff26901e861becd4ba99ed1f2090fac6f62b6f6ae3d59ad56bc7107dea22"
+  }
+ },
+ "stakes": {},
+ "revoked": {},
+ "nonces_seen": {},
+ "answered": {},
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}
