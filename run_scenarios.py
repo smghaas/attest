@@ -138,7 +138,7 @@ def main():
 
     # staked issuer, mandate chain, scope, policy
     first = envelope(proc, "request_quote", 4000, "quote 200 units of part X")
-    check("1 procurement asks a quote (in scope)", first, "allow", "ok")
+    first_answer = check("1 procurement asks a quote (in scope)", first, "allow", "ok")
     check("2 procurement places a 9,500 order (receiver policy)", envelope(proc, "place_order", 9500, "PO-1001"), "escalate")
     acme_order = check("3 procurement places a 7,500 order (in scope)", envelope(proc, "place_order", 7500, "PO-1002"), "allow", "ok")
     check("4 procurement places a 12,000 order (over limit)", envelope(proc, "place_order", 12000, "PO-1003"), "refuse", "over_limit")
@@ -180,10 +180,14 @@ def main():
 
     # integrity
     check("14 request body changed after signing", envelope(proc, "request_quote", 900, "tampered", tamper=True), "refuse", "bad_request_signature")
+    # the same request checked again (a crash, a retry, a double delivery): the original answer, marked repeat
     r = verify(first)
-    good = r["decision"] == "refuse" and r["reason"] == "replay"
-    fails += not good
-    print(f"{'ok ' if good else 'BAD'} {'15 same request presented twice (replay)':56} {'refuse':9} {r['decision']:9} {r['reason']}")
+    expect("15a same request checked again: original answer, repeat", r["decision"] == "allow" and r.get("repeat") is True
+           and r["receipt"]["id"] == first_answer["receipt"]["id"], f"{r['decision']} {r['reason']} repeat={r.get('repeat')}")
+    # a different request that reuses the nonce is still a replay
+    body = {k: v for k, v in first["request"].items() if k not in ("id", "sig")}
+    body["amount"] = 5000
+    check("15b new request reusing a nonce (replay)", {**first, "request": crypto.signed(proc["priv"], body)}, "refuse", "replay")
 
     # slashing: claims are signed by the receiver, wait out a dispute window, can be disputed
     breach = "goods received, payment never sent"

@@ -119,7 +119,8 @@ Other ways to make the same call: `attest check acme-supplies envelope.json`, `A
     "action": "request_quote", "amount": 400.0, "decision": "allow", "reason": "ok", "detail": "…",
     "credential_id": "50026aff…", "issuer": "0b6d0b6a…", "chain_ids": ["27d91369…"], "ts": 1794772291.48,
     "gate": "67044160…", "id": "d8d751ee…", "sig": "7a4000d5…"
-  }
+  },
+  "repeat": false
 }
 ```
 
@@ -130,6 +131,7 @@ Other ways to make the same call: `attest check acme-supplies envelope.json`, `A
 | `detail` | one sentence for humans and logs |
 | `receipt` | the decision signed by the gate. `gate` is the gate's public key (also at `GET /pubkey`). Keep it: a slashing claim needs it |
 | `challenge` | only for `unknown` / `pow_required`: the puzzle to solve ([below](#unknown-senders-and-the-puzzle)) |
+| `repeat` | `true` when the gate had already answered this exact request for you: the same decision and the same receipt come back ([below](#checking-the-same-request-again)) |
 
 **Check the receipt before acting.** It is genuine when `receipt.gate` equals `GET /pubkey`'s `gate`, `receipt.id`
 is the SHA-256 of the receipt without `id` and `sig`, and `receipt.sig` is a valid Ed25519 signature by `gate` over the
@@ -146,6 +148,15 @@ receipt without `sig` ([signing rules](#document-formats-and-signing)). The SDK 
 | `escalate` | do not act on your own; a human at your side should decide (your own policy asked for this) |
 | `unknown` | no staked operator is behind the sender. Give public, read-only answers at most. `pow_ok` means it solved the puzzle; it still gets nothing that moves value |
 
+### Checking the same request again
+
+You may check the same envelope again: after a crash, a retried tool call, or a message delivered twice. The gate
+then returns its **original** answer and receipt with `"repeat": true`. Nothing is counted again and no new receipt is
+written. A repeat is the same request, not a new one: **act on a request at most once.** If your own records show you
+already acted on it, do not act again. If you have no record of acting (you crashed before you did), act on the
+decision now. Only an unchanged request (same id, valid signature, same credential and chain) at the same receiver is
+answered this way, within 20 minutes of the first check; anything else reusing its `nonce` is refused as `replay`.
+
 ### Reason codes
 
 | reason | decision | meaning |
@@ -158,7 +169,7 @@ receipt without `sig` ([signing rules](#document-formats-and-signing)). The SDK 
 | `bad_request_signature` | refuse | the request was changed after signing, or signed by a different key than `from` |
 | `wrong_receiver` | refuse | the request is addressed to someone else |
 | `stale_request` | refuse | the request's `ts` is more than 10 minutes from the gate's clock |
-| `replay` | refuse | this exact request (its `nonce`) was already presented to the gate |
+| `replay` | refuse | a different or altered request reuses a `nonce` the gate has already seen (the same unchanged request gets `repeat: true` instead) |
 | `bad_credential_signature`, `bad_credential_id` | refuse | the credential was forged or altered |
 | `credential_expired`, `credential_revoked` | refuse | the credential is no longer valid |
 | `no_mandate`, `bad_root_mandate`, `root_subject_mismatch` | refuse | no mandate, or the first mandate is not from the credential's operator for this agent |
@@ -192,8 +203,8 @@ env = build_request(identity.load("acme-buyer"), to="acme-supplies", action="pla
 
 Rules the receiver's gate will apply:
 - `to` must be the receiver's registered name at the gate.
-- Each envelope can be checked **once**: it carries a random `nonce`, and a second check of the same envelope gets
-  `replay`. Build a new envelope for every request, and for every retry.
+- Build a new envelope for every new request: each carries a random `nonce`. Sending the same envelope again is
+  safe; the receiver's gate recognises it as the same request (`repeat`), so it is never counted twice.
 - It must be checked within 10 minutes of being built (`ts`).
 - `amount` is in the mandate's currency (USD). Use `0` for actions without an amount.
 - Any action name is allowed if it is in your mandate. Actions count as moving value (running totals,
@@ -265,7 +276,8 @@ Everything is JSON signed with Ed25519, so any language can take part.
 - **Sandbox stake is not money.** Anyone can mint test stake, so a sandbox `allow` shows the checks pass, not that a
   real company stands behind the agent. Real stake would come from a chain or an escrow (not built).
 - **Everything is public.** `GET /receipts` lists every decision from everyone. Do not put secrets in `message`.
-- **One check per envelope** (see `replay`). If your check failed for a network reason, ask the sender for a fresh envelope.
+- **Checking again** returns the first answer (`repeat: true`) for 20 minutes; after that the request is stale anyway.
+  Keeping track of what you already acted on is your job: the gate only says the request is the same.
 - **Clock**: requests are accepted within ±10 minutes of the gate's clock.
 - **Rate limits on the sandbox**, per IP and per minute: 120 checks, 20 writes (sign-up, claims, revocations).
   HTTP 429 means wait a minute (`Retry-After`). Bodies over 64 KB get 413. The sandbox holds at most 500 operators
@@ -274,7 +286,8 @@ Everything is JSON signed with Ed25519, so any language can take part.
   key can file a slashing claim, and only with an `allow` receipt the gate issued to it; only the accused operator can
   dispute; only the arbiter key can rule.
 - **One gate**: the gate is one process with its state in one file. Limits such as running spend hold per gate.
-- **Not checked**: who calls `/verify`. Anyone holding a copy of an envelope can present it first and use up its nonce.
+- **Not checked**: who calls `/verify`. Anyone holding a copy of an envelope can present it first; the receiver then
+  gets the same answer marked `repeat`, so it cannot be locked out, but it cannot tell who asked first.
 
 ## All endpoints
 

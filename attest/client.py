@@ -33,6 +33,12 @@ class Decision:
     def allowed(self) -> bool:
         return self.decision == "allow"
 
+    @property
+    def repeat(self) -> bool:
+        """True when the gate had already answered this exact request for this receiver: the same decision and
+        receipt come back. Act on a request at most once; a repeat is the same request, not a new one."""
+        return bool(self.raw.get("repeat"))
+
 
 def build_request(agent: dict, to: str, action: str, amount: float, message: str = "") -> dict:
     """Sign a request as `agent` (a dict with priv, pub, credential and chain) and wrap it in

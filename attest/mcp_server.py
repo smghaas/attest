@@ -23,10 +23,11 @@ def check_agent(receiver: str, envelope: dict) -> dict:
     received. `receiver` is your own registered name at the gate.
     Returns decision (allow, refuse, escalate or unknown), the reason, and receipt_verified.
     allow: act. refuse: do not act. escalate: ask a human. unknown: no staked operator behind the
-    sender, treat as public and read-only. Never act on a decision whose receipt_verified is false."""
+    sender, treat as public and read-only. Never act on a decision whose receipt_verified is false.
+    repeat true: the gate already answered this exact request for you (same receipt); act on a request at most once."""
     d = _at.check(receiver, envelope)
     out = {"decision": d.decision, "reason": d.reason, "detail": d.detail, "receipt_id": d.receipt["id"],
-           "receipt_verified": d.receipt_verified}
+           "receipt_verified": d.receipt_verified, "repeat": d.repeat}
     if d.challenge:
         out["puzzle_required_bits"] = d.challenge.get("bits")
     return out

@@ -138,6 +138,7 @@ class Gate:
             "stakes": {},
             "revoked": {},          # doc id -> {"by", "ts", "reason"}
             "nonces_seen": {},      # nonce -> gate time it was first seen
+            "answered": {},         # request id -> the receipt for the check that used up its nonce (repeat checks)
             "spent": {},            # mandate id -> money already allowed under it
             "issuer_spent": {},     # issuer pubkey -> [[ts, amount], ..] allowed within ISSUER_WINDOW_S
             "pow_attempts": {},     # agent pubkey -> [times a puzzle was issued to it]
@@ -365,6 +366,7 @@ class Gate:
         self._last_prune = now
         st = self.state
         st["nonces_seen"] = {n: t for n, t in st["nonces_seen"].items() if now - t < NONCE_TTL_S}
+        st["answered"] = {k: r for k, r in st["answered"].items() if now - r.get("ts", 0) < NONCE_TTL_S}
         st["pow_open"] = {k: v for k, v in st["pow_open"].items() if now - v.get("issued_at", 0) < POW_TTL_S}
         st["pow_attempts"] = {k: kept for k, v in st["pow_attempts"].items()
                               if (kept := [t for t in v if now - t < POW_KEY_WINDOW_S])}
@@ -380,11 +382,19 @@ class Gate:
         now = time.time()
         self._settle(now)
         self._prune(now)
-        extra: dict = {}
-        decision, reason, detail = self._decide(receiver, envelope or {}, extra)
         req = (envelope or {}).get("request") or {}
         chain = (envelope or {}).get("chain") or []
         cred = (envelope or {}).get("credential") or {}
+        # A receiver that checks the same request again (it crashed before acting, a message was delivered twice,
+        # a tool call was retried) gets the original answer back, marked as a repeat, instead of a replay refusal.
+        # Nothing is counted twice and no new receipt is issued. It is up to the receiver not to act twice.
+        earlier = self._earlier_answer(receiver, req, cred, chain)
+        if earlier:
+            return {"decision": earlier["decision"], "reason": earlier["reason"], "detail": earlier["detail"],
+                    "receipt": earlier, "repeat": True}
+        fresh_nonce = req.get("nonce") not in self.state["nonces_seen"]
+        extra: dict = {}
+        decision, reason, detail = self._decide(receiver, envelope or {}, extra)
         receipt_body = {
             "type": "attest.receipt/1",
             "receiver": receiver,
@@ -405,10 +415,26 @@ class Gate:
         receipt = crypto.signed(self.state["gate_key"]["priv"], receipt_body)
         with self.receipts_file.open("a") as f:
             f.write(json.dumps(receipt) + "\n")
-        out = {"decision": decision, "reason": reason, "detail": detail, "receipt": receipt}
+        if fresh_nonce and req.get("nonce") in self.state["nonces_seen"] and req.get("id"):
+            self.state["answered"][req["id"]] = receipt      # this check used up the nonce: remember its answer
+            self._save()
+        out = {"decision": decision, "reason": reason, "detail": detail, "receipt": receipt, "repeat": False}
         if "challenge" in extra:
             out["challenge"] = extra["challenge"]
         return out
+
+    def _earlier_answer(self, receiver: str, req: dict, cred: dict, chain: list) -> dict | None:
+        """The receipt of an earlier check of exactly this request at this receiver, or None. The request must be
+        unchanged (its id is the hash of its body) and still carry a valid signature, and it must come with the same
+        credential and mandate chain, so an altered copy is still judged afresh (and refused as a replay)."""
+        rec = self.state["answered"].get(req.get("id") or "")
+        if not rec or rec.get("receiver") != receiver:
+            return None
+        if not (crypto.id_ok(req) and crypto.verify(req.get("from", ""), crypto.body_of(req), req.get("sig", ""))):
+            return None
+        if rec.get("credential_id") != cred.get("id") or rec.get("chain_ids") != [m.get("id") for m in chain]:
+            return None
+        return rec
 
     def _issuer_status(self, rcv: dict, cred: dict | None) -> tuple[bool, str]:
         """(staked enough for this receiver, explanation)."""
