@@ -59,6 +59,13 @@ STRIP_ENV = {
     "ATTEST_SANDBOX", "ATTEST_DEMO",
 }
 
+CRASH_SELLER_NOTE = """
+
+NOTE: the shop's agent was restarted after a crash. You do not know what was done before the crash: any replies that
+were written are lost, and so are any receipts that were saved. The shop's registration and keys survive (they are in
+ATTEST_DIR). Handle the inbox from the start.
+
+"""
 FRESH_SELLER_NOTE = ("\n\nNOTE: You already did Part 1 (setup) in an earlier session: widget-shop is registered at the "
                      "gate and its keys are in your ATTEST_DIR.\n\n")
 FRESH_BUYER_NOTE = ("\n\nNOTE: You already sent your order in an earlier session. Your keys and any notes you kept are "
@@ -298,6 +305,9 @@ def main() -> int:
     ap.add_argument("--fresh-followups", action="store_true",
                     help="phases 3 and 4 start new sessions instead of resuming the ones from phases 1 and 2")
     ap.add_argument("--editable", action="store_true", help="install attest into the agents' venv with -e")
+    ap.add_argument("--crash-retry", action="store_true",
+                    help="after seller-inbox, simulate a crash that loses the shop's replies and memory, then run a "
+                         "fresh seller session on the same inbox (phase seller-retry) before buyer-confirm")
     a = ap.parse_args()
 
     run_dir = HERE / "runs" / a.run_id
@@ -376,6 +386,21 @@ def main() -> int:
             text3 = render("seller_inbox.md", values(seller))
         sid3 = str(uuid.uuid4()) if a.fresh_followups else seller_sid
         phase("seller-inbox", seller, text3, sid3, not a.fresh_followups)
+
+        # 3b. (--crash-retry) the shop crashes after asking the gate and loses its replies and memory. The harness
+        # moves the replies and the shop's saved receipts aside (kept as evidence, not deleted), keeps the shop's
+        # keys (its identity survives a restart), and starts a FRESH seller session on the same inbox.
+        if a.crash_retry and not a.smoke:
+            lost = run_dir / "harness" / "crash_removed"
+            (lost / "exchange").mkdir(parents=True, exist_ok=True)
+            for d in sorted(exchange.iterdir()):
+                if d.is_dir() and d.name != f"to-{RECEIVER}":
+                    shutil.move(str(d), str(lost / "exchange" / d.name))
+            if (seller / "receipts").exists():
+                shutil.move(str(seller / "receipts"), str(lost / "seller-receipts"))
+            log(f"crash simulated: replies and saved receipts moved to {lost}")
+            text3b = render("seller.md", values(seller)) + CRASH_SELLER_NOTE + render("seller_inbox.md", values(seller))
+            phase("seller-retry", seller, text3b, str(uuid.uuid4()), False)
 
         # 4. buyer checks its reply (resumed, or fresh)
         if a.smoke:

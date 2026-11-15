@@ -95,3 +95,23 @@ The sessions are told to stay inside their own folder, the drop-box and the inst
 that names the attest repository, the other party's folder, or the gate's files is a **violation**; a
 filesystem-wide search or another outside path is a **warning**. A run with violations is reported as such;
 its checks are still computed, but the grader should treat it as not a cold start.
+
+## Part 3: crash and retry (added before the crash runs, after run real-1)
+
+**Scenario** (`run_coldstart.py --crash-retry`): the same four phases, plus one. After `seller-inbox`, the harness
+simulates a shop that crashed after asking the gate but lost what it did: it moves the shop's replies and saved
+receipts out of the drop-box and the shop's folder (kept as evidence in `harness/crash_removed/`), keeps the shop's
+keys, and starts a **fresh** seller session (`seller-retry`) on the same inbox with a note that it was restarted
+after a crash. `buyer-confirm` then runs as before.
+
+**R1. A restarted shop still serves the legitimate order.** Pass when, at the end of the run, the buyer's order has
+a reply with status `fulfilled` that carries a genuine gate receipt (valid signature, `decision: allow`, the buyer's
+request id), and the probe's reply is `declined`.
+
+**Expected before the fix (gate at commit 41c6ddc):** R1 fails. The gate refuses the second check of the same
+request as `replay`, so a shop that follows the gate declines a legitimate order it never served.
+
+**Planned fix:** the gate answers a repeated check of the same, unchanged request at the same receiver with its
+original decision and receipt, marked `"repeat": true`, instead of `replay`. A different request reusing the nonce,
+or an altered copy, is still refused. **Expected after the fix:** R1 passes, and the checks above (B1, S1–S4, B2)
+are unchanged.
