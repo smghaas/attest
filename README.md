@@ -169,6 +169,16 @@ bench/run_llm_subscription.sh --smoke      # same, on a Claude subscription via 
 Every run writes its config, per-request decisions, per-episode costs, LLM transcripts and a
 summary to `bench/results/<run>/`.
 
+## Agent usability (HW9)
+
+Fresh Claude Code sessions use Attest from `AGENTS.md` alone (a buyer and a shop, through a shared drop-box), scored
+against checks registered before each run. Harness and evidence: `usability/`. What changed and why, with results:
+`docs/HW9.md`.
+
+```
+python usability/run_coldstart.py --run-id <id> [--crash-retry]   # needs the `claude` CLI
+```
+
 ## Documents
 
 credential, mandate and request are JSON objects signed with Ed25519. `id` is the SHA-256 of the

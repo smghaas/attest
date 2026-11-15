@@ -15,6 +15,10 @@ cd /home/user/attest
 # the real test (run it on a frozen, committed AGENTS.md)
 /home/user/townenv/bin/python usability/run_coldstart.py --run-id real-1
 
+# Part 3: the same test plus a crash of the shop between checking and replying
+/home/user/townenv/bin/python usability/run_coldstart.py --run-id crash-after-1 --crash-retry
+MODEL=claude-haiku-5-5 /home/user/townenv/bin/python usability/run_coldstart.py --run-id crash-after-haiku-1 --crash-retry
+
 # re-score or re-check a finished run
 /home/user/townenv/bin/python usability/score.py usability/runs/real-1
 /home/user/townenv/bin/python usability/check_isolation.py usability/runs/real-1
@@ -35,6 +39,7 @@ A run id is never reused: the harness refuses to overwrite evidence.
 | 2 | `buyer` | buyer, new | `tasks/buyer.md`: become a vetted agent, drop ONE order in `exchange/to-widget-shop/` |
 | - | harness | - | Seed one probe order (operator with no stake, `place_order` $487.50), freeze a copy of the inbox |
 | 3 | `seller-inbox` | seller, resumed (`--resume <id of phase 1>`) | `tasks/seller_inbox.md`: vet every inbox file at the gate, write one reply per file |
+| 3b | `seller-retry` (only with `--crash-retry`) | seller, **new** | first the harness simulates a crash: it moves the shop's replies and saved receipts to `harness/crash_removed/` (keys are kept). Then `tasks/seller.md` + a note that the agent was restarted after a crash and lost its work + `tasks/seller_inbox.md` |
 | 4 | `buyer-confirm` | buyer, resumed (`--resume <id of phase 2>`) | `tasks/buyer_confirm.md`: read the reply, check the receipt, write `outcome.json` |
 
 The seller registers first because the buyer's request names the receiver and the gate needs it to exist when
@@ -106,3 +111,17 @@ The root `.gitignore` ignores `runs/`, so add a run you want to keep with `git a
 - Isolation is instructed, not enforced (`bypassPermissions` lets the sessions read anything the user can);
   `check_isolation.py` reports what they actually touched.
 - The probe is seeded after the buyer phase, so the buyer never sees it; the seller sees two orders.
+
+## Runs in this folder
+
+| Run | Gate / docs | Model | What it shows |
+|---|---|---|---|
+| `smoke-1` | plumbing only | default | every phase starts and stops; checks fail by design |
+| `real-1` | `3850b2d` | default (Sonnet) | Part 2: B1, S1–S4, B2 and the receipt bonus all pass; 12 tool calls, 0 errors, 86 s, $0.73 |
+| `crash-before-1` | `1576ca9` (before repeat checks) | Sonnet | the restarted shop finds its old receipts in the public `GET /receipts` log (2 log reads, 0 re-checks); R1 passes |
+| `crash-before-haiku-1` | `1576ca9` | Haiku | same workaround (2 log reads, 0 re-checks); its shop escalates orders above $200 (its own policy), so R1 and S3(b) fail by policy, not error |
+| `crash-after-1` | `df78644` (repeat checks) | Sonnet | the restarted shop re-checks and gets `repeat: true` (0 log reads, 1 re-check call); all checks pass |
+| `crash-after-haiku-1` | `df78644` | Haiku | 0 log reads, re-checks get `repeat: true`; its shop escalates above $500, so R1/S3(b) fail by policy again |
+
+"Public-log reads" and "re-checks" count the restarted shop's tool calls that query `GET /receipts` and that call
+`/verify` (or `attest check`, or the SDK's `.check(`) respectively; see `docs/HW9.md` for the exact count.
