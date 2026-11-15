@@ -115,3 +115,12 @@ request as `replay`, so a shop that follows the gate declines a legitimate order
 original decision and receipt, marked `"repeat": true`, instead of `replay`. A different request reusing the nonce,
 or an altered copy, is still refused. **Expected after the fix:** R1 passes, and the checks above (B1, S1–S4, B2)
 are unchanged.
+
+## Confirmation on the final, merged documentation (added before these runs)
+
+`main` at `b3d5a5c` merges Sam's signed checks: on a sandbox the receiver must sign every `/verify` call
+(`X-Attest-Receiver-Sig`), otherwise HTTP 401. That is new work for a shop agent that learns Attest only from
+`AGENTS.md`. Two runs on the merged code and its `AGENTS.md`, scored with the same checks:
+- `final-1`: the Part 2 test. Success = B1, S1, S2, S3, S4 and B2 all pass, as for `real-1`.
+- `final-crash-1`: the Part 3 test (`--crash-retry`). Success = the same checks plus R1.
+Counted as well: HTTP 401 answers from the gate (unsigned checks), from the gate's access log.
