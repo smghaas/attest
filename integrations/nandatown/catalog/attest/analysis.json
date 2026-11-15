@@ -1,0 +1,184 @@
+{
+  "title": "Attest",
+  "version": "0.3",
+  "servers": [],
+  "auth_schemes": {},
+  "operations": [
+    {
+      "operation_id": "block_block_get",
+      "method": "GET",
+      "path": "/block",
+      "summary": "Block",
+      "effect": "read"
+    },
+    {
+      "operation_id": "claims_claims_get",
+      "method": "GET",
+      "path": "/claims",
+      "summary": "Claims",
+      "effect": "read"
+    },
+    {
+      "operation_id": "file_claim_claims_post",
+      "method": "POST",
+      "path": "/claims",
+      "summary": "File Claim",
+      "effect": "write"
+    },
+    {
+      "operation_id": "dispute_claims__claim_id__dispute_post",
+      "method": "POST",
+      "path": "/claims/{claim_id}/dispute",
+      "summary": "Dispute",
+      "effect": "write"
+    },
+    {
+      "operation_id": "resolve_claims__claim_id__resolve_post",
+      "method": "POST",
+      "path": "/claims/{claim_id}/resolve",
+      "summary": "Resolve",
+      "effect": "write"
+    },
+    {
+      "operation_id": "demo_agents_demo_agents_get",
+      "method": "GET",
+      "path": "/demo/agents",
+      "summary": "Demo Agents",
+      "effect": "read"
+    },
+    {
+      "operation_id": "demo_try_demo_try_post",
+      "method": "POST",
+      "path": "/demo/try",
+      "summary": "Demo Try",
+      "effect": "write"
+    },
+    {
+      "operation_id": "inbox_post_inbox__receiver__post",
+      "method": "POST",
+      "path": "/inbox/{receiver}",
+      "summary": "Inbox Post",
+      "effect": "write"
+    },
+    {
+      "operation_id": "inbox_get_inbox__receiver__get__rid__get",
+      "method": "GET",
+      "path": "/inbox/{receiver}/get/{rid}",
+      "summary": "Inbox Get",
+      "effect": "read"
+    },
+    {
+      "operation_id": "inbox_next_inbox__receiver__next_get",
+      "method": "GET",
+      "path": "/inbox/{receiver}/next",
+      "summary": "Inbox Next",
+      "effect": "read"
+    },
+    {
+      "operation_id": "inbox_reply_inbox__receiver__reply_post",
+      "method": "POST",
+      "path": "/inbox/{receiver}/reply",
+      "summary": "Inbox Reply",
+      "effect": "write"
+    },
+    {
+      "operation_id": "info_info_get",
+      "method": "GET",
+      "path": "/info",
+      "summary": "Info",
+      "effect": "read"
+    },
+    {
+      "operation_id": "pubkey_pubkey_get",
+      "method": "GET",
+      "path": "/pubkey",
+      "summary": "Pubkey",
+      "effect": "read"
+    },
+    {
+      "operation_id": "receipts_receipts_get",
+      "method": "GET",
+      "path": "/receipts",
+      "summary": "Receipts",
+      "effect": "read"
+    },
+    {
+      "operation_id": "receivers_receivers_get",
+      "method": "GET",
+      "path": "/receivers",
+      "summary": "Receivers",
+      "effect": "read"
+    },
+    {
+      "operation_id": "register_receiver_register_receiver_post",
+      "method": "POST",
+      "path": "/register/receiver",
+      "summary": "Register Receiver",
+      "effect": "write"
+    },
+    {
+      "operation_id": "replies_replies__agent_pub__get",
+      "method": "GET",
+      "path": "/replies/{agent_pub}",
+      "summary": "Replies",
+      "effect": "read"
+    },
+    {
+      "operation_id": "revoke_revoke_post",
+      "method": "POST",
+      "path": "/revoke",
+      "summary": "Revoke",
+      "effect": "write"
+    },
+    {
+      "operation_id": "faucet_sandbox_faucet_post",
+      "method": "POST",
+      "path": "/sandbox/faucet",
+      "summary": "Faucet",
+      "effect": "write"
+    },
+    {
+      "operation_id": "stake_stake_post",
+      "method": "POST",
+      "path": "/stake",
+      "summary": "Stake",
+      "effect": "write"
+    },
+    {
+      "operation_id": "stakes_stakes_get",
+      "method": "GET",
+      "path": "/stakes",
+      "summary": "Stakes",
+      "effect": "read"
+    },
+    {
+      "operation_id": "stats_stats_get",
+      "method": "GET",
+      "path": "/stats",
+      "summary": "Stats",
+      "effect": "read"
+    },
+    {
+      "operation_id": "verify_verify__receiver__post",
+      "method": "POST",
+      "path": "/verify/{receiver}",
+      "summary": "Verify",
+      "effect": "write"
+    }
+  ],
+  "unknowns": [
+    "no servers declared; the live endpoint is unknown",
+    "no security schemes declared; how requests authenticate is unknown",
+    "POST /claims is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /claims/{claim_id}/dispute is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /claims/{claim_id}/resolve is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /demo/try is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /inbox/{receiver} is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /inbox/{receiver}/reply is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /register/receiver is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /revoke is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /sandbox/faucet is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /stake is declared a write; its real side effects, costs, and permission rules are untested claims",
+    "POST /verify/{receiver} is declared a write; its real side effects, costs, and permission rules are untested claims"
+  ]
+}
