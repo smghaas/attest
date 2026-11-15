@@ -82,9 +82,15 @@ class Attest:
         return bool(receipt.get("gate") == gate and crypto.id_ok(receipt)
                     and crypto.verify(gate, crypto.body_of(receipt), receipt.get("sig", "")))
 
-    def check(self, receiver: str, envelope: dict) -> Decision:
-        r = self.http.post(f"/verify/{receiver}", json=envelope)
-        r.raise_for_status()
+    def check(self, receiver: str, envelope: dict, receiver_key: dict | None = None) -> Decision:
+        """receiver_key: your receiver identity ({name, priv, pub}). A sandbox gate requires it: only the
+        receiver may ask about requests sent to it."""
+        headers = {}
+        if receiver_key:
+            rid = (envelope.get("request") or {}).get("id")
+            headers["X-Attest-Receiver-Sig"] = crypto.sign(receiver_key["priv"], {"verify": rid, "receiver": receiver})
+        r = self.http.post(f"/verify/{receiver}", json=envelope, headers=headers)
+        _raise(r)
         out = r.json()
         rec = out["receipt"]
         return Decision(out["decision"], out["reason"], out.get("detail", ""), rec,

@@ -71,7 +71,7 @@ def sandbox_gate(tmp_path, monkeypatch):
 
 def _run(tmp_path, monkeypatch, profile, agent="proc", tamper=False,
          journal=True, stock_buyer=False, action=None, amount=None, signer=None,
-         solve_pow=False, discover=False, identity=None, receiver=None):
+         solve_pow=False, discover=False, identity=None, receiver=None, receiver_key=None):
     monkeypatch.setenv("ATTEST_TAMPER", "1" if tamper else "0")
     monkeypatch.setenv("ATTEST_JOURNAL", "1" if journal else "0")
     if agent is None or identity is not None:
@@ -80,7 +80,8 @@ def _run(tmp_path, monkeypatch, profile, agent="proc", tamper=False,
                        ("ATTEST_SIGNER", signer),
                        ("ATTEST_SOLVE_POW", "1" if solve_pow else None),
                        ("ATTEST_DISCOVER", "1" if discover else None),
-                       ("ATTEST_IDENTITY", identity), ("ATTEST_RECEIVER", receiver)):
+                       ("ATTEST_IDENTITY", identity), ("ATTEST_RECEIVER", receiver),
+                       ("ATTEST_RECEIVER_KEY", receiver_key)):
         if value is None:
             monkeypatch.delenv(key, raising=False)
         else:
@@ -296,8 +297,9 @@ def test_self_registered_operator_is_served_through_town(sandbox_gate, tmp_path,
     sdk.register_receiver(shop, min_stake=5000, escalate_above={"place_order": 1500})
     identity.new_agent("wb-procurement", op, "buys widgets", ["request_quote", "place_order"], 2000)
     me = str(tmp_path / "ids" / "wb-procurement.json")
+    shop_key = str(tmp_path / "ids" / "town-seller.json")       # the seller signs its own checks
 
-    quote = _run(tmp_path, monkeypatch, "quote-clean", identity=me, receiver="town-seller",
+    quote = _run(tmp_path, monkeypatch, "quote-clean", identity=me, receiver="town-seller", receiver_key=shop_key,
                  discover=True)
     assert _seller(quote)[0]["attest_decision"] == "refuse"            # no envelope yet
     assert _decision(quote, 1) == ("allow", "ok", True)
@@ -308,6 +310,6 @@ def test_self_registered_operator_is_served_through_town(sandbox_gate, tmp_path,
     # Discovery takes two requests (plain, then with an envelope), so Town's own correct stage
     # does not pass here; the buyer's note above is the check.
 
-    big = _run(tmp_path, monkeypatch, "quote-clean", identity=me, receiver="town-seller",
+    big = _run(tmp_path, monkeypatch, "quote-clean", identity=me, receiver="town-seller", receiver_key=shop_key,
                action="place_order", amount=1800)
     assert _decision(big) == ("escalate", "policy_escalation", False)   # its own policy

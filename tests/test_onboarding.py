@@ -55,7 +55,7 @@ def test_an_operator_that_never_took_test_stake_is_not_trusted(sandbox):
     op = identity.new_operator("Ghost")            # never calls the faucet
     agent = identity.new_agent("ghost-bot", op, "x", ["place_order"], 100)
     from attest import build_request
-    d = at.check("strict-desk", build_request(agent, "strict-desk", "place_order", 50))
+    d = at.check("strict-desk", build_request(agent, "strict-desk", "place_order", 50), identity.load("strict-desk"))
     assert d.decision == "refuse" and d.receipt_verified
 
 
@@ -162,3 +162,23 @@ def test_any_action_name_works_and_counts_as_spending_unless_read_only(sandbox, 
     capsys.readouterr()
     assert run("request", "ghost-bot", "airline-desk", "book_flight", "50", "--check") == 2
     assert "unstaked_money_action" in capsys.readouterr().out
+
+
+def test_only_the_receiver_can_ask_about_requests_sent_to_it(sandbox):
+    """A check spends the agent's budget, so a stranger must not run checks in a receiver's name."""
+    from attest import build_request
+    c, at = sandbox
+    run("operator", "create", "Pied")
+    run("receiver", "create", "pied-desk")
+    run("agent", "create", "pied-bot", "--operator", "Pied", "--actions", "place_order", "--max", "1000")
+    me, desk = identity.load("pied-bot"), identity.load("pied-desk")
+    env = build_request(me, "pied-desk", "place_order", 600)
+    assert c.post("/verify/pied-desk", json=env).status_code == 401                 # no signature
+    stranger = identity.new_receiver("not-pied")
+    with pytest.raises(Exception, match="only pied-desk"):
+        at.check("pied-desk", env, stranger)                                      # wrong key
+    assert at.check("pied-desk", env, desk).allowed                               # the receiver itself
+    other = build_request(me, "pied-desk", "place_order", 600)
+    sig = crypto.sign(desk["priv"], {"verify": env["request"]["id"], "receiver": "pied-desk"})
+    r = c.post("/verify/pied-desk", json=other, headers={"X-Attest-Receiver-Sig": sig})
+    assert r.status_code == 401                                                   # signature reused on another request

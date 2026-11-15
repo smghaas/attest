@@ -11,6 +11,15 @@ from . import identity
 from .client import Attest, build_request
 
 
+def _my_receiver(name: str) -> dict | None:
+    """The local receiver identity with this name, used to sign checks (a sandbox requires it)."""
+    try:
+        d = identity.load(name)
+    except FileNotFoundError:
+        return None
+    return d if d.get("kind") == "receiver" else None
+
+
 def _print(obj):
     print(json.dumps(obj, indent=2))
 
@@ -143,7 +152,7 @@ def main(argv=None) -> int:
             if not a.check:
                 _print(env)
                 return 0
-            d = at.check(a.receiver, env)
+            d = at.check(a.receiver, env, _my_receiver(a.receiver))
             if a.json:
                 _print(d.raw)
             else:
@@ -175,7 +184,7 @@ def main(argv=None) -> int:
                 ["id", "receiver", "action", "amount", "decision", "reason"])
         elif a.cmd == "check":
             env = json.load(sys.stdin if a.envelope == "-" else open(a.envelope))
-            d = at.check(a.receiver, env)
+            d = at.check(a.receiver, env, _my_receiver(a.receiver))
             if a.json:
                 _print(d.raw)
             else:

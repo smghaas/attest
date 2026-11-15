@@ -120,9 +120,19 @@ const AttestKeys = (() => {
     return { credential: a.credential, chain: a.chain, request: req };
   }
 
+  // Only the receiver may ask about requests sent to it: it signs {verify: request id, receiver}.
   async function check(agentName, receiver, action, amount) {
+    const rc = get(receiver);
+    if (!rc || rc.kind !== "receiver")
+      throw new Error("Only " + receiver + " can check requests sent to it, and its key is not in this browser. " +
+                      "Pick a receiver you created here (step 3).");
     const env = await envelope(agentName, receiver, action, amount, "sent from the browser");
-    return { envelope: env, result: await post("/verify/" + encodeURIComponent(receiver), env) };
+    const sig = await sign(rc, { verify: env.request.id, receiver });
+    const r = await fetch("/verify/" + encodeURIComponent(receiver), { method: "POST",
+      headers: { "content-type": "application/json", "X-Attest-Receiver-Sig": sig }, body: JSON.stringify(env) });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(out.detail || ("the gate said " + r.status));
+    return { envelope: env, result: out };
   }
 
   // ---- the ledger -------------------------------------------------------------------------------

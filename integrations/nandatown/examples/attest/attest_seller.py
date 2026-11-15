@@ -13,6 +13,8 @@ Environment, besides Town's TOWN_URL RUN_ID NAME TOKEN STATE_DIR DEADLINE:
     ATTEST_PUBLIC_URL gate URL to tell other agents, when it differs from ATTEST_URL
                       (default ATTEST_URL)
     ATTEST_RECEIVER   receiver name the gate knows this seller as (default supplierco)
+    ATTEST_RECEIVER_KEY  this seller's receiver identity file (as the attest CLI writes it). The seller
+                      signs each check with it; a sandbox gate refuses unsigned checks.
     ATTEST_JOURNAL    "0" turns off the journal: the negative control
 
 A buyer that is turned away is told how to be served: every quote_refusal carries
@@ -27,6 +29,7 @@ request already decided is answered from the record, never sent to the gate agai
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 import time
@@ -39,6 +42,7 @@ from nandatown.participants.base import Journal, run_loop
 ATTEST_URL = os.environ.get("ATTEST_URL", "http://127.0.0.1:8402")
 PUBLIC_URL = os.environ.get("ATTEST_PUBLIC_URL", ATTEST_URL).rstrip("/")
 RECEIVER = os.environ.get("ATTEST_RECEIVER", "supplierco")
+RECEIVER_KEY = os.environ.get("ATTEST_RECEIVER_KEY")
 USE_JOURNAL = os.environ.get("ATTEST_JOURNAL", "1") != "0"
 GUIDE = "https://github.com/smghaas/attest/blob/main/AGENTS.md"
 
@@ -66,11 +70,22 @@ def how_to_get_served(http: httpx.Client) -> dict:
     }
 
 
+def _receiver_sig(envelope: dict) -> dict:
+    """Only the receiver may ask about requests sent to it: sign {verify: request id, receiver}."""
+    if not RECEIVER_KEY:
+        return {}
+    sys.path.insert(0, os.environ.get("ATTEST_HOME", ""))
+    from gate import crypto
+    key = json.loads(open(RECEIVER_KEY).read())
+    rid = (envelope.get("request") or {}).get("id")
+    return {"X-Attest-Receiver-Sig": crypto.sign(key["priv"], {"verify": rid, "receiver": RECEIVER})}
+
+
 def ask_gate(http: httpx.Client, envelope: dict | None) -> dict:
     if not isinstance(envelope, dict):
         return {"decision": "refuse", "reason": "no KYA envelope in the request",
                 "receipt": None}
-    r = http.post(f"{ATTEST_URL}/verify/{RECEIVER}", json=envelope)
+    r = http.post(f"{ATTEST_URL}/verify/{RECEIVER}", json=envelope, headers=_receiver_sig(envelope))
     r.raise_for_status()
     return r.json()
 

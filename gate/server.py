@@ -3,6 +3,7 @@
 Gate endpoints (the product):
   GET  /pubkey                       the gate's signing key, so receipts can be checked
   POST /verify/{receiver}            body = envelope -> decision + signed receipt
+                                     header X-Attest-Receiver-Sig (required on a sandbox): see verify()
   POST /revoke                       {document, by, sig, reason}   by must be the document's signer
   GET  /receipts?limit=20            recent signed receipts
   GET  /receivers                    registered receivers and their stake thresholds
@@ -46,7 +47,7 @@ import time
 from collections import Counter, defaultdict, deque
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -222,8 +223,25 @@ def resolve(claim_id: str, r: Resolve):
     return _ok(gate.resolve(claim_id, r.uphold, r.sig))
 
 
+def receiver_sig_required() -> bool:
+    """On a public sandbox only the receiver may ask about requests sent to it: a check spends the
+    agent's budget, so a stranger must not be able to run checks in a receiver's name."""
+    return sandbox() or os.environ.get("ATTEST_REQUIRE_RECEIVER_SIG") == "1"
+
+
 @app.post("/verify/{receiver}")
-def verify(receiver: str, envelope: dict):
+def verify(receiver: str, envelope: dict, x_attest_receiver_sig: str | None = Header(default=None)):
+    """X-Attest-Receiver-Sig: the receiver's signature over {"verify": <request id>, "receiver": <name>}.
+    The request id is single-use, so a signature cannot be replayed for another request."""
+    with gate.lock:
+        rcv = gate.state["receivers"].get(receiver)
+    if rcv and rcv.get("pubkey") and (x_attest_receiver_sig or receiver_sig_required()):
+        from . import crypto
+        rid = ((envelope or {}).get("request") or {}).get("id")
+        body = {"verify": rid, "receiver": receiver}
+        if not (x_attest_receiver_sig and rid and crypto.verify(rcv["pubkey"], body, x_attest_receiver_sig)):
+            raise HTTPException(401, f"only {receiver} can ask about requests sent to it: sign "
+                                     '{"verify": <request id>, "receiver": <name>} and send it as X-Attest-Receiver-Sig')
     return gate.verify(receiver, envelope)
 
 
