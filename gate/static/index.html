@@ -15,6 +15,7 @@ header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-con
 h1{font-size:26px;margin:0}h2{font-size:15px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
 .sub{color:var(--mute);font-size:13px}.mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
 .grid{display:grid;gap:14px}.tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px}
+.hero{margin-bottom:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
 .tile b{display:block;font-size:28px;line-height:1.1}.tile span{color:var(--mute);font-size:13px}
 .two{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
@@ -34,6 +35,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .empty{color:var(--mute);padding:8px}
 pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
 h3{font-size:15px;margin:0 0 4px}
+.hero .big1{font-size:22px;font-weight:700;margin:0 0 10px;line-height:1.3}
+.three{margin:0 0 14px;padding-left:20px}.three li{margin:4px 0}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:8px;padding:10px 16px}
+.btn.ghost{background:var(--card);color:var(--accent);border:1px solid var(--line)}
+details.hood>summary{cursor:pointer;font-weight:700;font-size:15px;color:var(--mute)}
+.plain{font-size:17px;margin:6px 0 0}
 .step{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg)}
 .step select,.step input{background:var(--card)}
 .presets{display:flex;flex-wrap:wrap;gap:6px}.presets button{width:auto;margin:0;padding:4px 10px;background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:500}
@@ -46,51 +54,62 @@ button:disabled{opacity:.6;cursor:wait}
 <body>
 <main>
 <header>
-  <div><h1 style="display:flex;align-items:center;gap:10px"><img src="/static/logo.svg" alt="" width="34" height="34">Attest</h1><div class="sub">Know your agent before it acts. Every decision below carries a receipt signed by the gate.</div></div>
+  <div><h1 style="display:flex;align-items:center;gap:10px"><img src="/static/logo.svg" alt="" width="34" height="34">Attest</h1><div class="sub">ID checks for AI agents</div></div>
   <div class="sub"><span id="up">connecting…</span> · gate key <span class="mono" id="key">…</span></div>
 </header>
 
-<div id="banner" class="card" hidden style="border-color:var(--warn);background:var(--warnbg);color:var(--warn);margin-bottom:14px"></div>
-<div class="grid tiles" id="tiles"></div>
+<section class="card hero">
+  <p class="big1">Before your AI agent does business with another AI agent, Attest checks its ID.</p>
+  <ul class="three">
+    <li><b>Who is this robot?</b> It must carry an ID signed by a real company.</li>
+    <li><b>Who answers for it?</b> That company has put money down. If its robot cheats, it loses some.</li>
+    <li><b>Is it allowed to do this?</b> The company said what it may do, and up to how much.</li>
+  </ul>
+  <div class="cta"><a class="btn" href="/static/town/">See it work in NANDA Town</a><a class="btn ghost" href="#mine">Try it yourself</a></div>
+  <p class="sub" id="banner" hidden style="margin:12px 0 0"></p>
+</section>
 
 <section class="card" id="mine" style="margin-bottom:14px" hidden>
-  <h2>Use Attest in your browser</h2>
-  <p class="sub" style="margin:0 0 10px">No install, no demo agents. Keys are made and kept in this browser; the gate only sees signatures. Go in order, or skip to step 4 with an existing receiver.</p>
+  <h2>Try it yourself</h2>
+  <p class="sub" style="margin:0 0 10px">Four steps, about a minute. You play both sides: a company with a robot, and a shop that checks IDs. Nothing to install; the money here is pretend.</p>
   <div class="grid two">
-    <div class="step"><h3>1. Your company</h3>
+    <div class="step"><h3>1. Make your company</h3>
       <label for="m-op">Company name</label><input id="m-op" placeholder="e.g. Globex" autocomplete="off">
-      <button id="m-op-go">Create company (gets test stake)</button><div class="msg" id="m-op-msg"></div></div>
-    <div class="step"><h3>2. Your agent</h3>
-      <div class="row"><div><label for="m-ag">Agent name</label><input id="m-ag" placeholder="e.g. globex-buyer" autocomplete="off"></div>
-        <div><label for="m-iss">Issued by</label><select id="m-iss"></select></div></div>
+      <button id="m-op-go">Create company</button><div class="msg" id="m-op-msg"></div></div>
+    <div class="step"><h3>2. Give it a robot (an AI agent)</h3>
+      <div class="row"><div><label for="m-ag">Robot name</label><input id="m-ag" placeholder="e.g. globex-buyer" autocomplete="off"></div>
+        <div><label for="m-iss">Belongs to</label><select id="m-iss"></select></div></div>
       <label>Use case</label>
       <div class="presets"><button type="button" data-p="procurement">Procurement</button><button type="button" data-p="travel">Travel</button><button type="button" data-p="payments">Payments</button><button type="button" data-p="data">Data access</button></div>
       <label for="m-acts">May do (any action names, comma separated)</label><input id="m-acts" value="request_quote, place_order" autocomplete="off">
-      <label for="m-max">Up to (USD)</label><input id="m-max" type="number" min="0" value="10000">
-      <button id="m-ag-go">Create agent</button><div class="msg" id="m-ag-msg"></div></div>
-    <div class="step"><h3>3. Who checks (receiver)</h3>
-      <label for="m-rc">Receiver name</label><input id="m-rc" placeholder="e.g. my-desk" autocomplete="off">
-      <div class="row"><div><label for="m-min">Min stake behind an agent</label><input id="m-min" type="number" min="0" value="5000"></div>
+      <label for="m-max">Never more than (USD per request)</label><input id="m-max" type="number" min="0" value="10000">
+      <button id="m-ag-go">Create robot</button><div class="msg" id="m-ag-msg"></div></div>
+    <div class="step"><h3>3. Make a shop that checks IDs</h3>
+      <label for="m-rc">Shop name</label><input id="m-rc" placeholder="e.g. my-desk" autocomplete="off">
+      <div class="row"><div><label for="m-min">Company must have put down at least</label><input id="m-min" type="number" min="0" value="5000"></div>
         <div><label for="m-esc">Ask a human for anything above</label><input id="m-esc" type="number" min="0" value="8000"></div></div>
       <label for="m-ro">Actions that move no value here (anyone may do them)</label><input id="m-ro" placeholder="e.g. check_availability" autocomplete="off">
       <label for="m-esc-for">That limit applies to</label><select id="m-esc-for"><option value="*">every action (quotes and orders)</option><option value="place_order">orders only</option></select>
-      <button id="m-rc-go">Create receiver</button><div class="msg" id="m-rc-msg"></div></div>
-    <div class="step"><h3>4. Send a request, get a decision</h3>
-      <div class="row"><div><label for="m-from">From agent</label><select id="m-from"></select></div>
-        <div><label for="m-to">To receiver</label><select id="m-to"></select></div></div>
+      <button id="m-rc-go">Create shop</button><div class="msg" id="m-rc-msg"></div></div>
+    <div class="step"><h3>4. Your robot asks the shop</h3>
+      <div class="row"><div><label for="m-from">Your robot</label><select id="m-from"></select></div>
+        <div><label for="m-to">Shop</label><select id="m-to"></select></div></div>
       <div class="row"><div><label for="m-act">Action</label><input id="m-act" list="m-act-list" value="request_quote" autocomplete="off"><datalist id="m-act-list"></datalist></div>
         <div><label for="m-amt">Amount (USD)</label><input id="m-amt" type="number" min="0" value="2000"></div></div>
-      <button id="m-ask">Ask the gate</button><div id="m-out"></div></div>
+      <button id="m-ask">Send it</button><div id="m-out"></div></div>
   </div>
-  <div class="step" id="m-ledger" hidden style="margin-top:14px"><h3>5. Your agents' track record (on the ledger)</h3>
-    <p class="sub" style="margin:0 0 8px">After the gate allows a request, press "Deal done" or "Dispute" under the decision. The agent and the receiver both sign, and it is added to the agent's history. Anyone can read it; nobody can edit it.</p>
+  <div class="step" id="m-ledger" hidden style="margin-top:14px"><h3>5. Your robot's track record</h3>
+    <p class="sub" style="margin:0 0 8px">Every deal your robot finishes is added to its permanent record, signed by both sides. Other shops can read it before trusting your robot. Nobody can edit it, not even us.</p>
     <div id="m-track"></div><div class="msg" id="m-l-msg"></div></div>
-  <h3 style="margin-top:16px">Your keys (in this browser)</h3>
+  <details style="margin-top:16px"><summary class="sub" style="cursor:pointer">Your keys (kept in this browser): download, import, delete</summary>
   <div id="m-ids"></div>
   <div class="row" style="max-width:520px"><button id="m-dl">Download all as JSON</button><button id="m-forget" class="ghost">Forget all keys</button></div>
-  <label for="m-imp" style="margin-top:10px">Import keys made with the <span class="mono">attest</span> CLI (files from ~/.attest)</label><input id="m-imp" type="file" accept=".json" multiple>
+  <label for="m-imp" style="margin-top:10px">Import keys made with the <span class="mono">attest</span> CLI (files from ~/.attest)</label><input id="m-imp" type="file" accept=".json" multiple></details>
 </section>
 
+<details class="card hood" id="hood">
+<summary>Under the hood (for engineers)</summary>
+<div class="grid tiles" id="tiles" style="margin-top:14px"></div>
 <div class="grid two">
   <section class="card">
     <h2>Try the demo agents</h2>
@@ -137,6 +156,8 @@ button:disabled{opacity:.6;cursor:wait}
   <pre class="mono" id="cmds"></pre>
 </section>
 
+</details>
+
 <p class="sub" style="margin-top:18px">For agents: <span class="mono">GET /openapi.json</span> · <span class="mono">POST /verify/{receiver}</span> · MCP: <span class="mono">python -m attest.mcp_server</span> · CLI: <span class="mono">attest --help</span></p>
 </main>
 <script src="/static/keys.js"></script>
@@ -155,7 +176,7 @@ async function refresh(){
     const b=st.by_decision||{};
     $("#tiles").innerHTML=[["Decisions",st.decisions],["Allowed",b.allow||0],["Refused",b.refuse||0],["Escalated",b.escalate||0],["Unknown",b.unknown||0],["Staked (USD)",Math.round(st.staked_total).toLocaleString()]]
       .map(t=>`<div class="card tile"><b>${t[1]}</b><span>${t[0]}</span></div>`).join("");
-    $("#feed").innerHTML=tbl(rc.slice().reverse(),[["Decision",r=>pill(r.decision)],["Action",r=>esc(r.action)+(r.amount!=null?" $"+Number(r.amount).toLocaleString():"")+`<div class="sub">to ${esc(r.receiver)}</div>`],["Why",r=>esc(r.reason)],["Receipt",r=>`<span class="mono">${esc(r.id.slice(0,8))}</span>`]]);
+    $("#feed").innerHTML=tbl(rc.slice().reverse(),[["Decision",r=>pill(r.decision)],["Action",r=>esc(r.action)+(r.amount!=null?" $"+Number(r.amount).toLocaleString():"")+`<div class="sub">to ${esc(r.receiver)}</div>`],["Why",r=>esc(plainOf(r)[0])],["Receipt",r=>`<span class="mono">${esc(r.id.slice(0,8))}</span>`]]);
     $("#stakes").innerHTML=tbl(Object.entries(sk).map(([k,v])=>({k,...v})),[["Operator",r=>esc(r.name)],["Stake",r=>Number(r.stake).toLocaleString()],["Status",r=>r.suspended?pill("refuse").replace("REFUSE","SUSPENDED"):pill("allow").replace("ALLOW","ACTIVE")],["Slashed",r=>(r.slashes||[]).length]]);
     $("#rcvs").innerHTML=tbl(Object.entries(rv).map(([k,v])=>({k,...v})),[["Receiver",r=>esc(r.k)],["Min stake",r=>Number(r.min_stake||0).toLocaleString()],["Policy",r=>`<span class="mono">${esc(JSON.stringify(r.policy||{}))}</span>`]]);
     $("#claims").innerHTML=tbl(cl,[["Issuer",r=>esc(r.issuer_name)],["Status",r=>esc(r.status)],["Breach",r=>esc(r.breach)]]);
@@ -172,7 +193,7 @@ async function refresh(){
     }catch(e){}
     if(st.sandbox&&!$("#banner").dataset.set){
       $("#banner").dataset.set=1;$("#banner").hidden=false;
-      $("#banner").innerHTML="<b>Public sandbox.</b> Stake here is free test credit, not money. Every decision is public. Decisions, signatures and receipts are real.";
+      $("#banner").innerHTML="Practice mode: the money here is pretend, and everything you do is public. The checks themselves are real.";
       $("#start").hidden=false;$("#mine").hidden=false;
       $("#cmds").textContent=["export ATTEST_URL="+location.origin,"attest operator create MyCompany          # free test stake","attest receiver create my-desk --min-stake 5000 --escalate place_order=8000","attest agent create my-buyer --operator MyCompany --actions request_quote,place_order --max 10000","attest request my-buyer my-desk place_order 2000 --check"].join("\n");
     }
@@ -204,6 +225,29 @@ $("#go2").onclick=async()=>{let env;try{env=JSON.parse($("#env").value)}catch(e)
   const r=await post("/verify/"+encodeURIComponent($("#rcv2").value),env);if(r)render(r)};
 
 
+
+// What each gate answer means, in plain words.
+const PLAIN={
+  ok:["Yes. Real company, money behind it, and this is within what it may do.","good"],
+  policy_escalation:["Not on its own. This is above the shop's limit for acting without a person, so a human must approve.","wait"],
+  over_limit:["No. That is more than its company allows it to spend in one go.","bad"],
+  cumulative_over_limit:["No. Added to what it already spent, this goes over its company's total limit.","bad"],
+  issuer_exposure_over_stake:["No. Its company's robots have already spent more than the money the company put down can cover.","bad"],
+  attenuation_violation:["No. A helper robot can never get more power than the robot that made it.","bad"],
+  out_of_scope:["No. Its company never allowed it to do this kind of thing.","bad"],
+  unstaked_money_action:["No. No company has put money behind this robot, so it may only look, not buy.","bad"],
+  pow_required:["Only looking is allowed: no company stands behind this robot. It must solve a small puzzle first.","wait"],
+  pow_ok:["Puzzle solved. It may see public prices, nothing more.","wait"],
+  credential_revoked:["No. Its company cancelled its ID.","bad"],mandate_revoked:["No. Its permission was cancelled.","bad"],
+  credential_expired:["No. Its ID has expired.","bad"],mandate_expired:["No. Its permission has expired.","bad"],
+  replay:["No. This exact request was already used once. Copies don't count.","bad"],
+  bad_request_signature:["No. The request was not really signed by this robot (forged or changed).","bad"],
+  bad_credential_signature:["No. The ID is fake: the company never signed it.","bad"],
+  bad_mandate_signature:["No. The permission is fake: nobody valid signed it.","bad"],
+  wrong_receiver:["No. This request was meant for a different shop.","bad"],
+  unknown_receiver:["No. Attest doesn't know this shop.","bad"]
+};
+const plainOf=r=>PLAIN[r.reason]||[r.detail||r.reason,r.decision==="allow"?"good":"bad"];
 // ---------------- use Attest in your browser ----------------
 const K=AttestKeys;
 let ledgerOn=false;
@@ -232,7 +276,7 @@ async function busy(btn,fn){btn.disabled=true;try{await fn()}finally{btn.disable
 const clean=v=>v.trim();
 
 $("#m-op-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-op").value);if(!n)return say("#m-op-msg","Give your company a name.",false);
-  try{const r=await K.createOperator(n);say("#m-op-msg",`${n} created with ${Number(r.stake).toLocaleString()} test stake. Its key is in this browser.`);idsChanged();refresh()}catch(err){say("#m-op-msg",err.message,false)}});
+  try{const r=await K.createOperator(n);say("#m-op-msg",`${n} is set up and has put down $${Number(r.stake).toLocaleString()} (pretend money). Next: give it a robot.`);idsChanged();refresh()}catch(err){say("#m-op-msg",err.message,false)}});
 const PRESETS={procurement:["request_quote, place_order","","place_order"],travel:["search, check_availability, book_flight","check_availability","book_flight"],
   payments:["get_status, send_payment","","send_payment"],data:["read, export_data","","export_data"]};
 document.querySelectorAll(".presets button").forEach(b=>b.onclick=()=>{const [acts,ro,act]=PRESETS[b.dataset.p];$("#m-acts").value=acts;$("#m-ro").value=ro;$("#m-act").value=act});
@@ -243,16 +287,17 @@ $("#m-ag-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-ag").value)
   if(!n||!iss)return say("#m-ag-msg","Create a company first, then name the agent.",false);
   if(!acts.length)return say("#m-ag-msg","List at least one action it may do.",false);
   try{const sub=K.get(iss).kind==="agent";await K.createAgent(n,iss,"agent made in the browser",acts,Number($("#m-max").value)||0,sub?7:30);
-    say("#m-ag-msg",sub?`${n} is a sub-agent of ${iss}. If its limits are wider than its parent's, the gate will refuse it.`:`${n} now holds a credential and a mandate signed by ${iss}.`);idsChanged();$("#m-from").value=n}catch(err){say("#m-ag-msg",err.message,false)}});
+    say("#m-ag-msg",sub?`${n} is a helper robot made by ${iss}. If you gave it more power than ${iss} has, Attest will refuse it.`:`${n} now carries an ID from ${iss}: it may do ${acts.join(", ")}, never more than $${(Number($("#m-max").value)||0).toLocaleString()} at a time.`);idsChanged();$("#m-from").value=n}catch(err){say("#m-ag-msg",err.message,false)}});
 $("#m-rc-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-rc").value).toLowerCase();if(!n)return say("#m-rc-msg","Name the receiver (lowercase, dashes).",false);
-  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0,$("#m-esc-for").value,$("#m-ro").value.split(",").map(x=>x.trim()).filter(Boolean));say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
+  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0,$("#m-esc-for").value,$("#m-ro").value.split(",").map(x=>x.trim()).filter(Boolean));say("#m-rc-msg",`Shop ${n} is open and checks every robot with Attest. Now go to step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
 $("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("#m-to").value;
   if(!a){$("#m-out").innerHTML='<div class="msg err">Create an agent in step 2 first.</div>';return}
   try{const {envelope,result}=await K.check(a,to,$("#m-act").value.trim(),Number($("#m-amt").value)||0);
     const r=result,ch=r.challenge?`<div class="sub">Puzzle required: ${esc(r.challenge.bits)} bits of proof of work before an unstaked agent is heard.</div>`:"";
-    $("#m-out").innerHTML=`<div class="result"><div class="big">${pill(r.decision)} ${esc(r.reason)}</div>${r.detail?`<pre>${esc(r.detail)}</pre>`:""}${ch}
-      <div class="sub" style="margin-top:8px">Receipt <span class="mono">${esc(r.receipt.id.slice(0,16))}</span> signed by the gate.</div>
-      ${r.decision==="allow"&&ledgerOn?`<div class="row" style="margin-top:6px"><button id="m-done">Deal done (both sign)</button><button id="m-disp" class="ghost">Dispute</button></div><div class="msg" id="m-set-msg"></div>`:""}
+    const [say,tone]=plainOf(r);
+    $("#m-out").innerHTML=`<div class="result"><div class="big">${pill(r.decision)}</div><p class="plain">${esc(say)}</p><div class="sub">Technical: ${esc(r.reason)}${r.detail?" · "+esc(r.detail):""}</div>
+      <div class="sub" style="margin-top:4px">Attest signed this answer (slip <span class="mono">${esc(r.receipt.id.slice(0,10))}</span>), so nobody can fake it later.</div>
+      ${r.decision==="allow"&&ledgerOn?`<p class="plain" style="margin-top:12px">Did the deal go well? Both sides sign the answer and it goes on your robot's permanent record.</p><div class="row"><button id="m-done">Yes, deal done</button><button id="m-disp" class="ghost">No, dispute it</button></div><div class="msg" id="m-set-msg"></div>`:""}
       <button class="ghost" style="color:var(--accent);width:auto;padding:4px 12px" id="m-copy">Copy the signed envelope (to send to another agent)</button></div>`;
     const settle=status=>async ev=>{for(const b of ["#m-done","#m-disp"])$(b).disabled=true;say("#m-set-msg","Signing and adding to the ledger…");
       try{const out=await K.settle(a,to,envelope.request.id,envelope.request.amount,status);

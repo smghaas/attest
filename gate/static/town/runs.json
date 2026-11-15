@@ -1,0 +1,290 @@
+[
+ {
+  "slug": "stock",
+  "title": "A robot with no ID",
+  "story": "An ordinary NANDA Town buyer asks the shop for a price. It has no ID. Attest says no, and the shop tells it where to get one.",
+  "run_id": "run-b153607cc13f",
+  "town_stages": {
+   "accepted": "passed",
+   "claimed": "passed",
+   "received": "passed",
+   "processed": "not_enough_evidence",
+   "response": "not_enough_evidence",
+   "correct": "not_enough_evidence",
+   "portable_identity": "not_tested"
+  },
+  "steps": [
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-1"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "refuse",
+    "reason": "no KYA envelope in the request",
+    "receipt": "",
+    "action": null,
+    "amount": null,
+    "hint_sent": true
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_refusal",
+    "id": "x-1"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "reason": "unknown kind"
+   }
+  ],
+  "viewer": "stock.html"
+ },
+ {
+  "slug": "stranger",
+  "title": "A stranger figures it out alone",
+  "story": "This buyer was told nothing. It reads the shop's 'no', finds Attest by itself, does the small puzzle that strangers must do, and gets the public price.",
+  "run_id": "run-65272428cd2f",
+  "town_stages": {
+   "accepted": "passed",
+   "claimed": "passed",
+   "received": "passed",
+   "processed": "not_enough_evidence",
+   "response": "failed",
+   "correct": "failed",
+   "portable_identity": "not_tested"
+  },
+  "steps": [
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-0"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "refuse",
+    "reason": "no KYA envelope in the request",
+    "receipt": "",
+    "action": null,
+    "amount": null,
+    "hint_sent": true
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_refusal",
+    "id": "x-0"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "attest_decision": "refuse",
+    "reason": "no KYA envelope in the request",
+    "learned_gate": "http://127.0.0.1:59583",
+    "learned_receiver": "supplierco"
+   },
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-1"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "unknown",
+    "reason": "pow_required",
+    "receipt": "d018c0660120",
+    "action": "request_quote",
+    "amount": 39.9,
+    "hint_sent": true
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_refusal",
+    "id": "x-1"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "attest_decision": "unknown",
+    "reason": "pow_required",
+    "pow_solved_bits": 16
+   },
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-2"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "unknown",
+    "reason": "pow_ok",
+    "receipt": "bbbf71eae264",
+    "action": "request_quote",
+    "amount": 39.9,
+    "hint_sent": false
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_response",
+    "id": "r-2"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "correct": true,
+    "total_cents": 3990,
+    "attest_receipt_verified": true
+   }
+  ],
+  "viewer": "stranger.html"
+ },
+ {
+  "slug": "quote",
+  "title": "A company that signed up by itself",
+  "story": "An outside company signed up on the Attest website, got test credit and made its own robot. Nobody from our team helped. In NANDA Town, its robot gets served.",
+  "run_id": "run-322e994f1569",
+  "town_stages": {
+   "accepted": "passed",
+   "claimed": "passed",
+   "received": "passed",
+   "processed": "not_enough_evidence",
+   "response": "failed",
+   "correct": "failed",
+   "portable_identity": "not_tested"
+  },
+  "steps": [
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-0"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "refuse",
+    "reason": "no KYA envelope in the request",
+    "receipt": "",
+    "action": null,
+    "amount": null,
+    "hint_sent": true
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_refusal",
+    "id": "x-0"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "attest_decision": "refuse",
+    "reason": "no KYA envelope in the request",
+    "learned_gate": "http://127.0.0.1:59596",
+    "learned_receiver": "town-seller"
+   },
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-1"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "allow",
+    "reason": "ok",
+    "receipt": "539b4f7e32a6",
+    "action": "request_quote",
+    "amount": 39.9,
+    "hint_sent": false
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_response",
+    "id": "r-1"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "correct": true,
+    "total_cents": 3990,
+    "attest_receipt_verified": true
+   }
+  ],
+  "viewer": "quote.html"
+ },
+ {
+  "slug": "order",
+  "title": "A big order needs a human",
+  "story": "The same robot orders $1,800 of goods. The shop set a rule: above $1,500, a person must approve. Attest enforces it, so the shop does not act alone.",
+  "run_id": "run-915e9abba2b6",
+  "town_stages": {
+   "accepted": "passed",
+   "claimed": "passed",
+   "received": "passed",
+   "processed": "not_enough_evidence",
+   "response": "not_enough_evidence",
+   "correct": "not_enough_evidence",
+   "portable_identity": "not_tested"
+  },
+  "steps": [
+   {
+    "from": "buyer",
+    "to": "seller",
+    "kind": "quote_request",
+    "id": "q-1"
+   },
+   {
+    "from": "seller",
+    "to": "gate",
+    "kind": "check",
+    "decision": "escalate",
+    "reason": "policy_escalation",
+    "receipt": "03411bc3b5f8",
+    "action": "place_order",
+    "amount": 1800.0,
+    "hint_sent": true
+   },
+   {
+    "from": "seller",
+    "to": "buyer",
+    "kind": "quote_refusal",
+    "id": "x-1"
+   },
+   {
+    "from": "buyer",
+    "to": "buyer",
+    "kind": "note",
+    "attest_decision": "escalate",
+    "reason": "policy_escalation"
+   }
+  ],
+  "viewer": "order.html"
+ }
+]

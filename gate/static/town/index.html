@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attest in NANDA Town</title>
+<link rel="icon" href="/static/logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14181f;--mute:#5d6673;--line:#dde1e7;--buyer:#2f4bd6;--buyerbg:#e7ebff;--shop:#8a5a00;--shopbg:#fdf1d6;--gate:#0b7a43;--gatebg:#e2f5ea;--bad:#b3261e;--badbg:#fbe7e5}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1217;--card:#181c23;--ink:#e8ebf0;--mute:#9aa4b2;--line:#2a313c;--buyer:#8ea2ff;--buyerbg:#1c2447;--shop:#f2c14e;--shopbg:#38290a;--gate:#5fd394;--gatebg:#10301f;--bad:#ff8a80;--badbg:#3a1613}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+a{color:var(--buyer)}
+h1{font-size:28px;margin:0 0 4px;display:flex;gap:10px;align-items:center}
+.lead{font-size:18px;color:var(--mute);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.who{border-radius:10px;padding:12px}
+.who b{display:block;font-size:17px}
+.buyer{background:var(--buyerbg)}.buyer b{color:var(--buyer)}
+.shop{background:var(--shopbg)}.shop b{color:var(--shop)}
+.gate{background:var(--gatebg)}.gate b{color:var(--gate)}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.tabs button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h2{font-size:21px;margin:0 0 4px}
+.story{color:var(--mute);margin:0 0 14px}
+.step{display:flex;gap:12px;align-items:flex-start;margin:10px 0;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}
+.step.on{opacity:1;transform:none}
+.badge{flex:0 0 auto;width:92px;text-align:center;font-weight:700;font-size:13px;border-radius:8px;padding:6px 4px}
+.say{flex:1;border-radius:10px;padding:10px 12px;border:1px solid var(--line);background:var(--card)}
+.say small{display:block;color:var(--mute);margin-top:3px;font-size:13px}
+.result{margin-top:16px;padding:14px;border-radius:10px;font-size:18px;font-weight:700}
+.result.good{background:var(--gatebg);color:var(--gate)}.result.bad{background:var(--badbg);color:var(--bad)}.result.wait{background:var(--shopbg);color:var(--shop)}
+.controls{display:flex;gap:8px;margin-top:12px}
+.controls button{font:inherit;border:0;border-radius:8px;padding:8px 14px;background:var(--buyer);color:#fff;cursor:pointer;font-weight:600}
+.controls button.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.foot{font-size:14px;color:var(--mute)}
+button:focus-visible{outline:2px solid var(--buyer);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<h1><img src="/static/logo.svg" alt="" width="34" height="34">Attest in NANDA Town</h1>
+<p class="lead">Attest is a bouncer for AI agents. Before one robot does business with another, Attest checks the ID.</p>
+
+<section class="card">
+  <div class="cast">
+    <div class="who buyer"><b>The buyer robot</b>An AI agent that wants a price, or wants to place an order.</div>
+    <div class="who shop"><b>The shop robot</b>An AI agent that sells things. It will not deal with a robot it can't identify.</div>
+    <div class="who gate"><b>Attest, the bouncer</b>Checks three things: who is this robot, which company answers for it (and put money down), and is it allowed to do this.</div>
+  </div>
+  <p class="foot" style="margin:12px 0 0">NANDA Town is the class's test town where AI agents meet and trade. Everything below is a real recorded run there, not a mock-up.</p>
+</section>
+
+<section class="card">
+  <div class="tabs" id="tabs"></div>
+  <h2 id="title"></h2>
+  <p class="story" id="story"></p>
+  <div id="steps"></div>
+  <div id="result"></div>
+  <div class="controls"><button id="play">Play again</button><button class="ghost" id="all">Show all steps</button></div>
+</section>
+
+<p class="foot">Proof: <a id="raw" href="#">NANDA Town's own log of this run</a> (technical). <a href="/">Back to the Attest dashboard</a>.</p>
+</main>
+<script>
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=v=>v==null?"":"$"+Number(v).toLocaleString(undefined,Number(v)%1?{minimumFractionDigits:2,maximumFractionDigits:2}:{});
+const BADGE={buyer:["Buyer","buyer"],seller:["Shop","shop"],gate:["Attest","gate"]};
+
+// Turn one recorded step into a plain sentence.
+function plain(s){
+  if(s.kind==="quote_request"){const ask=s.order?`I'd like to place an order for ${money(s.order)}.`:"Hi, can I get a price?";return ["buyer",s.first?ask:"Asks again."]}
+  if(s.kind==="check"){
+    const what=s.action==="place_order"?`an order of ${money(s.amount)}`:"a price";
+    const m={
+      "no KYA envelope in the request":["Refused. This robot showed no ID at all.","The shop is told not to deal with it."],
+      "pow_required":["Unknown robot: no company has put money behind it. It may only see prices, and must first solve a small puzzle.","The puzzle costs a few seconds of computing, so one robot can't flood the shop with fake requests."],
+      "pow_ok":["Puzzle solved. It may see the public price, nothing more.","It still cannot place orders."],
+      "ok":["Allowed. Real company, money behind it, and asking for a price is within what it may do.","Every decision comes with a slip signed by Attest, so nobody can fake it later."],
+      "policy_escalation":[`Stop. ${money(s.amount)} is above the shop's own limit for acting without a person. A human must approve.`,"The shop does not act alone."]
+    }[s.reason]||[`${s.decision}: ${s.reason}`,""];
+    return ["gate",`The shop asks Attest about ${what}. Attest: ${m[0]}`,m[1]];
+  }
+  if(s.kind==="quote_refusal"){
+    if(s.why==="policy_escalation")return ["seller","I need a person on my side to approve this first."];
+    if(s.why==="pow_required")return ["seller","Solve the puzzle first, then ask again."];
+    return ["seller","Sorry, I can't serve you.",s.hint?"It adds: here is where Attest is and what to bring.":""];
+  }
+  if(s.kind==="quote_response")return ["seller","Here's your price."];
+  if(s.kind==="note"){
+    if(s.learned_receiver)return ["buyer",`Reads the refusal and learns where Attest is, and that this shop is "${s.learned_receiver}" there.`,"Nobody told this robot about Attest beforehand."];
+    if(s.pow_solved_bits)return ["buyer","Solves the puzzle and attaches the answer."];
+    if(s.correct)return ["buyer",`Gets the right price (${money(s.total_cents/100)}) and checks Attest's signed slip: genuine.`];
+    if(s.reason==="policy_escalation")return ["buyer","Understands: the order waits for a person at the shop."];
+    if(s.attest_decision==="refuse"||s.reason)return ["buyer","Gives up. It has no ID to show."];
+    return null;
+  }
+  return null;
+}
+function outcome(r){
+  const last=r.steps.filter(s=>s.kind==="check").pop()||{};
+  if(r.steps.some(s=>s.kind==="quote_response"))return ["good","Result: served."];
+  if(last.reason==="policy_escalation")return ["wait","Result: waiting for a human to approve."];
+  return ["bad","Result: turned away."];
+}
+
+let runs=[],cur=0,timer=null;
+function show(i,instant){
+  cur=i;clearTimeout(timer);
+  document.querySelectorAll("#tabs button").forEach((b,j)=>b.setAttribute("aria-pressed",j===i));
+  const r=runs[i];
+  document.getElementById("title").textContent=r.title;
+  document.getElementById("story").textContent=r.story;
+  document.getElementById("raw").href=r.viewer;
+  let first=true;
+  const rows=r.steps.map((s,k)=>{
+    if(s.kind==="quote_request"){s.first=first;first=false;const chk=r.steps[k+1];if(chk&&chk.kind==="check"&&chk.action==="place_order")s.order=chk.amount}
+    if(s.kind==="quote_refusal"){const prev=r.steps[k-1];s.hint=prev&&prev.hint_sent;s.why=prev&&prev.reason}
+    const p=plain(s);if(!p)return "";
+    const [who,label]=BADGE[p[0]];
+    return `<div class="step"><div class="badge ${label}">${who}</div><div class="say">${esc(p[1])}${p[2]?`<small>${esc(p[2])}</small>`:""}</div></div>`;
+  }).join("");
+  const [cls,text]=outcome(r);
+  document.getElementById("steps").innerHTML=rows;
+  document.getElementById("result").innerHTML=`<div class="result ${cls}" style="display:none">${esc(text)}</div>`;
+  const items=[...document.querySelectorAll("#steps .step")],res=document.querySelector("#result .result");
+  if(instant||matchMedia("(prefers-reduced-motion: reduce)").matches){items.forEach(x=>x.classList.add("on"));res.style.display="block";return}
+  let n=0;(function next(){if(n<items.length){items[n++].classList.add("on");timer=setTimeout(next,900)}else res.style.display="block"})();
+}
+fetch("runs.json").then(r=>r.json()).then(d=>{
+  runs=d;
+  document.getElementById("tabs").innerHTML=d.map((r,i)=>`<button>${i+1}. ${esc(r.title)}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach((b,i)=>b.onclick=()=>show(i));
+  document.getElementById("play").onclick=()=>show(cur);
+  document.getElementById("all").onclick=()=>show(cur,true);
+  show(0);
+});
+</script>
+</body>
+</html>

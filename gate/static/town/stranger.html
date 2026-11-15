@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NANDA Town run run-65272428cd2f</title>
+<style>
+  :root { --bg: #101418; --panel: #1a2027; --line: #2c3540;
+          --text: #e6edf3; --dim: #8b98a5; --good: #3fb950;
+          --bad: #f85149; --warn: #d29922; --accent: #58a6ff; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text);
+         font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+         padding: 16px; }
+  h1 { font-size: 16px; margin-bottom: 4px; }
+  .meta { color: var(--dim); margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 1fr 380px; gap: 12px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line);
+           border-radius: 8px; padding: 12px; }
+  svg { width: 100%; height: 420px; display: block; }
+  .agent circle { fill: #263040; stroke: var(--accent); stroke-width: 1.5; }
+  .agent text { fill: var(--text); font-size: 11px; text-anchor: middle; }
+  .agent .role { fill: var(--dim); font-size: 9px; }
+  .edge { stroke: var(--line); stroke-width: 1; }
+  .pulse { fill: var(--accent); }
+  .pulse.dropped { fill: var(--bad); }
+  .controls { display: flex; gap: 8px; align-items: center;
+              margin-top: 8px; }
+  input[type=range] { flex: 1; }
+  button { background: #263040; color: var(--text); border: 1px solid
+           var(--line); border-radius: 6px; padding: 4px 14px;
+           cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  #log { height: 300px; overflow-y: auto; font-size: 12px; }
+  #log div { padding: 1px 4px; border-left: 2px solid transparent; }
+  #log div.current { background: #223; border-left-color: var(--accent); }
+  #log .k { color: var(--accent); }
+  #log .o { color: var(--dim); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  td { padding: 2px 6px; border-top: 1px solid var(--line); }
+  .passed { color: var(--good); }
+  .failed { color: var(--bad); }
+  .not_enough_evidence { color: var(--warn); }
+  .not_tested { color: var(--dim); }
+  .error { color: var(--bad); }
+  .verdict { font-size: 15px; font-weight: bold; margin: 6px 0; }
+  .scope { color: var(--dim); font-size: 11px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<h1>NANDA Town System Fitness Report: <span id="title"></span></h1>
+<div class="meta" id="meta"></div>
+<div class="grid">
+  <div class="panel">
+    <svg id="map" viewBox="0 0 640 420"></svg>
+    <div class="controls">
+      <button id="play">Play</button>
+      <input type="range" id="scrub" min="0" value="0">
+      <span id="clock" style="color:var(--dim)"></span>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="verdict" id="verdict"></div>
+    <table id="stages"></table>
+    <div class="scope">This result applies only to the named agents,
+    releases, scenario, failure, evaluator, and time window. One run is
+    one scoped observation, not a certificate.</div>
+  </div>
+</div>
+<div class="panel" style="margin-top:12px">
+  <div style="color:var(--dim);margin-bottom:6px">Event log</div>
+  <div id="log"></div>
+</div>
+<script id="data" type="application/json">{"title": "run-65272428cd2f", "meta": "Track profile quote-clean, fault none, 23 events", "participants": [{"name": "buyer", "role": "buyer"}, {"name": "seller", "role": "seller"}], "events": [{"event_id": "ev-1", "run_id": "run-65272428cd2f", "at": 1794771712.404011, "observer": "town", "kind": "run_created", "subject": "run-65272428cd2f", "detail": {"profile": "quote-clean", "profile_fingerprint": "sha256:87a8ada4df2b3b2dc28fded719700e2db02559d8ed4e1647ffaf221e577eaa39", "fault": "none", "portable_identities": []}}, {"event_id": "ev-2", "run_id": "run-65272428cd2f", "at": 1794771712.500627, "observer": "town", "kind": "participant_joined", "subject": "seller", "detail": {}}, {"event_id": "ev-3", "run_id": "run-65272428cd2f", "at": 1794771712.5006819, "observer": "town", "kind": "participant_joined", "subject": "buyer", "detail": {}}, {"event_id": "ev-4", "run_id": "run-65272428cd2f", "at": 1794771712.5080261, "observer": "town", "kind": "message_accepted", "subject": "q-0", "detail": {"sender": "buyer", "to": "seller", "kind": "quote_request", "content_fingerprint": "sha256:df5674b3f743e6740901dcffc3755f137b3828a35cf1dc54ae3a5bc69c49cd87"}}, {"event_id": "ev-5", "run_id": "run-65272428cd2f", "at": 1794771712.560446, "observer": "town", "kind": "message_claimed", "subject": "q-0", "detail": {"claimant": "seller", "attempt": 1, "fence": "fence-b6fb77a512c7444194c9ae903bd118ae"}}, {"event_id": "ev-6", "run_id": "run-65272428cd2f", "at": 1794771712.566231, "observer": "town", "kind": "message_accepted", "subject": "x-0", "detail": {"sender": "seller", "to": "buyer", "kind": "quote_refusal", "content_fingerprint": "sha256:2cf569a97790e832ae178ac3f4ac3f34e0dd640c196cd0609e9f1eca6542d431", "request_id": "q-0"}}, {"event_id": "ev-7", "run_id": "run-65272428cd2f", "at": 1794771712.569342, "observer": "seller", "kind": "ack_recorded", "subject": "q-0", "detail": {"status": "processed", "note": {"attest_decision": "refuse", "attest_reason": "no KYA envelope in the request", "attest_receipt_id": null, "runtime": "attest-gated-seller", "applied": false, "attest_hint_sent": true}, "fence": "fence-b6fb77a512c7444194c9ae903bd118ae", "attempt": 1}}, {"event_id": "ev-8", "run_id": "run-65272428cd2f", "at": 1794771712.6160488, "observer": "town", "kind": "message_claimed", "subject": "x-0", "detail": {"claimant": "buyer", "attempt": 1, "fence": "fence-d3f54aeb73524283ad17bc489165d9b8"}}, {"event_id": "ev-9", "run_id": "run-65272428cd2f", "at": 1794771712.618968, "observer": "town", "kind": "message_accepted", "subject": "q-1", "detail": {"sender": "buyer", "to": "seller", "kind": "quote_request", "content_fingerprint": "sha256:9c5858279ad0bec858704045890a66729510d9d8c908d7c5cff320e7638acf61"}}, {"event_id": "ev-10", "run_id": "run-65272428cd2f", "at": 1794771712.621731, "observer": "buyer", "kind": "ack_recorded", "subject": "x-0", "detail": {"status": "processed", "note": {"refused": true, "attest_decision": "refuse", "reason": "no KYA envelope in the request", "learned_gate": "http://127.0.0.1:59583", "learned_receiver": "supplierco"}, "fence": "fence-d3f54aeb73524283ad17bc489165d9b8", "attempt": 1}}, {"event_id": "ev-11", "run_id": "run-65272428cd2f", "at": 1794771712.623639, "observer": "town", "kind": "message_claimed", "subject": "q-1", "detail": {"claimant": "seller", "attempt": 1, "fence": "fence-1e7e6d26dfea438f99286b105114a11c"}}, {"event_id": "ev-12", "run_id": "run-65272428cd2f", "at": 1794771712.976126, "observer": "town", "kind": "message_accepted", "subject": "x-1", "detail": {"sender": "seller", "to": "buyer", "kind": "quote_refusal", "content_fingerprint": "sha256:74c07bddf51b2da316c8f1b39d6ca7b3c2169e7ae6e460aa10911b90924158ae", "request_id": "q-1"}}, {"event_id": "ev-13", "run_id": "run-65272428cd2f", "at": 1794771712.9822688, "observer": "seller", "kind": "ack_recorded", "subject": "q-1", "detail": {"status": "processed", "note": {"attest_decision": "unknown", "attest_reason": "pow_required", "attest_receipt_id": "d018c066012010ad5d791d0fb06a2c83e327f73a9f558fd427eb1d5987ae54a6", "runtime": "attest-gated-seller", "applied": false, "attest_hint_sent": true}, "fence": "fence-1e7e6d26dfea438f99286b105114a11c", "attempt": 1}}, {"event_id": "ev-14", "run_id": "run-65272428cd2f", "at": 1794771713.003892, "observer": "town", "kind": "message_claimed", "subject": "x-1", "detail": {"claimant": "buyer", "attempt": 1, "fence": "fence-9f6890e6106342c0880ad01caf04c638"}}, {"event_id": "ev-15", "run_id": "run-65272428cd2f", "at": 1794771713.0117671, "observer": "town", "kind": "message_accepted", "subject": "q-2", "detail": {"sender": "buyer", "to": "seller", "kind": "quote_request", "content_fingerprint": "sha256:9e143cf3998e84b93adc0918a4dbe3276431aaf7b1c79923a3f0d87d676b7be0"}}, {"event_id": "ev-16", "run_id": "run-65272428cd2f", "at": 1794771713.021176, "observer": "buyer", "kind": "ack_recorded", "subject": "x-1", "detail": {"status": "processed", "note": {"refused": true, "attest_decision": "unknown", "reason": "pow_required", "pow_solved_bits": 16}, "fence": "fence-9f6890e6106342c0880ad01caf04c638", "attempt": 1}}, {"event_id": "ev-17", "run_id": "run-65272428cd2f", "at": 1794771713.037853, "observer": "town", "kind": "message_claimed", "subject": "q-2", "detail": {"claimant": "seller", "attempt": 1, "fence": "fence-764859ba91854949b36ac8e673fa4e45"}}, {"event_id": "ev-18", "run_id": "run-65272428cd2f", "at": 1794771713.0450199, "observer": "town", "kind": "message_accepted", "subject": "r-2", "detail": {"sender": "seller", "to": "buyer", "kind": "quote_response", "content_fingerprint": "sha256:472b5b73ae3d557f44251424bd3e4a8ed8b7cdc5accf804c16a618d52ed02ad7", "request_id": "q-2"}}, {"event_id": "ev-19", "run_id": "run-65272428cd2f", "at": 1794771713.048487, "observer": "seller", "kind": "ack_recorded", "subject": "q-2", "detail": {"status": "processed", "note": {"attest_decision": "unknown", "attest_reason": "pow_ok", "attest_receipt_id": "bbbf71eae2648cd2543b6d7253448bfe76620ace91d9a91b3354d9a2939fcd58", "runtime": "attest-gated-seller", "applied": true, "total_cents": 3990}, "fence": "fence-764859ba91854949b36ac8e673fa4e45", "attempt": 1}}, {"event_id": "ev-20", "run_id": "run-65272428cd2f", "at": 1794771713.076826, "observer": "town", "kind": "message_claimed", "subject": "r-2", "detail": {"claimant": "buyer", "attempt": 1, "fence": "fence-ecb68426592c4bd2a66041085b309c86"}}, {"event_id": "ev-21", "run_id": "run-65272428cd2f", "at": 1794771713.085582, "observer": "buyer", "kind": "ack_recorded", "subject": "r-2", "detail": {"status": "processed", "note": {"correct": true, "total_cents": 3990, "expected_total_cents": 3990, "attest_receipt_verified": true}, "fence": "fence-ecb68426592c4bd2a66041085b309c86", "attempt": 1}}, {"event_id": "ev-22", "run_id": "run-65272428cd2f", "at": 1794771713.135711, "observer": "runner", "kind": "participant_exited", "subject": "buyer", "detail": {"exit_code": 0}}, {"event_id": "ev-23", "run_id": "run-65272428cd2f", "at": 1794771713.139928, "observer": "town", "kind": "run_finished", "subject": "run-65272428cd2f", "detail": {}}], "result": {"run_id": "run-65272428cd2f", "evaluator_version": "0.5.0", "stages": [{"name": "accepted", "status": "passed", "evidence": ["ev-4"], "note": ""}, {"name": "claimed", "status": "passed", "evidence": ["ev-5"], "note": ""}, {"name": "received", "status": "passed", "evidence": ["ev-7"], "note": ""}, {"name": "processed", "status": "not_enough_evidence", "evidence": [], "note": "processed acknowledgements carry no application record"}, {"name": "response", "status": "failed", "evidence": ["ev-18"], "note": "the quote response names request \"q-2\", not the first accepted request \"q-0\""}, {"name": "correct", "status": "failed", "evidence": ["ev-21"], "note": "the buyer's assertion cannot establish the answer to the accepted request: the quote response names request \"q-2\", not the first accepted request \"q-0\""}, {"name": "portable_identity", "status": "not_tested", "evidence": [], "note": "this run used short-lived join tokens; rerun with --identity for grant-based portable identity"}], "verdict": "failed", "evaluated_at": 1794771713.144748}}</script>
+<script>
+const data = JSON.parse(document.getElementById('data').textContent);
+const agents = data.participants;
+const events = data.events;
+document.getElementById('title').textContent = data.title;
+document.getElementById('meta').textContent = data.meta;
+const v = document.getElementById('verdict');
+v.textContent = 'Verdict: ' + data.result.verdict.toUpperCase();
+v.className = 'verdict ' +
+  (data.result.verdict === 'passed' ? 'passed' : 'failed');
+const stages = document.getElementById('stages');
+const statuses = new Set(['passed', 'failed', 'not_enough_evidence',
+                          'not_tested', 'error']);
+for (const s of data.result.stages) {
+  const tr = document.createElement('tr');
+  const name = document.createElement('td');
+  name.textContent = s.name;
+  const status = document.createElement('td');
+  status.textContent = s.status.replaceAll('_', ' ');
+  if (statuses.has(s.status)) status.className = s.status;
+  tr.append(name, status);
+  stages.appendChild(tr);
+}
+const svg = document.getElementById('map');
+const cx = 320, cy = 200, R = 150;
+const pos = Object.create(null);
+agents.forEach((a, i) => {
+  const ang = (2 * Math.PI * i) / agents.length - Math.PI / 2;
+  pos[a.name] = [cx + R * Math.cos(ang), cy + R * Math.sin(ang)];
+});
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+for (const a of agents) {
+  const [x, y] = pos[a.name];
+  const g = el('g', {class: 'agent'});
+  g.appendChild(el('circle', {cx: x, cy: y, r: 26}));
+  const t1 = el('text', {x: x, y: y - 2}); t1.textContent = a.name;
+  const t2 = el('text', {x: x, y: y + 11, class: 'role'});
+  t2.textContent = a.role;
+  g.appendChild(t1); g.appendChild(t2);
+  svg.appendChild(g);
+}
+const log = document.getElementById('log');
+events.forEach((e, i) => {
+  const d = document.createElement('div');
+  const observer = document.createElement('span');
+  observer.className = 'o';
+  observer.textContent = '[' + e.observer + ']';
+  const kind = document.createElement('span');
+  kind.className = 'k';
+  kind.textContent = e.kind;
+  d.append('t=' + e.at.toFixed(2) + ' ', observer, ' ', kind, ' ',
+           e.subject, ' ',
+           Object.keys(e.detail).length ? JSON.stringify(e.detail) : '');
+  d.id = 'ev' + i;
+  log.appendChild(d);
+});
+const scrub = document.getElementById('scrub');
+scrub.max = Math.max(0, events.length - 1);
+scrub.disabled = events.length === 0;
+document.getElementById('play').disabled = events.length === 0;
+let playing = null;
+function pulse(from, to, dropped) {
+  if (!pos[from] || !pos[to]) return;
+  const [x1, y1] = pos[from], [x2, y2] = pos[to];
+  const dot = el('circle',
+                 {r: 6, class: 'pulse' + (dropped ? ' dropped' : '')});
+  svg.appendChild(dot);
+  const t0 = performance.now();
+  function step(t) {
+    const p = Math.min((t - t0) / 500, 1);
+    dot.setAttribute('cx', x1 + (x2 - x1) * p);
+    dot.setAttribute('cy', y1 + (y2 - y1) * p);
+    if (p < 1) requestAnimationFrame(step); else dot.remove();
+  }
+  requestAnimationFrame(step);
+}
+function show(i, animate) {
+  const e = events[i];
+  document.querySelectorAll('#log .current')
+    .forEach(x => x.classList.remove('current'));
+  const row = document.getElementById('ev' + i);
+  row.classList.add('current');
+  row.scrollIntoView({block: 'nearest'});
+  document.getElementById('clock').textContent =
+    't=' + e.at.toFixed(2) + '  ' + (i + 1) + '/' + events.length;
+  if (animate && e.detail && e.detail.to) {
+    const from = e.kind === 'message_delivered' ? e.detail.from : e.observer;
+    pulse(e.observer === 'town' ? (e.detail.from || e.observer)
+          : e.observer, e.detail.to, e.kind === 'message_dropped');
+  }
+}
+scrub.addEventListener('input', () => show(+scrub.value, true));
+document.getElementById('play').addEventListener('click', function () {
+  if (playing) { clearInterval(playing); playing = null;
+                 this.textContent = 'Play'; return; }
+  this.textContent = 'Pause';
+  if (+scrub.value >= events.length - 1) scrub.value = 0;
+  playing = setInterval(() => {
+    if (+scrub.value >= events.length - 1) {
+      clearInterval(playing); playing = null;
+      document.getElementById('play').textContent = 'Play'; return;
+    }
+    scrub.value = +scrub.value + 1;
+    show(+scrub.value, true);
+  }, 350);
+});
+if (events.length) show(0, false);
+</script>
+</body>
+</html>
