@@ -1,17 +1,10 @@
 """The human and agent interfaces: SDK, CLI, dashboard, demo mode and MCP tools."""
 import json
-import os
-import subprocess
-import sys
-import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-_tmp = tempfile.mkdtemp()
-os.environ.update(ATTEST_STATE_DIR=f"{_tmp}/state", ATTEST_LOG_DIR=f"{_tmp}/logs", ATTEST_DEMO="1")
-subprocess.run([sys.executable, "setup_demo.py"], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
-sys.path.insert(0, str(ROOT))
+import conftest
 
+_tmp = conftest.TMP
 from fastapi.testclient import TestClient  # noqa: E402
 
 from attest import Attest, build_request  # noqa: E402

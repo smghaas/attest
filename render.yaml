@@ -1,0 +1,16 @@
+# Render blueprint: one web service with a small disk for the gate's state.
+services:
+  - type: web
+    name: attest-sandbox
+    runtime: docker
+    plan: starter            # a disk needs a paid plan; free plans lose state on every restart
+    healthCheckPath: /info
+    disk:
+      name: attest-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: ATTEST_SANDBOX
+        value: "1"
+      - key: ATTEST_DEMO
+        value: "1"

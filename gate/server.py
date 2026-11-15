@@ -16,6 +16,12 @@ Gate endpoints (the product):
   GET  /stats                        counts for the dashboard
   GET  /                             the web dashboard (gate/static/index.html)
 
+Public sandbox (only when ATTEST_SANDBOX=1; stake is free test credit, nothing real is at risk):
+  GET  /info                         mode, faucet amount, limits
+  POST /sandbox/faucet               {issuer, name, sig}  test stake for a new operator, once per key
+  POST /register/receiver            {name, pubkey, min_stake, policy, sig}  create your own receiver
+  (/stake is closed in sandbox mode, and the demo inbox is off)
+
 Demo mode (only when ATTEST_DEMO=1; the gate signs on behalf of the demo agents in state/agents):
   GET  /demo/agents                  names of the demo agents
   POST /demo/try                     {agent, receiver, action, amount} -> the same answer as /verify
@@ -34,13 +40,15 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
-from collections import Counter
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
 from .core import Gate, STATE_DIR
@@ -68,12 +76,63 @@ def _ok(out: dict) -> dict:
 
 
 STATIC = Path(__file__).parent / "static"
-DEMO = os.environ.get("ATTEST_DEMO") == "1"
+
+
+def sandbox() -> bool:
+    return os.environ.get("ATTEST_SANDBOX") == "1"
+
+
+def demo_on() -> bool:
+    return os.environ.get("ATTEST_DEMO") == "1"
+
+
+def _num(var: str, default: float) -> float:
+    return float(os.environ.get(var, default))
+
+
+# Sandbox guards: body size, per-IP rate limits, no demo inbox, open CORS so browser agents can call.
+_hits: dict = defaultdict(deque)
+WRITE_PATHS = ("/sandbox/", "/register/", "/claims", "/revoke")
+
+
+@app.middleware("http")
+async def sandbox_guards(request: Request, call_next):
+    if sandbox():
+        path = request.url.path
+        if path.startswith(("/inbox", "/replies", "/demo")) and not (demo_on() and path.startswith("/demo")):
+            return JSONResponse({"detail": "not available on the public sandbox"}, status_code=404)
+        if int(request.headers.get("content-length") or 0) > _num("ATTEST_MAX_BODY", 65536):
+            return JSONResponse({"detail": "request too large"}, status_code=413)
+        if request.method == "POST":
+            ip = request.client.host if request.client else "?"
+            if os.environ.get("ATTEST_TRUST_PROXY") == "1":
+                ip = request.headers.get("x-forwarded-for", ip).split(",")[0].strip()
+            kind = "write" if path.startswith(WRITE_PATHS) else "check"
+            limit = _num("ATTEST_RATE_WRITE", 20) if kind == "write" else _num("ATTEST_RATE_CHECK", 120)
+            q, now = _hits[(ip, kind)], time.time()
+            while q and q[0] < now - 60:
+                q.popleft()
+            if len(q) >= limit:
+                return JSONResponse({"detail": f"rate limit: {int(limit)} {kind} requests per minute"},
+                                    status_code=429, headers={"Retry-After": "60"})
+            q.append(now)
+    return await call_next(request)
+
+
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 
 @app.get("/", include_in_schema=False)
 def dashboard():
     return FileResponse(STATIC / "index.html")
+
+
+@app.get("/info")
+def info():
+    return {"service": "attest", "version": app.version, "mode": "sandbox" if sandbox() else "private",
+            "stake_is_real": False if sandbox() else None, "faucet_amount": _num("ATTEST_SANDBOX_STAKE", 10000),
+            "demo_agents": demo_on(), "self_registration": sandbox(),
+            "limits": {"write_per_min": _num("ATTEST_RATE_WRITE", 20), "check_per_min": _num("ATTEST_RATE_CHECK", 120)}}
 
 
 @app.get("/stats")
@@ -82,8 +141,8 @@ def stats():
     st, cl = gate.stakes(), gate.claims()
     return {"decisions": len(rs), "by_decision": dict(Counter(r["decision"] for r in rs)),
             "staked_total": sum(v["stake"] for v in st.values()), "issuers": len(st),
-            "suspended": sum(1 for v in st.values() if v.get("suspended")),
-            "claims": dict(Counter(c["status"] for c in cl)), "demo": DEMO}
+            "suspended": sum(1 for v in st.values() if v.get("suspended")), "sandbox": sandbox(),
+            "claims": dict(Counter(c["status"] for c in cl)), "demo": demo_on()}
 
 
 @app.get("/pubkey")
@@ -117,6 +176,8 @@ class Stake(BaseModel):
 
 @app.post("/stake")
 def stake(s: Stake):
+    if sandbox():
+        raise HTTPException(403, "stake is free test credit on the sandbox: use POST /sandbox/faucet")
     return _ok(gate.stake(s.issuer, s.name, s.amount, s.sig))
 
 
@@ -178,6 +239,73 @@ def receipts(limit: int = 20):
     return gate.receipts(limit)
 
 
+# ---------------- public sandbox: self-registration ----------------
+NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,31}$")
+
+
+def _need_sandbox():
+    if not sandbox():
+        raise HTTPException(403, "self-registration is off on this gate (it is not a sandbox)")
+
+
+class Faucet(BaseModel):
+    issuer: str
+    name: str
+    sig: str
+
+
+@app.post("/sandbox/faucet")
+def faucet(f: Faucet):
+    """An operator proves it holds its key, and gets free test stake once."""
+    _need_sandbox()
+    if not re.fullmatch(r"[0-9a-f]{64}", f.issuer):
+        raise HTTPException(400, "issuer must be a 64 hex character Ed25519 public key")
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9 ._-]{1,31}", f.name):
+        raise HTTPException(400, "name: 2 to 32 letters, digits, space, dot, dash or underscore")
+    from . import crypto
+    if not crypto.verify(f.issuer, {"faucet": True, "issuer": f.issuer, "name": f.name}, f.sig):
+        raise HTTPException(400, "bad_signature")
+    if len(gate.stakes()) >= _num("ATTEST_MAX_ISSUERS", 500):
+        raise HTTPException(503, "the sandbox is full")
+    return _ok(gate.grant_stake(f.issuer, f.name, _num("ATTEST_SANDBOX_STAKE", 10000)))
+
+
+class NewReceiver(BaseModel):
+    name: str
+    pubkey: str
+    min_stake: float = 0
+    policy: dict = {}
+    sig: str
+
+
+@app.post("/register/receiver")
+def register_receiver(r: NewReceiver):
+    """A receiver proves it holds its key and creates itself. Names are first come, first served."""
+    _need_sandbox()
+    if not NAME_RE.match(r.name):
+        raise HTTPException(400, "name: 3 to 32 chars, lowercase letters, digits and dashes")
+    if not re.fullmatch(r"[0-9a-f]{64}", r.pubkey):
+        raise HTTPException(400, "pubkey must be a 64 hex character Ed25519 public key")
+    if not 0 <= r.min_stake <= 1e9:
+        raise HTTPException(400, "min_stake out of range")
+    esc = r.policy.get("escalate_above", {})
+    if set(r.policy) - {"escalate_above"} or not isinstance(esc, dict) or not all(
+            isinstance(k, str) and isinstance(v, (int, float)) and v >= 0 for k, v in esc.items()):
+        raise HTTPException(400, 'policy may only be {"escalate_above": {"action": amount}}')
+    from . import crypto
+    body = {"register_receiver": r.name, "pubkey": r.pubkey, "min_stake": float(r.min_stake), "policy": r.policy}
+    if not crypto.verify(r.pubkey, body, r.sig):
+        raise HTTPException(400, "bad_signature")
+    with gate.lock:
+        known = gate.state["receivers"]
+        if r.name in known:
+            raise HTTPException(409, "that receiver name is taken")
+        if len(known) >= _num("ATTEST_MAX_RECEIVERS", 500):
+            raise HTTPException(503, "the sandbox is full")
+        gate.register_receiver(r.name, r.min_stake, r.policy, r.pubkey)
+    return {"ok": True, "receiver": r.name, "min_stake": r.min_stake}
+
+
 # ---------------- demo mode ----------------
 class Try(BaseModel):
     agent: str
@@ -193,14 +321,14 @@ def _demo_agents() -> list[str]:
 
 @app.get("/demo/agents")
 def demo_agents():
-    if not DEMO:
+    if not demo_on():
         raise HTTPException(404, "demo mode is off (start with ATTEST_DEMO=1)")
     return _demo_agents()
 
 
 @app.post("/demo/try")
 def demo_try(t: Try):
-    if not DEMO:
+    if not demo_on():
         raise HTTPException(404, "demo mode is off (start with ATTEST_DEMO=1)")
     if t.agent not in _demo_agents():
         raise HTTPException(404, "no such demo agent")

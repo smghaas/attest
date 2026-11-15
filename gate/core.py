@@ -188,6 +188,19 @@ class Gate:
         self._save()
 
     @_locked
+    def grant_stake(self, issuer_pub: str, name: str, amount: float) -> dict:
+        """Sandbox only: give a new issuer free test stake, once. The server has already checked the
+        issuer signed the request; no money is involved."""
+        if issuer_pub in self.state["stakes"]:
+            return _err("already_funded")
+        if any(v["name"].lower() == name.lower() for v in self.state["stakes"].values()):
+            return _err("name_taken")
+        self.state["stakes"][issuer_pub] = {"name": name, "stake": float(amount), "suspended": False,
+                                            "slashes": [], "sandbox": True}
+        self._save()
+        return {"ok": True, "issuer": name, "stake": float(amount)}
+
+    @_locked
     def stake(self, issuer_pub: str, name: str, amount: float, sig: str) -> dict:
         """An operator adds stake for its issuer key. The operator signs {stake, issuer, name, amount}."""
         body = {"stake": True, "issuer": issuer_pub, "name": name, "amount": float(amount)}

@@ -104,3 +104,32 @@ class Attest:
                                             "sig": crypto.sign(receiver["priv"], body)})
         r.raise_for_status()
         return r.json()
+
+    # -- sandbox onboarding (the gate must run with ATTEST_SANDBOX=1) --------------------------
+    def info(self) -> dict:
+        return self._get("/info")
+
+    def faucet(self, operator: dict) -> dict:
+        """Free test stake for a new operator, once per key."""
+        sig = crypto.sign(operator["priv"], {"faucet": True, "issuer": operator["pub"], "name": operator["name"]})
+        r = self.http.post("/sandbox/faucet", json={"issuer": operator["pub"], "name": operator["name"], "sig": sig})
+        _raise(r)
+        return r.json()
+
+    def register_receiver(self, receiver: dict, min_stake: float = 0, escalate_above: dict | None = None) -> dict:
+        policy = {"escalate_above": escalate_above} if escalate_above else {}
+        body = {"register_receiver": receiver["name"], "pubkey": receiver["pub"],
+                "min_stake": float(min_stake), "policy": policy}
+        r = self.http.post("/register/receiver", json={**{k: v for k, v in body.items() if k != "register_receiver"},
+                                                         "name": receiver["name"], "sig": crypto.sign(receiver["priv"], body)})
+        _raise(r)
+        return r.json()
+
+
+def _raise(r: httpx.Response):
+    if r.status_code >= 400:
+        try:
+            msg = r.json().get("detail") or r.text
+        except ValueError:
+            msg = r.text
+        raise httpx.HTTPStatusError(str(msg), request=r.request, response=r)

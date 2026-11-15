@@ -40,7 +40,8 @@ ATTEST_DEMO=1 .venv/bin/uvicorn gate.server:app --port 8402     # http://127.0.0
 **Human:** the dashboard at `/` shows live decisions, stake behind each operator, receivers and slashing
 claims, and has a "Check an agent" box (a demo agent, or a pasted envelope).
 
-**Terminal:** `pip install -e .` gives an `attest` command.
+**Terminal:** `pip install git+https://github.com/smghaas/attest` (or `pip install -e .` in a checkout) gives an
+`attest` command. Add `[mcp]` (`pip install "attest[mcp] @ git+https://github.com/smghaas/attest"`) for the MCP server.
 
 ```
 attest status
@@ -61,6 +62,26 @@ if d.allowed and d.receipt_verified:
 **Any agent (MCP):** `python -m attest.mcp_server` exposes `check_agent`, `verify_receipt`,
 `list_receivers`, `get_stakes` and `recent_decisions`. Set `ATTEST_URL` to point at your gate.
 Agents reading this repo should start with [AGENTS.md](AGENTS.md). The raw HTTP API is described at `/openapi.json`.
+
+## Try it on a public sandbox (anyone, no setup from the gate owner)
+
+A gate started with `ATTEST_SANDBOX=1` lets strangers register themselves. Stake there is free test credit,
+and every decision is public. Your keys are created and kept on your machine (`~/.attest`); the gate only sees signatures.
+
+```
+export ATTEST_URL=https://<the-gate>
+attest operator create MyCompany                 # 10,000 test stake, once per key
+attest receiver create my-desk --min-stake 5000 --escalate place_order=8000
+attest agent create my-buyer --operator MyCompany --actions request_quote,place_order --max 10000
+attest agent delegate my-sub --parent my-buyer --actions place_order --max 50000    # wider than its parent
+attest request my-buyer my-desk place_order 2000 --check      # ALLOW
+attest request my-sub my-desk place_order 100 --check         # REFUSE: attenuation_violation
+```
+
+The same steps exist in Python (`attest.identity`, `Attest.faucet`, `Attest.register_receiver`) and as plain HTTP
+(`POST /sandbox/faucet`, `POST /register/receiver`, `POST /verify/{receiver}`; see `/openapi.json`).
+To run your own sandbox, see [docs/DEPLOY.md](docs/DEPLOY.md) (Dockerfile and a Render blueprint are included).
+The sandbox proves the decision logic. It does not prove an operator has money, because anyone can mint test stake.
 
 ## Layout
 

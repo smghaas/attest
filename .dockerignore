@@ -1,0 +1,9 @@
+.git
+.venv
+state
+logs
+runs
+video
+bench/results
+__pycache__
+*.pyc

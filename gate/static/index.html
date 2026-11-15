@@ -42,6 +42,7 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
   <div class="sub"><span id="up">connecting…</span> · gate key <span class="mono" id="key">…</span></div>
 </header>
 
+<div id="banner" class="card" hidden style="border-color:var(--warn);background:var(--warnbg);color:var(--warn);margin-bottom:14px"></div>
 <div class="grid tiles" id="tiles"></div>
 
 <div class="grid two">
@@ -76,6 +77,12 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
   <section class="card"><h2>Receivers</h2><div id="rcvs"></div><h2 style="margin-top:16px">Slashing claims</h2><div id="claims"></div></section>
 </div>
 
+<section class="card" id="start" style="margin-top:14px" hidden>
+  <h2>Use it yourself</h2>
+  <p class="sub" style="margin:0 0 8px">Your keys stay on your machine; the gate only sees signatures. Needs <span class="mono">pip install git+https://github.com/smghaas/attest</span>.</p>
+  <pre class="mono" id="cmds"></pre>
+</section>
+
 <p class="sub" style="margin-top:18px">For agents: <span class="mono">GET /openapi.json</span> · <span class="mono">POST /verify/{receiver}</span> · MCP: <span class="mono">python -m attest.mcp_server</span> · CLI: <span class="mono">attest --help</span></p>
 </main>
 <script>
@@ -100,6 +107,12 @@ async function refresh(){
     const names=Object.keys(rv);
     for(const id of ["#rcv","#rcv2"]){const s=$(id),cur=s.value;s.innerHTML=names.map(n=>`<option>${esc(n)}</option>`).join("");if(names.includes(cur))s.value=cur}
     demo=st.demo;
+    if(st.sandbox&&!$("#banner").dataset.set){
+      $("#banner").dataset.set=1;$("#banner").hidden=false;
+      $("#banner").innerHTML="<b>Public sandbox.</b> Stake here is free test credit, not money. Every decision is public. Decisions, signatures and receipts are real.";
+      $("#start").hidden=false;
+      $("#cmds").textContent=["export ATTEST_URL="+location.origin,"attest operator create MyCompany          # free test stake","attest receiver create my-desk --min-stake 5000 --escalate place_order=8000","attest agent create my-buyer --operator MyCompany --actions request_quote,place_order --max 10000","attest request my-buyer my-desk place_order 2000 --check"].join("\n");
+    }
   }catch(e){$("#up").textContent="gate unreachable"}
 }
 

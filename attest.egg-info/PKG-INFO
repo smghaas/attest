@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: attest
+Version: 0.4.0
+Summary: Know-Your-Agent gate: check who an agent is, who stands behind it, and what it may do.
+Requires-Python: >=3.11
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: httpx
+Requires-Dist: cryptography
+Requires-Dist: pydantic
+Provides-Extra: mcp
+Requires-Dist: mcp>=2.0; extra == "mcp"

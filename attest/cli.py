@@ -7,7 +7,8 @@ import sys
 
 import httpx
 
-from .client import Attest
+from . import identity
+from .client import Attest, build_request
 
 
 def _print(obj):
@@ -40,10 +41,81 @@ def main(argv=None) -> int:
     c.add_argument("envelope")
     v = sub.add_parser("verify-receipt", help="check a receipt file was signed by the gate")
     v.add_argument("receipt")
+    sub.add_parser("ids", help="identities (operators, agents, receivers) kept on this machine")
+    sub.add_parser("info", help="what kind of gate this is: sandbox or private, limits, faucet")
+    o = sub.add_parser("operator", help="create an operator and get free sandbox stake")
+    o.add_argument("action", choices=["create"])
+    o.add_argument("name")
+    rc = sub.add_parser("receiver", help="create a receiver, the one who asks the gate before acting")
+    rc.add_argument("action", choices=["create"])
+    rc.add_argument("name")
+    rc.add_argument("--min-stake", type=float, default=0, help="operators must have at least this much stake")
+    rc.add_argument("--escalate", action="append", default=[], metavar="ACTION=AMOUNT",
+                    help="ask a human above this amount, e.g. place_order=8000")
+    ag = sub.add_parser("agent", help="create an agent for an operator, or delegate a narrower one")
+    ag.add_argument("action", choices=["create", "delegate"])
+    ag.add_argument("name")
+    ag.add_argument("--operator", help="operator name (for create)")
+    ag.add_argument("--parent", help="parent agent name (for delegate)")
+    ag.add_argument("--purpose", default="agent")
+    ag.add_argument("--actions", default="request_quote", help="comma separated, e.g. request_quote,place_order")
+    ag.add_argument("--max", type=float, default=1000, dest="max_amount", help="largest amount per mandate, USD")
+    ag.add_argument("--days", type=float, default=30)
+    rq = sub.add_parser("request", help="sign a request as an agent; --check also asks the gate")
+    rq.add_argument("agent")
+    rq.add_argument("receiver")
+    rq.add_argument("action")
+    rq.add_argument("amount", type=float)
+    rq.add_argument("--message", default="")
+    rq.add_argument("--check", action="store_true")
     a = p.parse_args(argv)
     at = Attest(a.url)
     try:
-        if a.cmd == "status":
+        if a.cmd == "ids":
+            _table([{"name": d["name"], "kind": d.get("kind", "?"), "key": d["pub"][:16],
+                     "operator": d.get("operator", ""), "parent": d.get("delegated_by", "")}
+                    for d in identity.ids()], ["name", "kind", "operator", "parent", "key"])
+        elif a.cmd == "info":
+            _print(at.info())
+        elif a.cmd == "operator":
+            op = identity.new_operator(a.name, persist=False)
+            out = at.faucet(op)
+            identity.save(op)                      # keep the key only once the gate accepted it
+            print(f"operator {a.name} created, key kept in {identity.home()}/{a.name}.json")
+            print(f"funded with {out['stake']:,.0f} test stake (sandbox credit, not money)")
+        elif a.cmd == "receiver":
+            rcv = identity.new_receiver(a.name, persist=False)
+            esc = {k: float(v) for k, v in (x.split("=", 1) for x in a.escalate)}
+            at.register_receiver(rcv, a.min_stake, esc or None)
+            identity.save(rcv)
+            print(f"receiver {a.name} registered (min stake {a.min_stake:,.0f}); key kept in {identity.home()}/{a.name}.json")
+            print(f"check an agent with:  attest request AGENT {a.name} request_quote 100 --check")
+        elif a.cmd == "agent":
+            acts = [x.strip() for x in a.actions.split(",") if x.strip()]
+            if a.action == "create":
+                if not a.operator:
+                    sys.exit("--operator is required")
+                d = identity.new_agent(a.name, identity.load(a.operator), a.purpose, acts, a.max_amount, a.days)
+            else:
+                if not a.parent:
+                    sys.exit("--parent is required")
+                d = identity.delegate(identity.load(a.parent), a.name, acts, a.max_amount, a.days)
+            print(f"agent {a.name} created: {', '.join(acts)} up to ${a.max_amount:,.0f}, chain depth {len(d['chain'])}")
+        elif a.cmd == "request":
+            env = build_request(identity.load(a.agent), a.receiver, a.action, a.amount, a.message)
+            if not a.check:
+                _print(env)
+                return 0
+            d = at.check(a.receiver, env)
+            if a.json:
+                _print(d.raw)
+            else:
+                print(f"{d.decision.upper()}  {d.reason}")
+                if d.detail:
+                    print(d.detail)
+                print(f"receipt {d.receipt['id'][:12]}  signature {'valid' if d.receipt_verified else 'INVALID'}")
+            return 0 if d.allowed else 2
+        elif a.cmd == "status":
             out = {"url": at.url, "gate_key": at.pubkey(), **at.stats()}
             _print(out) if a.json else [print(f"{k:12} {v}") for k, v in out.items()]
         elif a.cmd == "receivers":
@@ -82,7 +154,13 @@ def main(argv=None) -> int:
     except httpx.ConnectError:
         sys.exit(f"cannot reach a gate at {at.url}. Start one: uvicorn gate.server:app --port 8402")
     except httpx.HTTPStatusError as e:
-        sys.exit(f"gate said {e.response.status_code}: {e.response.text}")
+        try:
+            why = e.response.json().get("detail", e.response.text)
+        except ValueError:
+            why = e.response.text
+        sys.exit(f"gate said {e.response.status_code}: {why}")
+    except (FileNotFoundError, FileExistsError) as e:
+        sys.exit(str(e))
     return 0
 
 

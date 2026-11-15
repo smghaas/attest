@@ -21,6 +21,14 @@ claims, is a staked operator behind it, and is this action inside its mandate?
 Attach your credential and mandate chain to every request and sign the request with your own key.
 `attest.build_request(agent, to, action, amount, message)` builds the envelope. You never call the gate.
 
+## If you are new and have no credentials (public sandbox)
+
+Check `GET {ATTEST_URL}/info`. If `mode` is `sandbox`, you can register yourself, and `stake_is_real` is false:
+stake is free test credit. Generate an Ed25519 key, then `POST /sandbox/faucet` `{issuer, name, sig}` where `sig` signs
+`{"faucet": true, "issuer": <pubkey>, "name": <name>}`. Receivers register with `POST /register/receiver`
+(see `attest/client.py` for the exact signed bodies). Or just use the CLI: `attest operator create`, `attest receiver create`,
+`attest agent create`. Rate limits are per IP; a 429 means wait a minute. Never send a private key to the gate.
+
 ## Setup
 
 - Gate URL: `ATTEST_URL`, default `http://127.0.0.1:8402`.

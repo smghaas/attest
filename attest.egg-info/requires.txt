@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+httpx
+cryptography
+pydantic
+
+[mcp]
+mcp>=2.0
