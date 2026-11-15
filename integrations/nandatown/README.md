@@ -2,7 +2,8 @@
 
 Started as a copy of the Attest x NANDA Town integration submitted as
 https://github.com/projnanda/nandatown/pull/352 (branch `integration/attest-gate-seller`,
-commit b878589, built on Town commit 6f9a7c0). **This copy is now ahead of the PR.** Since b878589:
+commit b878589, built on Town commit 6f9a7c0). **This copy is now ahead of the PR** (full explanation:
+`docs/NANDATOWN.md`). Since b878589:
 
 - the seller's refusals tell the buyer how to get served (gate address and key, receiver name, what to attach)
 - the buyer can start knowing nothing about Attest and learn the gate from the seller (`ATTEST_DISCOVER=1`),
