@@ -1,5 +1,11 @@
 # Cold-start integration test: pre-registered checks
 
+**Useful result (the success criterion, fixed before the run):** the run is a success when B1, S1, S2, S3, S4 and
+B2 all pass. In words: a buyer agent that has never seen Attest signs itself up from AGENTS.md alone and sends an
+order the gate can vet; a seller agent that has never seen Attest registers its shop, checks every request at the
+gate and acts on each decision (fulfils the legitimate order at the right price, declines the unstaked one); and the
+buyer reads the answer and reports it truthfully. The documentation under test is AGENTS.md at commit 3850b2d.
+
 These checks are fixed before the real run. `score.py` computes every one of them from artifacts in the run
 folder (`usability/runs/<id>/`). An agent's own statement is never evidence that something happened. The only
 agent statement that is scored is `outcome.json` in B2, and B2 scores whether that statement is true.
