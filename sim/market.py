@@ -65,13 +65,14 @@ class Market:
         for old in self.details.glob("*.json"):
             old.unlink()
         self.control = LOG_DIR / "market_control.json"
+        self.run_id = os.environ.get("ATTEST_MARKET_RUN") or str(int(time.time()))
         self.n = 0
         self.ops, self.agents, self.meta, self.shops = {}, {}, {}, {}
 
     def emit(self, kind: str, record: dict | None = None, **kw):
         """Log an event; `record` (the full transaction) is kept beside it for the details view."""
         self.n += 1
-        ev = {"n": self.n, "t": time.time(), "kind": kind, **kw, "has_detail": record is not None}
+        ev = {"n": self.n, "run": self.run_id, "t": time.time(), "kind": kind, **kw, "has_detail": record is not None}
         if record is not None:
             (self.details / f"{self.n}.json").write_text(json.dumps({"event": ev, **record}))
         with self.log.open("a") as f:

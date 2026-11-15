@@ -132,8 +132,9 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "P
 
 
 @app.get("/", include_in_schema=False)
-def dashboard():
-    return FileResponse(STATIC / "index.html")
+def home():
+    """Everything on one page: tabs for the live town, between people, checking an agent, NANDA Town."""
+    return FileResponse(STATIC / "app.html")
 
 
 @app.get("/info")
@@ -368,12 +369,14 @@ def market_start(request: Request, rounds: int = 120, pace: float = 3.0, mode: s
             p.kill()
     (LOG_DIR / "market.jsonl").write_text("")               # the page reads the new run from the start
     _control(mode="step" if mode == "step" else "play", pace=max(0.3, min(pace, 10)), granted=0)
-    env = {**os.environ, "ATTEST_URL": str(request.base_url).rstrip("/"), "ATTEST_LOG_DIR": str(LOG_DIR)}
+    run_id = str(int(time.time() * 1000))
+    env = {**os.environ, "ATTEST_URL": str(request.base_url).rstrip("/"), "ATTEST_LOG_DIR": str(LOG_DIR),
+           "ATTEST_MARKET_RUN": run_id}
     env.pop("ATTEST_DIR", None)
     _market["proc"] = subprocess.Popen([sys.executable, str(ROOT / "sim" / "market.py"),
                                         "--rounds", str(max(5, min(rounds, 400)))],
                                        cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return {"ok": True}
+    return {"ok": True, "run": run_id}
 
 
 class Control(BaseModel):

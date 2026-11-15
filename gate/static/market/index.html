@@ -103,7 +103,7 @@ table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left
 </div>
 <section class="feed"><h2>Every transaction, newest first (click one for the details)</h2><ol id="feed"></ol></section>
 <aside class="drawer" id="drawer" aria-label="Details"></aside>
-<p style="color:var(--mute);font-size:13px">Every check is a real, signed answer from the Attest gate, and every finished deal is signed by both sides and kept on the ledger. <a href="/">Back to Attest</a> · <a href="/static/people/">Between two people</a> · <a href="/static/town/">The NANDA Town runs</a></p>
+<p style="color:var(--mute);font-size:13px">Every check is a real, signed answer from the Attest gate, and every finished deal is signed by both sides and kept on the ledger. <a href="/" target="_top">Back to Attest</a> · <a href="/#people" target="_top">Between two people</a> · <a href="/#nanda" target="_top">The NANDA Town runs</a></p>
 </main>
 <script>
 const $=s=>document.querySelector(s);
@@ -131,7 +131,7 @@ const WHY={
 const BEHAVE={honest:"honest",shady:"often leaves sellers unhappy",splitter:"splits orders to dodge its limit",big:"big spender",revoked:"its backer cancels its ID halfway",greedy:"helper given more power than its maker",impostor:"no ID at all"};
 const why=e=>WHY[e.reason]||e.plain||e.detail||e.reason;
 const BAD=new Set(["unstaked_money_action","attenuation_violation","cumulative_over_limit","credential_revoked","bad_track_record","over_limit","out_of_scope","issuer_exposure_over_stake"]);
-let A={},S={},last=0,stats={},queue=[],busy=false,mode="idle",running=false;
+let A={},S={},last=0,stats={},queue=[],busy=false,mode="idle",running=false,run=null;
 
 // ---------------- the town ----------------
 function reset(){stats={served:0,refused:0,human:0,disputed:0,bad:0};queue=[];$("#feed").innerHTML="";drawStats()}
@@ -202,7 +202,11 @@ function feed(html,n){
 function pump(){if(busy||!queue.length)return;busy=true;apply(queue.shift());setTimeout(()=>{busy=false;pump()},queue.length>15?80:500)}
 async function poll(){
   try{const evs=await (await fetch("/market/events?after="+last)).json();
-    for(const e of evs){last=e.n;queue.push(e)}pump();
+    for(const e of evs){
+      if(e.kind==="setup"&&!run)run=e.run;          // opened mid-run: follow the run that is on screen
+      if(run&&e.run!==run)continue;                   // an older run's events: ignore them
+      last=e.n;queue.push(e)}
+    pump();
   }catch(e){}
 }
 
@@ -213,7 +217,7 @@ function setRunning(on){running=on;$("#pp").disabled=!on;$("#step").disabled=!on
 $("#start").onclick=async()=>{
   reset();$("#agents").innerHTML='<p class="help">Setting up the town: making IDs and keys…</p>';$("#shops").innerHTML="";
   const r=await fetch(`/market/start?rounds=150&pace=${$("#speed").value}&mode=play`,{method:"POST"});
-  last=0;queue=[];
+  last=0;queue=[];if(r.ok)run=(await r.clone().json()).run;
   if(!r.ok){$("#state").textContent="Starting a run needs demo mode on this gate.";return}
   mode="play";$("#pp").textContent="Pause";setRunning(true);
 };

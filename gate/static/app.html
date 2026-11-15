@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attest</title>
+<link rel="icon" href="/static/logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f4f5f2;--card:#fff;--ink:#141821;--mute:#5d6673;--line:#dcdfe4;--accent:#2f4bd6}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1217;--card:#181c23;--ink:#e8ebf0;--mute:#9aa4b2;--line:#2a313c;--accent:#8ea2ff}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;display:flex;flex-direction:column}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px 0}
+.top{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center}
+h1{font-size:22px;margin:0;display:flex;gap:8px;align-items:center}
+.what{color:var(--mute);font-size:14px}
+nav{max-width:1240px;margin:8px auto 0;display:flex;gap:2px;overflow-x:auto}
+nav a{padding:9px 14px;border-radius:8px 8px 0 0;color:var(--mute);text-decoration:none;font-weight:600;white-space:nowrap;border:1px solid transparent;border-bottom:0}
+nav a[aria-current=page]{color:var(--ink);background:var(--bg);border-color:var(--line)}
+nav a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.frames{flex:1;position:relative}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
+iframe[hidden]{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><h1><img src="/static/logo.svg" alt="" width="30" height="30">Attest</h1>
+    <span class="what">Before you trust an agent, or a person, Attest checks who they are, who answers for them, and what they may do.</span></div>
+  <nav id="tabs" aria-label="Sections"></nav>
+</header>
+<div class="frames" id="frames"></div>
+<script>
+// One page: each section is its own page in a frame, loaded on first visit and kept alive, so the live town
+// keeps running while you look at something else.
+const TABS=[
+  ["town","Live town: 10 agents, 10 shops","/static/market/"],
+  ["people","Between two people","/static/people/"],
+  ["check","Check an agent yourself","/static/index.html"],
+  ["nanda","In NANDA Town","/static/town/"],
+];
+const frames={};
+function show(id){
+  if(!TABS.some(t=>t[0]===id))id=TABS[0][0];
+  for(const [k,label,src] of TABS){
+    if(k===id&&!frames[k]){const f=document.createElement("iframe");f.src=src;f.title=label;document.getElementById("frames").appendChild(f);frames[k]=f}
+    if(frames[k])frames[k].hidden=k!==id;
+  }
+  document.querySelectorAll("#tabs a").forEach(a=>{if(a.dataset.id!==id)a.removeAttribute("aria-current");else a.setAttribute("aria-current","page")});
+}
+document.getElementById("tabs").innerHTML=TABS.map(([k,label])=>`<a href="#${k}" data-id="${k}">${label}</a>`).join("");
+addEventListener("hashchange",()=>show(location.hash.slice(1)));
+show(location.hash.slice(1));
+</script>
+</body>
+</html>
