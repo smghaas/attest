@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Attest</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f4bd6'/%3E%3Cpath d='M9 17l5 5 9-11' stroke='white' stroke-width='3.5' fill='none'/%3E%3C/svg%3E">
+<link rel="icon" href="/static/logo.svg" type="image/svg+xml">
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#14181f;--mute:#5d6673;--line:#dde1e7;--ok:#0b7a43;--okbg:#e2f5ea;--bad:#b3261e;--badbg:#fbe7e5;--warn:#8a5a00;--warnbg:#fdf1d6;--unk:#4a5565;--unkbg:#e8ebf0;--accent:#2f4bd6}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1217;--card:#181c23;--ink:#e8ebf0;--mute:#9aa4b2;--line:#2a313c;--ok:#5fd394;--okbg:#10301f;--bad:#ff8a80;--badbg:#3a1613;--warn:#f2c14e;--warnbg:#38290a;--unk:#b6c0cf;--unkbg:#262d38;--accent:#8ea2ff}}
@@ -36,6 +36,7 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
 h3{font-size:15px;margin:0 0 4px}
 .step{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg)}
 .step select,.step input{background:var(--card)}
+.presets{display:flex;flex-wrap:wrap;gap:6px}.presets button{width:auto;margin:0;padding:4px 10px;background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:500}
 .checks{display:flex;gap:16px}.checks label{display:flex;gap:6px;align-items:center;margin:0;color:var(--ink);font-size:14px}.checks input{width:auto}
 .msg{font-size:13px;margin-top:8px;min-height:1em}.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
 button.ghost{background:var(--card);color:var(--bad);border:1px solid var(--line)}
@@ -45,7 +46,7 @@ button:disabled{opacity:.6;cursor:wait}
 <body>
 <main>
 <header>
-  <div><h1>Attest</h1><div class="sub">Know your agent before it acts. Every decision below carries a receipt signed by the gate.</div></div>
+  <div><h1 style="display:flex;align-items:center;gap:10px"><img src="/static/logo.svg" alt="" width="34" height="34">Attest</h1><div class="sub">Know your agent before it acts. Every decision below carries a receipt signed by the gate.</div></div>
   <div class="sub"><span id="up">connecting…</span> · gate key <span class="mono" id="key">…</span></div>
 </header>
 
@@ -62,20 +63,22 @@ button:disabled{opacity:.6;cursor:wait}
     <div class="step"><h3>2. Your agent</h3>
       <div class="row"><div><label for="m-ag">Agent name</label><input id="m-ag" placeholder="e.g. globex-buyer" autocomplete="off"></div>
         <div><label for="m-iss">Issued by</label><select id="m-iss"></select></div></div>
-      <label>May do</label>
-      <div class="checks"><label><input type="checkbox" id="m-q" checked> request_quote</label><label><input type="checkbox" id="m-o" checked> place_order</label></div>
+      <label>Use case</label>
+      <div class="presets"><button type="button" data-p="procurement">Procurement</button><button type="button" data-p="travel">Travel</button><button type="button" data-p="payments">Payments</button><button type="button" data-p="data">Data access</button></div>
+      <label for="m-acts">May do (any action names, comma separated)</label><input id="m-acts" value="request_quote, place_order" autocomplete="off">
       <label for="m-max">Up to (USD)</label><input id="m-max" type="number" min="0" value="10000">
       <button id="m-ag-go">Create agent</button><div class="msg" id="m-ag-msg"></div></div>
     <div class="step"><h3>3. Who checks (receiver)</h3>
       <label for="m-rc">Receiver name</label><input id="m-rc" placeholder="e.g. my-desk" autocomplete="off">
       <div class="row"><div><label for="m-min">Min stake behind an agent</label><input id="m-min" type="number" min="0" value="5000"></div>
         <div><label for="m-esc">Ask a human for anything above</label><input id="m-esc" type="number" min="0" value="8000"></div></div>
+      <label for="m-ro">Actions that move no value here (anyone may do them)</label><input id="m-ro" placeholder="e.g. check_availability" autocomplete="off">
       <label for="m-esc-for">That limit applies to</label><select id="m-esc-for"><option value="*">every action (quotes and orders)</option><option value="place_order">orders only</option></select>
       <button id="m-rc-go">Create receiver</button><div class="msg" id="m-rc-msg"></div></div>
     <div class="step"><h3>4. Send a request, get a decision</h3>
       <div class="row"><div><label for="m-from">From agent</label><select id="m-from"></select></div>
         <div><label for="m-to">To receiver</label><select id="m-to"></select></div></div>
-      <div class="row"><div><label for="m-act">Action</label><select id="m-act"><option>request_quote</option><option>place_order</option></select></div>
+      <div class="row"><div><label for="m-act">Action</label><input id="m-act" list="m-act-list" value="request_quote" autocomplete="off"><datalist id="m-act-list"></datalist></div>
         <div><label for="m-amt">Amount (USD)</label><input id="m-amt" type="number" min="0" value="2000"></div></div>
       <button id="m-ask">Ask the gate</button><div id="m-out"></div></div>
   </div>
@@ -160,9 +163,10 @@ async function refresh(){
     for(const id of ["#rcv","#rcv2","#m-to"]){const s=$(id),cur=s.value;s.innerHTML=names.map(n=>`<option>${esc(n)}</option>`).join("");if(names.includes(cur))s.value=cur}
     demo=st.demo;
     try{
-      const [li,la,lb]=await Promise.all([get("/ledger/info"),get("/ledger/agents"),get("/ledger/blocks?limit=5")]);
+      const [li,laAll,lb]=await Promise.all([get("/ledger/info"),get("/ledger/agents"),get("/ledger/blocks?limit=5")]);
+      const isRcv=x=>x.actions.length===1&&x.actions[0]==="receive",la=laAll.filter(x=>!isRcv(x)),nr=laAll.length-la.length;
       $("#ledger").hidden=false;$("#m-ledger").hidden=false;if(!ledgerOn){ledgerOn=true;track()}
-      $("#linfo").textContent=`Height ${li.height}, final to ${li.final}, ${li.records} records, ${li.validators} validators. Blocks need a ${li.block_puzzle_bits}-bit puzzle and a staked validator's signature; a block is final once more than 2/3 of stake voted for it. ${li.note}.`;
+      $("#linfo").textContent=`${la.length} agents and ${nr} receivers have a passport. Height ${li.height}, final to ${li.final}, ${li.records} records, ${li.validators} validators. Blocks need a ${li.block_puzzle_bits}-bit puzzle and a staked validator's signature; a block is final once more than 2/3 of stake voted for it. ${li.note}.`;
       $("#lagents").innerHTML=tbl(la,[["Agent",r=>esc(r.name)],["Trades",r=>r.trades],["Accepted",r=>r.accepted],["Disputed",r=>r.disputed],["Volume",r=>"$"+Number(r.volume).toLocaleString()],["What a stranger would conclude",r=>pill(r.decision).replace(r.decision.toUpperCase(),verdict[r.decision]||r.decision)+`<div class="sub">${esc(r.why)}</div>`]]);
       $("#lblocks").innerHTML=tbl(lb,[["Block",r=>r.height],["Records",r=>r.records],["Proposer",r=>`<span class="mono">${esc(r.proposer)}</span>`],["Merkle root",r=>`<span class="mono">${esc(r.root.slice(0,16))}…</span>`]]);
     }catch(e){}
@@ -219,7 +223,7 @@ function idsChanged(){
   const ids=K.list(),names=k=>ids.filter(d=>d.kind===k).map(d=>d.name);
   const agents=names("agent");
   fill("#m-iss",[...names("operator"),...agents]);
-  fill("#m-from",agents);
+  fill("#m-from",agents);actsFor();
   track();
   $("#m-ids").innerHTML=tbl(ids,[["Name",r=>esc(r.name)],["Kind",r=>esc(r.kind)],["Details",r=>r.kind==="agent"?esc(`${r.chain[r.chain.length-1].scope.actions.join(", ")} up to $${Number(r.chain[r.chain.length-1].scope.max_amount).toLocaleString()}`+(r.delegated_by?`, delegated by ${r.delegated_by}`:`, for ${r.operator}`)):""],["Public key",r=>`<span class="mono">${esc(r.pub.slice(0,16))}…</span>`]]);
 }
@@ -229,17 +233,22 @@ const clean=v=>v.trim();
 
 $("#m-op-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-op").value);if(!n)return say("#m-op-msg","Give your company a name.",false);
   try{const r=await K.createOperator(n);say("#m-op-msg",`${n} created with ${Number(r.stake).toLocaleString()} test stake. Its key is in this browser.`);idsChanged();refresh()}catch(err){say("#m-op-msg",err.message,false)}});
+const PRESETS={procurement:["request_quote, place_order","","place_order"],travel:["search, check_availability, book_flight","check_availability","book_flight"],
+  payments:["get_status, send_payment","","send_payment"],data:["read, export_data","","export_data"]};
+document.querySelectorAll(".presets button").forEach(b=>b.onclick=()=>{const [acts,ro,act]=PRESETS[b.dataset.p];$("#m-acts").value=acts;$("#m-ro").value=ro;$("#m-act").value=act});
+function actsFor(){const a=K.get($("#m-from").value);$("#m-act-list").innerHTML=a&&a.chain?a.chain[a.chain.length-1].scope.actions.map(x=>`<option value="${esc(x)}">`).join(""):""}
+$("#m-from").addEventListener("change",actsFor);
 $("#m-ag-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-ag").value),iss=$("#m-iss").value;
-  const acts=[["#m-q","request_quote"],["#m-o","place_order"]].filter(x=>$(x[0]).checked).map(x=>x[1]);
+  const acts=$("#m-acts").value.split(",").map(x=>x.trim()).filter(Boolean);
   if(!n||!iss)return say("#m-ag-msg","Create a company first, then name the agent.",false);
-  if(!acts.length)return say("#m-ag-msg","Tick at least one action.",false);
+  if(!acts.length)return say("#m-ag-msg","List at least one action it may do.",false);
   try{const sub=K.get(iss).kind==="agent";await K.createAgent(n,iss,"agent made in the browser",acts,Number($("#m-max").value)||0,sub?7:30);
     say("#m-ag-msg",sub?`${n} is a sub-agent of ${iss}. If its limits are wider than its parent's, the gate will refuse it.`:`${n} now holds a credential and a mandate signed by ${iss}.`);idsChanged();$("#m-from").value=n}catch(err){say("#m-ag-msg",err.message,false)}});
 $("#m-rc-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-rc").value).toLowerCase();if(!n)return say("#m-rc-msg","Name the receiver (lowercase, dashes).",false);
-  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0,$("#m-esc-for").value);say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
+  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0,$("#m-esc-for").value,$("#m-ro").value.split(",").map(x=>x.trim()).filter(Boolean));say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
 $("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("#m-to").value;
   if(!a){$("#m-out").innerHTML='<div class="msg err">Create an agent in step 2 first.</div>';return}
-  try{const {envelope,result}=await K.check(a,to,$("#m-act").value,Number($("#m-amt").value)||0);
+  try{const {envelope,result}=await K.check(a,to,$("#m-act").value.trim(),Number($("#m-amt").value)||0);
     const r=result,ch=r.challenge?`<div class="sub">Puzzle required: ${esc(r.challenge.bits)} bits of proof of work before an unstaked agent is heard.</div>`:"";
     $("#m-out").innerHTML=`<div class="result"><div class="big">${pill(r.decision)} ${esc(r.reason)}</div>${r.detail?`<pre>${esc(r.detail)}</pre>`:""}${ch}
       <div class="sub" style="margin-top:8px">Receipt <span class="mono">${esc(r.receipt.id.slice(0,16))}</span> signed by the gate.</div>
@@ -247,7 +256,9 @@ $("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("
       <button class="ghost" style="color:var(--accent);width:auto;padding:4px 12px" id="m-copy">Copy the signed envelope (to send to another agent)</button></div>`;
     const settle=status=>async ev=>{for(const b of ["#m-done","#m-disp"])$(b).disabled=true;say("#m-set-msg","Signing and adding to the ledger…");
       try{const out=await K.settle(a,to,envelope.request.id,envelope.request.amount,status);
-        say("#m-set-msg",status==="accepted"?`Recorded in block ${out.height}: ${a} and ${to} both confirmed the deal.`:`Dispute recorded in block ${out.height}, signed by both. It counts against ${a}'s record.`);track();refresh()}
+        const v=await get("/ledger/agents/"+K.get(a).pub+"/decision"),h=await get("/ledger/agents/"+K.get(a).pub+"/history");
+        const next=v.decision==="unknown"?" To become Trusted it needs 3 confirmed deals with at least 2 different partners (at most 2 count per partner).":"";
+        say("#m-set-msg",`${status==="accepted"?"Confirmed by both":"Dispute recorded, signed by both"} (block ${out.height}). ${a} now has ${h.accepted} confirmed and ${h.disputed} disputed. A stranger would see: ${verdict[v.decision]}.${next}`,v.decision!=="refuse");track();refresh()}
       catch(err){say("#m-set-msg",err.message,false);for(const b of ["#m-done","#m-disp"])$(b).disabled=false}};
     if($("#m-done")){$("#m-done").onclick=settle("accepted");$("#m-disp").onclick=settle("disputed")}
     $("#m-copy").onclick=()=>navigator.clipboard.writeText(JSON.stringify(envelope,null,1)).then(()=>$("#m-copy").textContent="Copied");

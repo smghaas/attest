@@ -52,6 +52,8 @@ def main(argv=None) -> int:
     rc.add_argument("--min-stake", type=float, default=0, help="operators must have at least this much stake")
     rc.add_argument("--escalate", action="append", default=[], metavar="ACTION=AMOUNT",
                     help="ask a human above this amount: *=8000 for every action, or place_order=8000 for one")
+    rc.add_argument("--read-only", action="append", default=[], metavar="ACTION",
+                    help="an action that moves no value here (anyone may do it), e.g. --read-only check_availability")
     ag = sub.add_parser("agent", help="create an agent for an operator, or delegate a narrower one")
     ag.add_argument("action", choices=["create", "delegate"])
     ag.add_argument("name")
@@ -121,7 +123,7 @@ def main(argv=None) -> int:
         elif a.cmd == "receiver":
             rcv = identity.new_receiver(a.name, persist=False)
             esc = {k: float(v) for k, v in (x.split("=", 1) for x in a.escalate)}
-            at.register_receiver(rcv, a.min_stake, esc or None)
+            at.register_receiver(rcv, a.min_stake, esc or None, a.read_only or None)
             identity.save(rcv)
             print(f"receiver {a.name} registered (min stake {a.min_stake:,.0f}); key kept in {identity.home()}/{a.name}.json")
             print(f"check an agent with:  attest request AGENT {a.name} request_quote 100 --check")

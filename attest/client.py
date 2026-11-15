@@ -116,8 +116,13 @@ class Attest:
         _raise(r)
         return r.json()
 
-    def register_receiver(self, receiver: dict, min_stake: float = 0, escalate_above: dict | None = None) -> dict:
+    def register_receiver(self, receiver: dict, min_stake: float = 0, escalate_above: dict | None = None,
+                          read_only: list | None = None) -> dict:
+        """escalate_above: {"*": 8000} asks a human above 8,000 for any action. read_only: actions that move
+        no value at this receiver; every other action counts as spending."""
         policy = {"escalate_above": escalate_above} if escalate_above else {}
+        if read_only:
+            policy["read_only"] = list(read_only)
         body = {"register_receiver": receiver["name"], "pubkey": receiver["pub"],
                 "min_stake": float(min_stake), "policy": policy}
         r = self.http.post("/register/receiver", json={**{k: v for k, v in body.items() if k != "register_receiver"},

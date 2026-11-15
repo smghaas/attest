@@ -143,3 +143,22 @@ def test_a_human_threshold_for_every_action_also_catches_large_quotes(sandbox, c
     assert run("request", "v-buyer", "careful-desk", "place_order", "9000", "--check") == 2
     assert "ESCALATE" in capsys.readouterr().out
     assert run("request", "v-buyer", "careful-desk", "request_quote", "500", "--check") == 0
+
+
+def test_any_action_name_works_and_counts_as_spending_unless_read_only(sandbox, capsys):
+    """Not only quotes and orders: a travel agent books flights, and the running total still applies."""
+    assert run("operator", "create", "Skyways") == 0
+    assert run("receiver", "create", "airline-desk", "--min-stake", "1000", "--read-only", "check_availability") == 0
+    assert run("agent", "create", "travel-bot", "--operator", "Skyways",
+               "--actions", "check_availability,book_flight", "--max", "1000") == 0
+    capsys.readouterr()
+    assert run("request", "travel-bot", "airline-desk", "book_flight", "600", "--check") == 0
+    assert run("request", "travel-bot", "airline-desk", "book_flight", "600", "--check") == 2   # 1,200 > 1,000
+    assert "cumulative_over_limit" in capsys.readouterr().out
+    assert run("request", "travel-bot", "airline-desk", "check_availability", "900", "--check") == 0  # read-only: no total
+    # an agent with no staked operator may look, but not book
+    ghost_op = identity.new_operator("GhostAir")
+    identity.new_agent("ghost-bot", ghost_op, "t", ["check_availability", "book_flight"], 1000)
+    capsys.readouterr()
+    assert run("request", "ghost-bot", "airline-desk", "book_flight", "50", "--check") == 2
+    assert "unstaked_money_action" in capsys.readouterr().out

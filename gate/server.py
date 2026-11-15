@@ -293,10 +293,12 @@ def register_receiver(r: NewReceiver):
         raise HTTPException(400, "pubkey must be a 64 hex character Ed25519 public key")
     if not 0 <= r.min_stake <= 1e9:
         raise HTTPException(400, "min_stake out of range")
-    esc = r.policy.get("escalate_above", {})
-    if set(r.policy) - {"escalate_above"} or not isinstance(esc, dict) or not all(
-            isinstance(k, str) and isinstance(v, (int, float)) and v >= 0 for k, v in esc.items()):
-        raise HTTPException(400, 'policy may only be {"escalate_above": {"action": amount}}')
+    esc, ro = r.policy.get("escalate_above", {}), r.policy.get("read_only", [])
+    if set(r.policy) - {"escalate_above", "read_only"} or not isinstance(esc, dict) or not all(
+            isinstance(k, str) and isinstance(v, (int, float)) and v >= 0 for k, v in esc.items()) or not (
+            isinstance(ro, list) and len(ro) <= 50 and all(isinstance(a, str) and 0 < len(a) <= 64 for a in ro)):
+        raise HTTPException(400, 'policy may only be {"escalate_above": {"action" or "*": amount}, '
+                                 '"read_only": ["action", ...]}')
     from . import crypto
     body = {"register_receiver": r.name, "pubkey": r.pubkey, "min_stake": r.min_stake, "policy": r.policy}
     if not crypto.verify(r.pubkey, body, r.sig):

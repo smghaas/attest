@@ -73,8 +73,10 @@ ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = Path(os.environ.get("ATTEST_STATE_DIR", ROOT / "state"))
 LOG_DIR = Path(os.environ.get("ATTEST_LOG_DIR", ROOT / "logs"))
 
-READ_ONLY = {"request_quote"}           # actions that move no money
-MONEY = {"place_order"}
+# Actions that move no value. Every other action counts as spending (running totals, the issuer's
+# stake cap, refused for unstaked agents), so a new action name is never free by accident.
+# A receiver can add its own read-only actions with policy {"read_only": [...]}.
+READ_ONLY = {"request_quote", "search", "read", "lookup", "get_status"}
 
 POW_BASE_BITS = 16                      # about 65,000 hashes on average
 POW_MAX_BITS = 30
@@ -453,16 +455,20 @@ class Gate:
         minute = str(int(now // 60))
         buckets[minute] = buckets.get(minute, 0) + 1
 
+    def _read_only(self, receiver: str, action) -> bool:
+        pol = (self.state["receivers"].get(receiver) or {}).get("policy") or {}
+        return action in READ_ONLY or action in (pol.get("read_only") or [])
+
     def _unstaked(self, receiver: str, env: dict, req: dict, why: str, now: float, extra: dict) -> tuple[str, str, str]:
         """No staked issuer behind this agent: refuse money, puzzle for read-only."""
         bad = self._check_request_sig(receiver, req, now)
         if bad:
             return "refuse", *bad
         action = req.get("action")
-        if action not in READ_ONLY:
+        if not self._read_only(receiver, action):
             self.state["nonces_seen"][req["nonce"]] = now
             self._save()
-            return "refuse", "unstaked_money_action", f"{why}; {action} moves money, so it is refused"
+            return "refuse", "unstaked_money_action", f"{why}; {action} moves value, so it is refused"
         sol = env.get("pow")
         if sol:
             ch = self.state["pow_open"].get(sol.get("challenge_id", ""))
@@ -575,7 +581,7 @@ class Gate:
             return "refuse", "bad_amount", "amount must be a finite number, not negative"
         if amt > float(scope.get("max_amount", 0)):
             return "refuse", "over_limit", f"amount {amt:,.0f} exceeds mandate limit {scope.get('max_amount'):,}"
-        if req.get("action") in MONEY:
+        if not self._read_only(receiver, req.get("action")):
             for m in chain:
                 spent = self.state["spent"].get(m["id"], 0.0)
                 cap = float(m["scope"].get("max_amount", 0))
@@ -599,7 +605,7 @@ class Gate:
         if limit is not None and amt > float(limit):
             return "escalate", "policy_escalation", f"{req.get('action')} above {limit:,} needs a human at {receiver}"
 
-        if req.get("action") in MONEY:
+        if not self._read_only(receiver, req.get("action")):
             for m in chain:
                 self.state["spent"][m["id"]] = self.state["spent"].get(m["id"], 0.0) + amt
             self.state["issuer_spent"].setdefault(cred["issuer"], []).append([now, amt])
