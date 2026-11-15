@@ -3,6 +3,9 @@
 A Know-Your-Agent (KYA) check that one agent calls before it acts on a request from another agent.
 MAS.665 AI Studio, MIT, fall 2026. Samuel Haas and Eduard Alsina.
 
+**Building an agent that uses Attest?** Everything it needs (access, inputs, outputs, limits, a worked example) is in
+[AGENTS.md](AGENTS.md).
+
 ## What it does
 
 Before a receiving agent trusts a request, it asks the gate three questions about the sender:

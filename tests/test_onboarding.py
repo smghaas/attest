@@ -162,3 +162,19 @@ def test_any_action_name_works_and_counts_as_spending_unless_read_only(sandbox, 
     capsys.readouterr()
     assert run("request", "ghost-bot", "airline-desk", "book_flight", "50", "--check") == 2
     assert "unstaked_money_action" in capsys.readouterr().out
+
+
+def test_a_delegated_sub_agent_made_with_the_cli_defaults_is_accepted(sandbox, capsys):
+    # Before the fix, `attest agent delegate` gave the child a fresh lifetime that outlived its parent,
+    # so every sub-agent made with the defaults was refused (attenuation_violation).
+    assert run("operator", "create", "Umbrella") == 0
+    assert run("receiver", "create", "umbrella-desk", "--min-stake", "5000") == 0
+    assert run("agent", "create", "umbrella-buyer", "--operator", "Umbrella", "--actions", "request_quote,place_order",
+               "--max", "2000") == 0
+    assert run("agent", "delegate", "umbrella-sub", "--parent", "umbrella-buyer", "--actions", "request_quote",
+               "--max", "500") == 0
+    parent, child = identity.load("umbrella-buyer"), identity.load("umbrella-sub")
+    assert child["chain"][-1]["expires_at"] <= parent["chain"][-1]["expires_at"]
+    capsys.readouterr()
+    assert run("request", "umbrella-sub", "umbrella-desk", "request_quote", "100", "--check") == 0
+    assert "ALLOW" in capsys.readouterr().out
