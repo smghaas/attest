@@ -1,0 +1,20 @@
+{
+ "type": "attest.receipt/1",
+ "receiver": "widget-shop",
+ "request_id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+ "from": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+ "action": "place_order",
+ "amount": 600.0,
+ "decision": "escalate",
+ "reason": "policy_escalation",
+ "detail": "place_order above 500.0 needs a human at widget-shop",
+ "credential_id": "1139862d4bc8f9b9fcb8d7e2fcb8d2ccae7a248629ee1dad36772d12a98c8ce3",
+ "issuer": "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb",
+ "chain_ids": [
+  "4187b2e75353fe42c4cbb9ca4d398913a77ab210c666035d50d6a38fec377b64"
+ ],
+ "ts": 1794773929.5586941,
+ "gate": "0a423408edec14dba974d35ec7375f235002fbbbdc3ac0f72247559f76fc6991",
+ "id": "df0cb47080162e9e1b280081f9e5a72b227cb6f8878dd76e53c0ef86b7c0dfc2",
+ "sig": "bd6f2e1afe4a565ffef8aa29edf048bbc078088b375c6503612c21799bc178ed397909de3450298c32667136cec6c45d2112551be8b6776242d43b1942f5e90f"
+}

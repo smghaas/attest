@@ -1,0 +1,26 @@
+{
+  "request_id": "1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae",
+  "status": "fulfilled",
+  "reason": "Vetted by Attest (allow). 30 x X-200 at our list price $19.50 = $585.00, within the $600 authorized (your PO assumed $20/unit).",
+  "total_usd": 585.0,
+  "receipt": {
+    "type": "attest.receipt/1",
+    "receiver": "widget-shop",
+    "request_id": "1174ace9acbf659cedb4f22f22f20f4bf6bbd752969bccb5cfed46c6fc4dd1ae",
+    "from": "17d0918971b122ebea75f4a2144b4d4fac90dabbe9927a0090c6db4d74fdb5f0",
+    "action": "place_order",
+    "amount": 600.0,
+    "decision": "allow",
+    "reason": "ok",
+    "detail": "issuer BrightlineFabrication staked 10,000 (threshold 5,000), chain depth 1, place_order 600 within limit 700.0",
+    "credential_id": "aa9a91c3e2045c143b78e30fc519586d5be845a92ca50b724c3cdcc21bb1c801",
+    "issuer": "f915eb697af164f1f6c3eb0df2de9268db2be3d545ff7e35100c7f19a812496f",
+    "chain_ids": [
+      "4b8729bce6fedac64c2b0a984bcd890cd61bc5fec7c9bc29d18d93e4a9c6412e"
+    ],
+    "ts": 1794773822.5853007,
+    "gate": "35e0c9bd5e493d062dd8de6efbdc2e6be57faf1be1a80856822e519ae312cb0d",
+    "id": "5ceeac0a71593636598ecf5ae1f7d3376e414d5b5da8f75648ef981129fa9217",
+    "sig": "f40e9b0613bcc88c1bcef972cb3673a8a1efaf35f6e8ca909b2064b6575eaf03815f7bee9009b71b5b5face62cc6d443fd6d486d4d1e7d5a996ccc4e855df801"
+  }
+}

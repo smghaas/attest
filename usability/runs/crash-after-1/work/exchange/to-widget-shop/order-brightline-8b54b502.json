@@ -1,0 +1,54 @@
+{
+ "from": "Brightline Supply",
+ "reply_to": "to-brightline-supply",
+ "order": {
+  "item": "X-200",
+  "quantity": 25,
+  "unit_price_usd": 19.5,
+  "total_usd": 487.5
+ },
+ "envelope": {
+  "credential": {
+   "type": "kya.credential/1",
+   "agent": "f87441fe25b86710546cf343e24b06b4eca9e451bc50905c6f5705086678b08c",
+   "operator": "Brightline Supply",
+   "issuer": "37bcc194c48733384d12d3059034a52e4ddaa379d78338dbcda4b9db004a51b4",
+   "purpose": "procurement for Brightline Supply",
+   "issued_at": 1794773808.7330673,
+   "expires_at": 1797365808.7330673,
+   "id": "75bbc34f4c36e4f5091c3c2e4a05f53108ff3efa30789204890f14e6beb42a34",
+   "sig": "c12d491ad14ba27bd06002e2857b2b98c955781f65746ba874071b19d79cca04218b2a098308bff2823424f7f7e70b5d8c64d06652ca3f6fdde8915afa5cb40d"
+  },
+  "chain": [
+   {
+    "type": "kya.mandate/1",
+    "subject": "f87441fe25b86710546cf343e24b06b4eca9e451bc50905c6f5705086678b08c",
+    "issuer": "37bcc194c48733384d12d3059034a52e4ddaa379d78338dbcda4b9db004a51b4",
+    "parent": null,
+    "scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 1000.0,
+     "currency": "USD"
+    },
+    "expires_at": 1797365808.7330673,
+    "id": "6c6f46761943aff75bf359ee5da85622b4b7abc0c345269143c93fbdf947437e",
+    "sig": "53b6e1035c64adfaa2f34568465473d3c88a693d5a7b7d724eb698fd423387c2eb899b4d91ae06ecc447ba8cfe861a38e1bf283a3a4a38bc9f32356c061a6003"
+   }
+  ],
+  "request": {
+   "type": "kya.request/1",
+   "from": "f87441fe25b86710546cf343e24b06b4eca9e451bc50905c6f5705086678b08c",
+   "to": "widget-shop",
+   "action": "place_order",
+   "amount": 487.5,
+   "message": "Order: 25 units of X-200 at $19.50, total $487.50. Please ship to Brightline Supply.",
+   "ts": 1794773808.7334363,
+   "nonce": "7de656f9051b4f3481acb750df83ccde",
+   "id": "8b54b5028220b1df50df5e372b35491bdad3ac09954ca2ca6974bb3e5eb97010",
+   "sig": "51cb7099d81f8e39d0bfa138f2e0a3084894bd8ded9cfd3e582b55121ff055b346463e61b66c47f8b933ee8b020715c504ef1a429619b573f07ec7637cd95a01"
+  }
+ }
+}

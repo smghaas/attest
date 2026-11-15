@@ -1,0 +1,45 @@
+{
+  "credential": {
+    "type": "kya.credential/1",
+    "agent": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+    "operator": "BrightlineAssembly",
+    "issuer": "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb",
+    "purpose": "agent",
+    "issued_at": 1794773913.5136845,
+    "expires_at": 1797365913.5136845,
+    "id": "1139862d4bc8f9b9fcb8d7e2fcb8d2ccae7a248629ee1dad36772d12a98c8ce3",
+    "sig": "dcc387e688a9da27276818f64a1d3cfaa8e94b3451221550f558cbb1b875f4c0e975152ac61d24e3ac2ca4f95f5124ccbe590d8449133094de15e799a51a3a0a"
+  },
+  "chain": [
+    {
+      "type": "kya.mandate/1",
+      "subject": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+      "issuer": "0eaca0b42d297d3a20270add95256ca708a5fc76fcc1263e6baa7627999efdbb",
+      "parent": null,
+      "scope": {
+        "actions": [
+          "request_quote",
+          "place_order"
+        ],
+        "max_amount": 600.0,
+        "currency": "USD"
+      },
+      "expires_at": 1797365913.5136845,
+      "id": "4187b2e75353fe42c4cbb9ca4d398913a77ab210c666035d50d6a38fec377b64",
+      "sig": "04da3be6ddfb6613285651b355fe1803cda07bef75f77d91b50c8661f7f84d57a5649a6d415ffb01fd8f5a659024fa5b7e942cdc48c4915f562412b83e482e09"
+    }
+  ],
+  "request": {
+    "type": "kya.request/1",
+    "from": "946a8f9d9e7202998cf7b3356646e0f8155c2eb4b9b78c84907d305c1168f5d8",
+    "to": "widget-shop",
+    "action": "place_order",
+    "amount": 600.0,
+    "message": "PO-1: 30 units of part X-200, approx. $600 total ($20/unit)",
+    "ts": 1794773918.2389894,
+    "nonce": "994011b6c7e141cc8054dd43d10ed3eb",
+    "id": "7e2c405c5029545b3cb13853fcd0baef9ed646d56a7141e4ae5ba7713addabec",
+    "sig": "4510bfe88757abeb752311ab7cea52575389d431a11401cf62e41c1ce01e7e7e4dde902244c5f78d7bddc2bf21d48bfc75bacf23154b8879ac973eb85b5ad506"
+  },
+  "reply_to": "to-BrightlineAssembly"
+}

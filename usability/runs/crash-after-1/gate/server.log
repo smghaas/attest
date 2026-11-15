@@ -1,0 +1,31 @@
+INFO:     Started server process [6745]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:33885 (Press CTRL+C to quit)
+INFO:     127.0.0.1:45996 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46000 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38850 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38862 - "POST /register/receiver HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38866 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52536 - "GET /info HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52542 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52548 - "POST /sandbox/faucet HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37860 - "GET /receipts?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37870 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49672 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49672 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49672 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57374 - "GET /receivers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57376 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57376 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57384 - "POST /verify/widget-shop HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57384 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33810 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33818 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33834 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45370 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45382 - "GET /pubkey HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [6745]

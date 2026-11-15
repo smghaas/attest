@@ -1,0 +1,54 @@
+{
+ "from": "Brightline Supply",
+ "reply_to": "to-brightline-supply",
+ "order": {
+  "item": "X-200",
+  "quantity": 25,
+  "unit_price_usd": 19.5,
+  "total_usd": 487.5
+ },
+ "envelope": {
+  "credential": {
+   "type": "kya.credential/1",
+   "agent": "431d67c638a29c348032c0ab42f8f6d652c1b8a49fe026a29d9d7ac938f936fe",
+   "operator": "Brightline Supply",
+   "issuer": "7089bdf182e3f3dbcb6acd15ece375c5e646ab52747dfb376fb7221596205658",
+   "purpose": "procurement for Brightline Supply",
+   "issued_at": 1794773923.7128928,
+   "expires_at": 1797365923.7128928,
+   "id": "605486deaa0fd0fecc3d50bd8859391e944165d10c494d5bb42fc560e5407368",
+   "sig": "45fd72dc6d80db4fab8b9c490eb115797ba6384bd3ce0e75307936ef0aa298c011fc7749ffe70fda205cfbdb4cb65b40157e6ff60e38d52d6fc22acaf24ab40a"
+  },
+  "chain": [
+   {
+    "type": "kya.mandate/1",
+    "subject": "431d67c638a29c348032c0ab42f8f6d652c1b8a49fe026a29d9d7ac938f936fe",
+    "issuer": "7089bdf182e3f3dbcb6acd15ece375c5e646ab52747dfb376fb7221596205658",
+    "parent": null,
+    "scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 1000.0,
+     "currency": "USD"
+    },
+    "expires_at": 1797365923.7128928,
+    "id": "ec3651c7b2acc486d9ab41ee65657833d568c9884302b816bde6d5292775c647",
+    "sig": "b06262027e46aba8d4f8ab98b42340344b82bb500f843a9a810877c15d3add45c6db026689c7d438b4c06ef31557d23c520afcf52c5ded0f0297dc91d423400e"
+   }
+  ],
+  "request": {
+   "type": "kya.request/1",
+   "from": "431d67c638a29c348032c0ab42f8f6d652c1b8a49fe026a29d9d7ac938f936fe",
+   "to": "widget-shop",
+   "action": "place_order",
+   "amount": 487.5,
+   "message": "Order: 25 units of X-200 at $19.50, total $487.50. Please ship to Brightline Supply.",
+   "ts": 1794773923.7132287,
+   "nonce": "67de8a39ba1147d897b4f2aba3745b70",
+   "id": "6b2732988b73f48365942e0173ad20da085c7d14560afd4467bfa2b4c9401b88",
+   "sig": "98da42b7133772610bf4a21fef7b1d43349040ae5ac104536e043ba3e62a1adb3a4039f3aedac963c11b7795bf077a42718105282227c12df3f483fe759fc108"
+  }
+ }
+}

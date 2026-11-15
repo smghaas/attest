@@ -111,13 +111,14 @@ passes all its scenarios.
 - **The Town proposal is behind.** [projnanda/nandatown#352](https://github.com/projnanda/nandatown/pull/352)
   still has the earlier files. To update it, copy `examples/attest/` and `tests/test_attest_integration.py`
   into the PR branch. They sit at the same paths in the Town repo. `catalog/` is not part of the PR.
-- **Gate safety gap (not addressed here).** `/verify` does not check who is calling. Anyone holding a copy of
-  a signed request can present it first, which uses up its nonce, so the real receiver then gets `replay`.
-  The fix belongs in `gate/server.py`.
+- **Gate safety gap (partly closed in HW9).** `/verify` does not check who is calling. Before HW9, anyone holding
+  a copy of a signed request could present it first, use up its nonce, and the real receiver then got `replay`.
+  Since the HW9 repeat change (commit `df78644`), the receiver gets the same answer marked `repeat: true`, so it
+  can no longer be locked out; it still cannot tell who asked first.
 
 ## Suggested next steps
 
 1. Deploy the sandbox, then run `catalog/make_candidate.sh` so the catalog entry carries the real address.
 2. Copy the integration files into PR #352.
-3. Have receivers sign their `/verify` calls, to close the gap above.
+3. Have receivers sign their `/verify` calls, so the gate knows who asked.
 4. Propose a two-step quote profile to Town.

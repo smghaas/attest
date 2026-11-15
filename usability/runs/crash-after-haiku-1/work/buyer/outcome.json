@@ -1,0 +1,7 @@
+{
+  "order_status": "escalated",
+  "total_usd": null,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop escalated the 600 USD place_order to a human because its policy escalates place_order above 500 USD; no total was quoted or charged yet. The gate receipt (escalate, policy_escalation) is signed by the gate key and its request_id matches my order."
+}
