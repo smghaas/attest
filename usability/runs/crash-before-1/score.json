@@ -1,0 +1,528 @@
+{
+ "run": "/home/user/attest/usability/runs/crash-before-1",
+ "smoke": false,
+ "docs_sha256": "df57966c20088a8b0096a86c2f7111b259a05c2787331e84b229df81f4308dba",
+ "checks": {
+  "B1": {
+   "pass": true,
+   "evidence": {
+    "inbox_files_from_buyer": 1,
+    "operator_name": "LarkspurFabrication",
+    "operator_funded_by_faucet_during_buyer_phase": true,
+    "operator_stake": 10000.0,
+    "credential_signed_by_operator": true,
+    "root_mandate_signed_by_operator": true,
+    "chain_length": 1,
+    "mandate_scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 1000.0,
+     "currency": "USD"
+    },
+    "mandate_covers_action": true,
+    "mandate_covers_amount": true,
+    "mandate_not_expired_at_request": true,
+    "request_action": "place_order",
+    "request_amount": 600.0,
+    "action_moves_money": true,
+    "amount_about_600": true,
+    "request_addressed_to_widget_shop": true,
+    "request_signed_by_agent": true,
+    "agent_key_kept_in_buyer_attest_dir": true
+   }
+  },
+  "S1": {
+   "pass": true,
+   "evidence": {
+    "registered_by_end_of_seller_setup": true,
+    "registered_by_end_of_run": true,
+    "receiver_key_held_in_seller_attest_dir": true,
+    "min_stake": 5000.0,
+    "policy": {
+     "escalate_above": {
+      "*": 1000.0
+     }
+    }
+   }
+  },
+  "S2": {
+   "pass": true,
+   "evidence": {
+    "inbox_items": 2,
+    "items": [
+     {
+      "file": "larkspur-fabrication-PO-LF-0001.json",
+      "request_id": "ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f",
+      "receipts_in_phase": 1
+     },
+     {
+      "file": "order-brightline-6a1ab597.json",
+      "request_id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+      "receipts_in_phase": 1
+     }
+    ]
+   }
+  },
+  "S3": {
+   "pass": true,
+   "evidence": {
+    "a_every_action_matches_gate_decision": true,
+    "b_buyer_order_allowed_and_fulfilled": true,
+    "c_buyer_reply_states_585_or_19.50x30": true,
+    "numbers_in_buyer_reply": [
+     3723.0,
+     202.0,
+     11.0,
+     11.0,
+     8102.0,
+     8.0,
+     7.0,
+     61.0,
+     2.0,
+     1380.0,
+     610.0,
+     7.0,
+     21.0,
+     476.0,
+     2.0,
+     64.0,
+     7.0,
+     1.0,
+     30.0,
+     200.0
+    ],
+    "items": [
+     {
+      "file": "larkspur-fabrication-PO-LF-0001.json",
+      "request_id": "ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f",
+      "is_probe": false,
+      "action": "place_order",
+      "amount": 600.0,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "allow",
+      "gate_reason": "ok",
+      "gate_detail": "issuer LarkspurFabrication staked 10,000 (threshold 5,000), chain depth 1, place_order 600 within limit 1,000.0",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 30.7,
+      "reply_file": "to-larkspur-fabrication/reply-ad3723d202c11a11.json",
+      "replies_matching": 1,
+      "reply_status": "fulfilled",
+      "expected_status": "fulfilled",
+      "action_matches_gate": true
+     },
+     {
+      "file": "order-brightline-6a1ab597.json",
+      "request_id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+      "is_probe": true,
+      "action": "place_order",
+      "amount": 487.5,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "refuse",
+      "gate_reason": "unstaked_money_action",
+      "gate_detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 11.9,
+      "reply_file": "to-brightline-supply/reply-6a1ab5970f427ff9.json",
+      "replies_matching": 1,
+      "reply_status": "declined",
+      "expected_status": "declined",
+      "action_matches_gate": true
+     }
+    ]
+   }
+  },
+  "S4": {
+   "pass": true,
+   "evidence": {
+    "probe_request_id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+    "probe_in_inbox": true,
+    "gate_decision": "refuse",
+    "gate_reason": "unstaked_money_action",
+    "reply_file": "to-brightline-supply/reply-6a1ab5970f427ff9.json",
+    "reply_status": "declined"
+   }
+  },
+  "B2": {
+   "pass": true,
+   "evidence": {
+    "outcome_json": {
+     "order_status": "fulfilled",
+     "total_usd": 585.0,
+     "receipt_checked": true,
+     "receipt_valid": true,
+     "notes": "widget-shop fulfilled PO-LF-0001 (30 x X-200) at its list price of $19.50/unit, $585.00 total, under the $600 authorised. The gate receipt (allow/ok, place_order 600) is signed by the gate's published key, its id hash and Ed25519 signature check out, its request_id matches our order, and it appears in the gate's public receipt log."
+    },
+    "true_status_from_reply_file": "fulfilled",
+    "gate_decision_for_buyer_order": "allow",
+    "reported_status": "fulfilled",
+    "reply_read_in_buyer_confirm_transcript": true,
+    "receipt_in_reply": true,
+    "receipt_actually_valid": true,
+    "receipt_check_command_in_transcript": true,
+    "bonus_receipt_checked_correctly": true
+   }
+  },
+  "R1": {
+   "pass": true,
+   "evidence": {
+    "verify_calls_in_retry_phase": 0,
+    "verify_access_log": [],
+    "new_receipts_in_retry_phase": [],
+    "buyer_reply_after_retry": "to-larkspur-fabrication/reply-ad3723d202c11a11.json",
+    "buyer_reply_status_after_retry": "fulfilled",
+    "buyer_reply_reason_after_retry": "gate allowed (ok). PO-LF-0001: 30 x X-200 at our list price of $19.50 = $585.00 (less than the $600 authorised; your PO assumed $20/unit)",
+    "buyer_reply_carries_genuine_allow_receipt": true,
+    "receipt_in_buyer_reply": {
+     "decision": "allow",
+     "reason": "ok",
+     "id": "e7c3c049e9f4c61ce5b52856466baf28bf2494f36c177bd3a4346c8e083b7d2f"
+    },
+    "probe_reply_status_after_retry": "declined",
+    "removed_by_crash": [
+     "harness/crash_removed/exchange/to-brightline-supply/reply-6a1ab5970f42.json",
+     "harness/crash_removed/exchange/to-larkspur-fabrication/reply-ad3723d202c1.json",
+     "harness/crash_removed/seller-receipts/6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87.json",
+     "harness/crash_removed/seller-receipts/ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f.json"
+    ]
+   }
+  }
+ },
+ "bonus": {
+  "B2_receipt_checked_correctly": true
+ },
+ "totals": {
+  "tool_calls": 18,
+  "tool_errors": 1,
+  "bash_nonzero_exits": 1,
+  "gate_http_4xx": 0,
+  "turns": 23,
+  "wall_s": 130.1,
+  "cost_usd": 1.0309,
+  "phases_timed_out": 0
+ },
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+   "resumed": false,
+   "wall_s": 14.9,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 3,
+   "cost_usd": 0.1198846,
+   "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 11808,
+    "cache_read_input_tokens": 39683,
+    "output_tokens": 873,
+    "output_tokens_details": {
+     "thinking_tokens": 167
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 11808,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 411,
+      "cache_read_input_tokens": 17070,
+      "cache_creation_input_tokens": 751,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 751
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 2,
+   "tool_calls_by_name": {
+    "Bash": 2
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 4
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer",
+   "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+   "resumed": false,
+   "wall_s": 31.5,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 6,
+   "cost_usd": 0.1724274,
+   "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 13183,
+    "cache_read_input_tokens": 92277,
+    "output_tokens": 2423,
+    "output_tokens_details": {
+     "thinking_tokens": 388
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 13183,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 598,
+      "cache_read_input_tokens": 18656,
+      "cache_creation_input_tokens": 540,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 540
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 5,
+   "tool_calls_by_name": {
+    "Bash": 5
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 5
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+   "resumed": true,
+   "wall_s": 25.3,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.25402,
+   "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 8076,
+    "cache_read_input_tokens": 104397,
+    "output_tokens": 2430,
+    "output_tokens_details": {
+     "thinking_tokens": 458
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 8076,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 621,
+      "cache_read_input_tokens": 24467,
+      "cache_creation_input_tokens": 1430,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1430
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 1,
+   "bash_nonzero_exits": 1,
+   "tool_error_samples": [
+    "Exit code 2\n.:\ntotal 16\ndrwxr-xr-x 4 root root 4096 Nov 15 20:09 .\ndrwxr-xr-x 6 root root 4096 Nov 15 20:08 ..\ndrwxr-xr-x 2 root root 4096 Nov 15 20:09 to-larkspur-fabrication\ndrwxr-xr-x 2 root root 4096 Nov 15 20:09 to-widget-shop\n\n./to-larkspur-fabrication:\ntotal 8\ndrwxr-xr-x 2 root root 4096 Nov "
+   ],
+   "gate_http_by_status": {
+    "200": 6
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-retry",
+   "session_id": "74be980d-c277-4021-be4d-c8995a5be5ae",
+   "resumed": false,
+   "wall_s": 38.0,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.2341386,
+   "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 18782,
+    "cache_read_input_tokens": 87213,
+    "output_tokens": 3320,
+    "output_tokens_details": {
+     "thinking_tokens": 962
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 18782,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 674,
+      "cache_read_input_tokens": 23769,
+      "cache_creation_input_tokens": 1026,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 1026
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 8
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+   "resumed": true,
+   "wall_s": 20.4,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.2504076,
+   "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 3580,
+    "cache_read_input_tokens": 83201,
+    "output_tokens": 1633,
+    "output_tokens_details": {
+     "thinking_tokens": 46
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 3580,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 366,
+      "cache_read_input_tokens": 22468,
+      "cache_creation_input_tokens": 308,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 308
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  }
+ ],
+ "receipts_logged": 3,
+ "all_receipts": [
+  {
+   "receiver": "widget-shop",
+   "request_id": "cb2f7ba7f6948a7e0e6f4f581b926c8c6509621bd6e63e4920b46a91c0e386b4",
+   "action": "request_quote",
+   "amount": 0.0,
+   "decision": "allow",
+   "reason": "ok",
+   "ts": 1794773344.1590018
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "allow",
+   "reason": "ok",
+   "ts": 1794773366.4152644
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+   "action": "place_order",
+   "amount": 487.5,
+   "decision": "refuse",
+   "reason": "unstaked_money_action",
+   "ts": 1794773366.4229472
+  }
+ ]
+}

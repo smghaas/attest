@@ -1,0 +1,52 @@
+{
+ "gate_key": {
+  "priv": "a1c7302410da3797793207693e894f7df8b2e4c4bcf07d7d12b2ea680a2fe397",
+  "pub": "e6bc366ddf7880b5fdbee10b1af0749bf441afd81c8f54dbccc6b11c536ce060"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 5000.0,
+   "policy": {
+    "escalate_above": {
+     "*": 1000.0
+    }
+   },
+   "pubkey": "65dabb40a50ea70e39785cd2018f5d2c8ba772f628e94ee54dc6f69e5559d9d7"
+  }
+ },
+ "stakes": {
+  "3177918b406fb5db3e92581b05f514d65ab90c30e422715fdca8e07db206be9f": {
+   "name": "LarkspurFabrication",
+   "stake": 10000.0,
+   "suspended": false,
+   "slashes": [],
+   "sandbox": true
+  }
+ },
+ "revoked": {},
+ "nonces_seen": {
+  "add52f92e0ed41f39a6605f0275fbe1f": 1794773344.155728,
+  "b1f245a9355c46778ae889f7474f0b04": 1794773366.4133737,
+  "da631e1eafd64335951ca456407f8cdb": 1794773366.4219217
+ },
+ "spent": {
+  "c021e1f2cec09e7c0dc75d400e57b7d9f2ff2383fb3edb2fe521d1afd4ccb3d3": 600.0
+ },
+ "issuer_spent": {
+  "3177918b406fb5db3e92581b05f514d65ab90c30e422715fdca8e07db206be9f": [
+   [
+    1794773366.4133737,
+    600.0
+   ]
+  ]
+ },
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}

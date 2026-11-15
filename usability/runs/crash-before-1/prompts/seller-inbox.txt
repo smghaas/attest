@@ -1,0 +1,2 @@
+Requests have arrived. Do Part 2 (inbox) now: process every file in /tmp/attest-coldstart/crash-before-1/exchange/to-widget-shop/ as described in your
+task. Finish with a short summary: one line per request with its id, what the gate said and what you did.

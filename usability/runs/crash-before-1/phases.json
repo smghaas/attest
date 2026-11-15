@@ -1,0 +1,337 @@
+[
+ {
+  "phase": "seller-setup",
+  "cwd": "/tmp/attest-coldstart/crash-before-1/seller",
+  "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+  "resumed": false,
+  "start": 1794773308.012868,
+  "end": 1794773322.9043572,
+  "wall_s": 14.9,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-setup.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 3,
+  "total_cost_usd": 0.1198846,
+  "usage": {
+   "input_tokens": 6,
+   "cache_creation_input_tokens": 11808,
+   "cache_read_input_tokens": 39683,
+   "output_tokens": 873,
+   "output_tokens_details": {
+    "thinking_tokens": 167
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 11808,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 411,
+     "cache_read_input_tokens": 17070,
+     "cache_creation_input_tokens": 751,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 751
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "Part 1 is done. The gate now lists `widget-shop` as a registered receiver.\n\n- **Receiver name:** `widget-shop`, on the sandbox gate at http://127.0.0.1:44355.\n- **Minimum stake:** 5,000. A new sandbox operator gets 10,000 in free test stake, so any normally funded operator qualifies. An operator with less stake than that, or one that has been suspended, is treated as unstaked. It gets read-only answers at most, and any order that moves money is refused.\n- **Policy:** `{\"escalate_above\": {\"*\": 1000}}`. Any request over $1,000 (about 51 units of X-200 at $19.50) comes back as `escalate`, so a person at the shop decides instead of me. I added no extra read-only actions; the gate's defaults (`request_quote`, `search`, `read`, `lookup`, `get_status`) are enough.\n\nThe shop's private key is in `/tmp/attest-coldstart/crash-before-1/seller/.attest/widget-shop.json`, and the gate only has the public key. I haven't read the inbox or written anything into the drop-box folder.",
+  "gate_log_offset": [
+   254,
+   502
+  ]
+ },
+ {
+  "phase": "buyer",
+  "cwd": "/tmp/attest-coldstart/crash-before-1/buyer",
+  "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+  "resumed": false,
+  "start": 1794773322.9063356,
+  "end": 1794773354.4294002,
+  "wall_s": 31.5,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 6,
+  "total_cost_usd": 0.1724274,
+  "usage": {
+   "input_tokens": 12,
+   "cache_creation_input_tokens": 13183,
+   "cache_read_input_tokens": 92277,
+   "output_tokens": 2423,
+   "output_tokens_details": {
+    "thinking_tokens": 388
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 13183,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 598,
+     "cache_read_input_tokens": 18656,
+     "cache_creation_input_tokens": 540,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 540
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "The order for 30 units of X-200 is in widget-shop's inbox. I did not check the order itself at the gate, because each signed order can be checked only once and the shop's own check would then be refused as a replay.\n\n**File dropped:** `/tmp/attest-coldstart/crash-before-1/exchange/to-widget-shop/larkspur-fabrication-PO-LF-0001.json`\n\n**What I did**\n1. **Company:** I named it **Larkspur Fabrication**. I created an Attest operator called `LarkspurFabrication` on the sandbox gate, which gave it 10,000 in free test stake. widget-shop requires at least 5,000.\n2. **Buying agent:** I created `larkspur-buyer`. It is allowed to request quotes and place orders up to $1,000 in total, for 30 days. Its keys are in `/tmp/attest-coldstart/crash-before-1/buyer/.attest`.\n3. **Order:** I built a signed `place_order` request for $600 with the message \"PO-LF-0001: 30 units of part X-200, total $600 ($20/unit)\", addressed to `widget-shop`. widget-shop's rules send any order over $1,000 to a human, so $600 should not be held up.\n4. **Reply address:** I added `\"reply_to\": \"to-larkspur-fabrication\"` to the order file and created that folder in the drop-box for the shop's answer.\n\n**Test at the gate:** before dropping the order, I sent a separate $0 quote request with a `reply_to` field to the gate. It came back **allow**, so the extra field doesn't cause problems and the setup passes the shop's checks. That test is now in the gate's public list of decisions.\n\nI'll check `to-larkspur-fabrication` for the shop's answer when asked.",
+  "gate_log_offset": [
+   502,
+   815
+  ]
+ },
+ {
+  "phase": "seller-inbox",
+  "cwd": "/tmp/attest-coldstart/crash-before-1/seller",
+  "session_id": "3182dfc6-8376-4450-8124-c50856742a16",
+  "resumed": true,
+  "start": 1794773354.530038,
+  "end": 1794773379.866517,
+  "wall_s": 25.3,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-inbox.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 5,
+  "total_cost_usd": 0.25402,
+  "usage": {
+   "input_tokens": 12,
+   "cache_creation_input_tokens": 8076,
+   "cache_read_input_tokens": 104397,
+   "output_tokens": 2430,
+   "output_tokens_details": {
+    "thinking_tokens": 458
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 8076,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 621,
+     "cache_read_input_tokens": 24467,
+     "cache_creation_input_tokens": 1430,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1430
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I processed both requests in the inbox, one fulfilled and one declined:\n\n- **`ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f`** (LarkspurFabrication, PO-LF-0001, 30 \u00d7 X-200, `place_order` for $600): the gate said **allow / ok**. I **fulfilled** it at **$585.00**. They offered $20 a unit, but the list price is $19.50, so I charged the list price. That's less than the $600 the gate approved, and the reply says why. Reply: `/tmp/attest-coldstart/crash-before-1/exchange/to-larkspur-fabrication/reply-ad3723d202c1.json`\n- **`6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87`** (Brightline Supply, 25 \u00d7 X-200, `place_order` for $487.50): the gate said **refuse / unstaked_money_action** because Brightline Supply has no stake. I **declined** it. Reply: `/tmp/attest-coldstart/crash-before-1/exchange/to-brightline-supply/reply-6a1ab5970f42.json` (I created that folder, since the request asked for replies there).\n\nBoth gate receipts passed the signature check. Each reply carries its receipt exactly as the gate returned it, and copies are saved in `/tmp/attest-coldstart/crash-before-1/seller/receipts/`, one file per request id. I didn't change anything in `to-widget-shop`.\n\nThe gate's log also shows a receipt for widget-shop from before I started, for a different request: a $0 `request_quote` from Larkspur's agent (`cb2f7ba7\u2026`). It was allowed. That request isn't one of the inbox files, so I didn't reply to it.",
+  "gate_log_offset": [
+   815,
+   1200
+  ]
+ },
+ {
+  "phase": "seller-retry",
+  "cwd": "/tmp/attest-coldstart/crash-before-1/seller",
+  "session_id": "74be980d-c277-4021-be4d-c8995a5be5ae",
+  "resumed": false,
+  "start": 1794773379.8713977,
+  "end": 1794773417.845617,
+  "wall_s": 38.0,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-retry.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 5,
+  "total_cost_usd": 0.2341386,
+  "usage": {
+   "input_tokens": 10,
+   "cache_creation_input_tokens": 18782,
+   "cache_read_input_tokens": 87213,
+   "output_tokens": 3320,
+   "output_tokens_details": {
+    "thinking_tokens": 962
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 18782,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 674,
+     "cache_read_input_tokens": 23769,
+     "cache_creation_input_tokens": 1026,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1026
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I processed both requests in the inbox and wrote one reply for each.\n\nThe agent had already sent both requests to the gate before the crash. Each request can only be checked once, so checking again would only get a `replay` refusal. Instead I took the original receipts for `widget-shop` from the gate's public log (`GET /receipts`). Both have valid gate signatures, and their request id, sender and credential match the envelopes in the inbox. I saved them in `seller/receipts/` and copied each one unchanged into its reply.\n\n| Request id | Gate decision | What I did |\n|---|---|---|\n| `ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f` (Larkspur Fabrication, PO-LF-0001, `place_order` $600) | **allow** / `ok`: LarkspurFabrication has 10,000 stake, $600 is within its $1,000 limit | **Fulfilled**: 30 \u00d7 X-200 at our price of $19.50 = **$585.00**. Their order assumed $20 per unit, so I charged our lower price, which is inside what the gate allowed. Reply is in `exchange/to-larkspur-fabrication/`. |\n| `6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87` (Brightline Supply, 25 \u00d7 X-200, `place_order` $487.50) | **refuse** / `unstaked_money_action`: Brightline Supply has no stake at the gate | **Declined**, giving the gate's reason. Reply is in `exchange/to-brightline-supply/`. |\n\nThe gate's log also has an earlier `allow` receipt for a price-quote request from Larkspur (`cb2f7ba7\u2026`). That request is not in the inbox, so I wrote no reply for it.\n\nI did not modify, move or delete anything in `to-widget-shop/`.",
+  "gate_log_offset": [
+   1200,
+   1689
+  ]
+ },
+ {
+  "phase": "buyer-confirm",
+  "cwd": "/tmp/attest-coldstart/crash-before-1/buyer",
+  "session_id": "c7defca9-5274-415e-82a2-23c067ea82d9",
+  "resumed": true,
+  "start": 1794773417.8498485,
+  "end": 1794773438.270471,
+  "wall_s": 20.4,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer-confirm.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.2504076,
+  "usage": {
+   "input_tokens": 10,
+   "cache_creation_input_tokens": 3580,
+   "cache_read_input_tokens": 83201,
+   "output_tokens": 1633,
+   "output_tokens_details": {
+    "thinking_tokens": 46
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 3580,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 366,
+     "cache_read_input_tokens": 22468,
+     "cache_creation_input_tokens": 308,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 308
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "The order went through. widget-shop filled order PO-LF-0001 for 30 units of X-200 and charged **$585.00**, because its list price is $19.50 a unit and my order had assumed $20. That is $15 under the $600 the gate approved. The shop's reply is `to-larkspur-fabrication/reply-ad3723d202c11a11.json` and includes a receipt from the Attest gate, which I checked and found genuine. It is signed by the same gate key the gate publishes at `/pubkey`, its ID and Ed25519 signature both check out (with `attest verify-receipt` and with my own script), and its `request_id` matches the order I sent. It records an `allow` / `ok` decision for `place_order` at $600, and the same receipt is in the gate's public log. The receipt only covers the $600 the gate approved; the $585 charge comes from the shop's reply alone. I wrote the result to `/tmp/attest-coldstart/crash-before-1/buyer/outcome.json` as: status `fulfilled`, total $585.0, `receipt_checked` true, `receipt_valid` true.",
+  "gate_log_offset": [
+   1689,
+   1874
+  ]
+ }
+]

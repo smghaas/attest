@@ -1,0 +1,7 @@
+{
+  "order_status": "fulfilled",
+  "total_usd": 585.0,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop fulfilled PO-LF-0001 (30 x X-200) at its list price of $19.50/unit, $585.00 total, under the $600 authorised. The gate receipt (allow/ok, place_order 600) is signed by the gate's published key, its id hash and Ed25519 signature check out, its request_id matches our order, and it appears in the gate's public receipt log."
+}

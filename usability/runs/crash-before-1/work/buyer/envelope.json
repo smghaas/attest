@@ -1,0 +1,44 @@
+{
+  "credential": {
+    "type": "kya.credential/1",
+    "agent": "0041cc8942e84399d0408fb1b5e4fcbe5255c7217d3a89041027961ed59295d3",
+    "operator": "LarkspurFabrication",
+    "issuer": "3177918b406fb5db3e92581b05f514d65ab90c30e422715fdca8e07db206be9f",
+    "purpose": "agent",
+    "issued_at": 1794773335.5172691,
+    "expires_at": 1797365335.5172691,
+    "id": "fc1611d6aa932f50dcffcf980142fec6ae3b92a961fce97e8eb242fba632813d",
+    "sig": "b6673ebbeef54db5d4dd32d42a1250adafedf997e5b111b3350ec9bb871e530d2daa89baa236769e0a123ae6f0d09880f83ea6e158e185ea6d4967d57dbb450b"
+  },
+  "chain": [
+    {
+      "type": "kya.mandate/1",
+      "subject": "0041cc8942e84399d0408fb1b5e4fcbe5255c7217d3a89041027961ed59295d3",
+      "issuer": "3177918b406fb5db3e92581b05f514d65ab90c30e422715fdca8e07db206be9f",
+      "parent": null,
+      "scope": {
+        "actions": [
+          "request_quote",
+          "place_order"
+        ],
+        "max_amount": 1000.0,
+        "currency": "USD"
+      },
+      "expires_at": 1797365335.5172691,
+      "id": "c021e1f2cec09e7c0dc75d400e57b7d9f2ff2383fb3edb2fe521d1afd4ccb3d3",
+      "sig": "393122df1badc9734868406b13ebf111ee927fdd7d411fe6db09f2ea1bf70f09ae10e55e9574a18d8837e5fca4fd5ff9426d2d126e7720338a57fb6ff12cc808"
+    }
+  ],
+  "request": {
+    "type": "kya.request/1",
+    "from": "0041cc8942e84399d0408fb1b5e4fcbe5255c7217d3a89041027961ed59295d3",
+    "to": "widget-shop",
+    "action": "place_order",
+    "amount": 600.0,
+    "message": "PO-LF-0001: 30 units of part X-200, total $600 ($20/unit)",
+    "ts": 1794773335.7119243,
+    "nonce": "b1f245a9355c46778ae889f7474f0b04",
+    "id": "ad3723d202c11a11df8102bee8c7dc61b02e1380a610f7d21ff476a2afe64c7f",
+    "sig": "7bf2b78a5d2c4175f9b4c6cd2806530e2600386649fd26e17f3f58dabf0bf29c25230f4078ba75f4f8e1d037510ef44cf09c9010ac151d7e93cfeb1bd3a9910d"
+  }
+}

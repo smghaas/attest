@@ -1,0 +1,54 @@
+{
+ "from": "Brightline Supply",
+ "reply_to": "to-brightline-supply",
+ "order": {
+  "item": "X-200",
+  "quantity": 25,
+  "unit_price_usd": 19.5,
+  "total_usd": 487.5
+ },
+ "envelope": {
+  "credential": {
+   "type": "kya.credential/1",
+   "agent": "2ef1d514050db52c368955427647319e0479e9de2e7eb2899e73435c6d393a0b",
+   "operator": "Brightline Supply",
+   "issuer": "8d0661e497c3741c0abed2fa5daa5c42dde710d9b38dddac5502c123e177b4b7",
+   "purpose": "procurement for Brightline Supply",
+   "issued_at": 1794773354.5280046,
+   "expires_at": 1797365354.5280046,
+   "id": "87342afcba150ed7f9c00bfe4f9cfdbc41dbfaf6b2555c885cc181b43a01750b",
+   "sig": "b9d8cf4b03bf154e1496d130915199e4264fcbebe9db609017e7e2278765f113116ff922a9c0dfe34ee4d76daed17441dc454cac5fec0c3574db47bc2688ce0e"
+  },
+  "chain": [
+   {
+    "type": "kya.mandate/1",
+    "subject": "2ef1d514050db52c368955427647319e0479e9de2e7eb2899e73435c6d393a0b",
+    "issuer": "8d0661e497c3741c0abed2fa5daa5c42dde710d9b38dddac5502c123e177b4b7",
+    "parent": null,
+    "scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 1000.0,
+     "currency": "USD"
+    },
+    "expires_at": 1797365354.5280046,
+    "id": "0d0aff51b3beeb6149ada9c5883797a93c6d1b76a5f531a6ac7f939d07db3443",
+    "sig": "219781be122fa11a5370c5c4b48aeca8791aef6b62cad4d77bd32a66c2747bed637b5c5908c48c9afa553fd7ee1fac9c917b4578ad5c200842003c150bbde604"
+   }
+  ],
+  "request": {
+   "type": "kya.request/1",
+   "from": "2ef1d514050db52c368955427647319e0479e9de2e7eb2899e73435c6d393a0b",
+   "to": "widget-shop",
+   "action": "place_order",
+   "amount": 487.5,
+   "message": "Order: 25 units of X-200 at $19.50, total $487.50. Please ship to Brightline Supply.",
+   "ts": 1794773354.5284321,
+   "nonce": "da631e1eafd64335951ca456407f8cdb",
+   "id": "6a1ab5970f427ff9f2f67ffbeb1bfb81ee54ed598946d737ab5f3f6dd355cd87",
+   "sig": "4d40126301cb37de927d408de07d2fc41183c757b0dc125c18897aef6f59ad1fc17530cda7bf94837f8dcf712572204b521499e87dae491f0ff1f6a2f66feb0b"
+  }
+ }
+}

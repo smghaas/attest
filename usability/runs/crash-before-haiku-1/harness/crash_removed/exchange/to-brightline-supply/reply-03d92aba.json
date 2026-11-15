@@ -1,0 +1,25 @@
+{
+ "request_id": "03d92aba1600c569026597fae6b70c8d7f7698b9a7388154dc7e1c87d232e4bb",
+ "status": "declined",
+ "reason": "unstaked_money_action: Brightline Supply has no stake at the gate, so place_order (moves value) is refused",
+ "receipt": {
+  "type": "attest.receipt/1",
+  "receiver": "widget-shop",
+  "request_id": "03d92aba1600c569026597fae6b70c8d7f7698b9a7388154dc7e1c87d232e4bb",
+  "from": "dcdbfbdc0ad3f252f93b332e2f4cc80879eb21356d656ed86a1a480390fa6bdc",
+  "action": "place_order",
+  "amount": 487.5,
+  "decision": "refuse",
+  "reason": "unstaked_money_action",
+  "detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+  "credential_id": "5afbcb7e065a22fee463f8a56ad42398a4029aec366f41435abb7eeb8b0bd47e",
+  "issuer": "d0ba18d88301c6f812c3d821bd5914971d6932b03f546fc025702f480346275d",
+  "chain_ids": [
+   "24a0d6edebfeccc37eb6fd54d6b19e67f77762b82853aa5b6dd4f27773eb86c0"
+  ],
+  "ts": 1794773509.0149305,
+  "gate": "6c89a614b1777624be8f00461d29472a00724a70078169d5d66446e76e2d16bc",
+  "id": "ef3aeb21e005bb1915d09cca5515a08cae825694a993c21f3201fcf46583e3e2",
+  "sig": "6f3f6013b1e8ff1ff458c15cbf2ff78f25a55d51bdcb0cfc318cc032785db39e774404262c57248b8751f9920f532c548a0f1cdb5536c2aaf3fa12e8f0618b0a"
+ }
+}

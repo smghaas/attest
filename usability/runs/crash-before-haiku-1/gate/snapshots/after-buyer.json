@@ -1,0 +1,44 @@
+{
+ "gate_key": {
+  "priv": "0587f8db8fb0d4b820eeceaadf930efa3c793fe85a2f4c4a32b7d04d67ca68a0",
+  "pub": "6c89a614b1777624be8f00461d29472a00724a70078169d5d66446e76e2d16bc"
+ },
+ "receivers": {
+  "widget-shop": {
+   "min_stake": 2000.0,
+   "policy": {
+    "escalate_above": {
+     "*": 200.0
+    },
+    "read_only": [
+     "check_stock"
+    ]
+   },
+   "pubkey": "043c814ac4757bdf52e44928355d142f9efb094e32a8cbe74bf0e0489ba2fdac"
+  }
+ },
+ "stakes": {
+  "5463d2815ac8bbe9c1fa583fcaa5ec865084933c1c3c354c9a84b594f83342e3": {
+   "name": "Halcyon Manufacturing",
+   "stake": 10000.0,
+   "suspended": false,
+   "slashes": [],
+   "sandbox": true
+  }
+ },
+ "revoked": {},
+ "nonces_seen": {
+  "52d8c30ebb694e88bba60e4376710033": 1794773492.5560715
+ },
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}

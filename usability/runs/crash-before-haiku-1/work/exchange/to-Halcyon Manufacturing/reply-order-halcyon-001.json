@@ -1,0 +1,26 @@
+{
+ "request_id": "59e67ae554d8ac1a9f124d40badd9d2c2b711a46ced3969cadf388cb6c4271f6",
+ "status": "escalated",
+ "reason": "policy_escalation: 600 USD is above the 200 USD limit for automatic orders; a human at widget-shop will review.",
+ "total_usd": null,
+ "receipt": {
+  "type": "attest.receipt/1",
+  "receiver": "widget-shop",
+  "request_id": "59e67ae554d8ac1a9f124d40badd9d2c2b711a46ced3969cadf388cb6c4271f6",
+  "from": "f3b8be0d7148f54d46319ca1191375e60e4dcf33cef916e2ec6712ec86fde878",
+  "action": "place_order",
+  "amount": 600.0,
+  "decision": "escalate",
+  "reason": "policy_escalation",
+  "detail": "place_order above 200.0 needs a human at widget-shop",
+  "credential_id": "94a887727c473448ff3ba7fe0271f1502c003da3149f0ba0b70d37fa98770d11",
+  "issuer": "5463d2815ac8bbe9c1fa583fcaa5ec865084933c1c3c354c9a84b594f83342e3",
+  "chain_ids": [
+   "ab478e7f8cbf1262314a3c9990ee5855bac1a4fadf3e77c45e0d06e236857562"
+  ],
+  "ts": 1794773509.020454,
+  "gate": "6c89a614b1777624be8f00461d29472a00724a70078169d5d66446e76e2d16bc",
+  "id": "f76417ef01254b3d6d9c2905a2b887ff8c8e9abe590ffd87d705c22d7f30309d",
+  "sig": "52f04d765de748c68e4f56f53e2abe3c9693f246c8bbaf0ae189556e20bfec4a3c437b9141ff6df7e200c6fe5e88fee5ee48682cef8ff898773096af2d26bb01"
+ }
+}

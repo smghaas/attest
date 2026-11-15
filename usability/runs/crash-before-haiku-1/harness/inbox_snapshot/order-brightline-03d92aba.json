@@ -1,0 +1,54 @@
+{
+ "from": "Brightline Supply",
+ "reply_to": "to-brightline-supply",
+ "order": {
+  "item": "X-200",
+  "quantity": 25,
+  "unit_price_usd": 19.5,
+  "total_usd": 487.5
+ },
+ "envelope": {
+  "credential": {
+   "type": "kya.credential/1",
+   "agent": "dcdbfbdc0ad3f252f93b332e2f4cc80879eb21356d656ed86a1a480390fa6bdc",
+   "operator": "Brightline Supply",
+   "issuer": "d0ba18d88301c6f812c3d821bd5914971d6932b03f546fc025702f480346275d",
+   "purpose": "procurement for Brightline Supply",
+   "issued_at": 1794773502.7451441,
+   "expires_at": 1797365502.7451441,
+   "id": "5afbcb7e065a22fee463f8a56ad42398a4029aec366f41435abb7eeb8b0bd47e",
+   "sig": "569267498a6173a839d7e44f4b2b20f20a53e553e0c90bbf3e914b2d7e98f7c6dd89cd0cdf2470564589ce76893f4b50d5c54ccc53e00bbd2e0d5e090520c40b"
+  },
+  "chain": [
+   {
+    "type": "kya.mandate/1",
+    "subject": "dcdbfbdc0ad3f252f93b332e2f4cc80879eb21356d656ed86a1a480390fa6bdc",
+    "issuer": "d0ba18d88301c6f812c3d821bd5914971d6932b03f546fc025702f480346275d",
+    "parent": null,
+    "scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 1000.0,
+     "currency": "USD"
+    },
+    "expires_at": 1797365502.7451441,
+    "id": "24a0d6edebfeccc37eb6fd54d6b19e67f77762b82853aa5b6dd4f27773eb86c0",
+    "sig": "15e902f9b84b2f093e076d7b7e47e64931816587d7ac2c9bfaa5aff479c2a72b81dfe79d616d5b1eccbd2559cb8cbe7529faa10b8db910e427fa2886eb229e0e"
+   }
+  ],
+  "request": {
+   "type": "kya.request/1",
+   "from": "dcdbfbdc0ad3f252f93b332e2f4cc80879eb21356d656ed86a1a480390fa6bdc",
+   "to": "widget-shop",
+   "action": "place_order",
+   "amount": 487.5,
+   "message": "Order: 25 units of X-200 at $19.50, total $487.50. Please ship to Brightline Supply.",
+   "ts": 1794773502.745534,
+   "nonce": "a48b99d5da7f44bb8f7b181deb6f3e4f",
+   "id": "03d92aba1600c569026597fae6b70c8d7f7698b9a7388154dc7e1c87d232e4bb",
+   "sig": "c10a053ed857803e2ae606d4a6e9c2bbffff9826d77ec043d35b40391ee7a2441d449785df708e37553dae6be2b2bbabc213f0876de2c70e74a13d1938cfd508"
+  }
+ }
+}
