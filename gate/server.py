@@ -106,7 +106,9 @@ async def sandbox_guards(request: Request, call_next):
             return JSONResponse({"detail": "not available on the public sandbox"}, status_code=404)
         if int(request.headers.get("content-length") or 0) > _num("ATTEST_MAX_BODY", 65536):
             return JSONResponse({"detail": "request too large"}, status_code=413)
-        if request.method == "POST":
+        local = (request.client and request.client.host in ("127.0.0.1", "::1")
+                 and "x-forwarded-for" not in request.headers)      # jobs on this machine, e.g. sim/market.py
+        if request.method == "POST" and not local:
             ip = request.client.host if request.client else "?"
             if os.environ.get("ATTEST_TRUST_PROXY") == "1":
                 ip = request.headers.get("x-forwarded-for", ip).split(",")[0].strip()
@@ -125,7 +127,7 @@ async def sandbox_guards(request: Request, call_next):
 from .ledger_api import router as ledger_router  # noqa: E402  (endpoints live in their own file)
 
 app.include_router(ledger_router)
-app.mount("/static", StaticFiles(directory=STATIC), name="static")
+app.mount("/static", StaticFiles(directory=STATIC, html=True), name="static")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 
@@ -266,6 +268,248 @@ def check(c: Check):
     with (LOG_DIR / "checks.jsonl").open("a") as f:
         f.write(json.dumps(out) + "\n")
     return out
+
+
+_market: dict = {"proc": None}
+BEHAVIOURS = ("honest", "shady", "splitter", "big", "revoked", "greedy", "impostor")
+
+
+def _need_demo():
+    if not demo_on():
+        raise HTTPException(404, "demo mode is off (start the gate with ATTEST_DEMO=1)")
+
+
+def _control(**kw):
+    from .core import LOG_DIR
+    f = LOG_DIR / "market_control.json"
+    try:
+        c = json.loads(f.read_text())
+    except (OSError, ValueError):
+        c = {}
+    c.update(kw)
+    f.write_text(json.dumps(c))
+    return c
+
+
+def _rounds_done() -> int:
+    from .core import LOG_DIR
+    f = LOG_DIR / "market.jsonl"
+    done = 0
+    if f.exists():
+        for line in f.read_text().splitlines():
+            if '"kind": "deal"' in line:
+                done = max(done, json.loads(line).get("round", 0))
+    return done
+
+
+@app.get("/market/cast")
+def market_cast():
+    """The agents and shops the next market run will use (sim/default_cast.json until someone edits it)."""
+    from .core import LOG_DIR, ROOT
+    f = LOG_DIR / "market_cast.json"
+    return json.loads((f if f.exists() else ROOT / "sim" / "default_cast.json").read_text())
+
+
+@app.put("/market/cast")
+def market_cast_save(cast: dict):
+    """Demo mode: replace the cast. Agents: key, name, backer, backer_kind, money, actions, limit, amount,
+    behaviour, about, parent. Shops: key, name, sells, min_stake, human_above, checks_record, free_actions."""
+    _need_demo()
+    from .core import LOG_DIR
+    agents, shops = cast.get("agents") or [], cast.get("shops") or []
+    if not (1 <= len(agents) <= 30 and 1 <= len(shops) <= 30):
+        raise HTTPException(400, "between 1 and 30 agents, and between 1 and 30 shops")
+    slug = re.compile(r"^[a-z0-9][a-z0-9-]{0,30}$")
+    keys = set()
+    for x in agents + shops:
+        x["key"] = re.sub(r"[^a-z0-9-]+", "-", str(x.get("key") or x.get("name") or "").lower()).strip("-")[:31]
+        if not slug.match(x["key"]) or x["key"] in keys:
+            raise HTTPException(400, f"every agent and shop needs a different short name ({x.get('name')!r})")
+        keys.add(x["key"])
+        x["name"] = str(x.get("name") or x["key"])[:60]
+    for a in agents:
+        if a.get("behaviour", "honest") not in BEHAVIOURS:
+            raise HTTPException(400, f"behaviour must be one of {', '.join(BEHAVIOURS)}")
+        a["actions"] = [re.sub(r"[^a-z0-9_]+", "_", str(x).lower()).strip("_")[:40] for x in a.get("actions") or []][:12]
+        a["actions"] = [x for x in a["actions"] if x] or ["request_quote"]
+        a["limit"] = max(0.0, min(float(a.get("limit") or 0), 1e7))
+        lo, hi = (list(a.get("amount") or [20, 400]) + [400])[:2]
+        a["amount"] = [max(0.0, float(lo)), max(float(lo), float(hi))]
+    for sh in shops:
+        sh["min_stake"] = max(0.0, float(sh.get("min_stake") or 0))
+        sh["human_above"] = float(sh["human_above"]) if sh.get("human_above") not in (None, "", 0) else None
+        sh["free_actions"] = [re.sub(r"[^a-z0-9_]+", "_", str(x).lower()).strip("_")[:40]
+                              for x in sh.get("free_actions") or []][:12]
+    (LOG_DIR / "market_cast.json").write_text(json.dumps({"agents": agents, "shops": shops}, indent=1))
+    return {"ok": True, "agents": len(agents), "shops": len(shops)}
+
+
+@app.delete("/market/cast")
+def market_cast_reset():
+    _need_demo()
+    from .core import LOG_DIR
+    (LOG_DIR / "market_cast.json").unlink(missing_ok=True)
+    return {"ok": True}
+
+
+@app.post("/market/start")
+def market_start(request: Request, rounds: int = 120, pace: float = 3.0, mode: str = "play"):
+    """Demo mode: start sim/market.py against this gate. A run already going is stopped first."""
+    _need_demo()
+    import subprocess
+    import sys
+    from .core import LOG_DIR, ROOT
+    p = _market["proc"]
+    if p is not None and p.poll() is None:
+        _control(mode="stop")
+        try:
+            p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            p.kill()
+    (LOG_DIR / "market.jsonl").write_text("")               # the page reads the new run from the start
+    _control(mode="step" if mode == "step" else "play", pace=max(0.3, min(pace, 10)), granted=0)
+    env = {**os.environ, "ATTEST_URL": str(request.base_url).rstrip("/"), "ATTEST_LOG_DIR": str(LOG_DIR)}
+    env.pop("ATTEST_DIR", None)
+    _market["proc"] = subprocess.Popen([sys.executable, str(ROOT / "sim" / "market.py"),
+                                        "--rounds", str(max(5, min(rounds, 400)))],
+                                       cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return {"ok": True}
+
+
+class Control(BaseModel):
+    mode: str                      # play, pause, step (one more transaction), stop
+    pace: float | None = None
+
+
+@app.post("/market/control")
+def market_control(c: Control):
+    _need_demo()
+    if c.mode not in ("play", "pause", "step", "stop"):
+        raise HTTPException(400, "mode: play, pause, step or stop")
+    kw = {"mode": c.mode}
+    if c.pace is not None:
+        kw["pace"] = max(0.3, min(c.pace, 10))
+    if c.mode == "step":
+        kw["granted"] = _rounds_done() + 1
+    if c.mode == "pause":
+        kw["granted"] = _rounds_done()
+    return _control(**kw)
+
+
+@app.get("/card/{pub}")
+def agent_card(pub: str):
+    """An agent's card, for anyone: its passport (who vouches for it, what it may do), whether its backer has
+    money down, what a stranger should conclude, and every deal on its record, each one in a ledger block."""
+    from .ledger_api import enabled as ledger_on, service
+    if not ledger_on():
+        raise HTTPException(404, "this gate keeps no ledger")
+    svc = service()
+    node = svc.nodes[0]
+    pp = node.state.passports.get(pub)
+    names = {k: v["name"] for k, v in node.state.passports.items()}
+    h = node.history(pub)
+    with gate.lock:
+        stake = gate.state["stakes"].get(pp["operator"]) if pp else None
+    deals = []
+    for e in h["entries"]:
+        r = e["record"]
+        other = r["buyer"] if r["provider"] == pub else r["provider"]
+        deals.append({"block": e["height"], "request": r["request"], "status": r["status"], "amount": r["amount"],
+                      "with": names.get(other, other[:12]), "role": "seller" if r["provider"] == pub else "buyer",
+                      "ts": r.get("ts")})
+    return {"agent": pub, "passport": {"name": pp["name"], "backer_key": pp["operator"], "actions": pp["actions"],
+                                       "max_amount": pp["max_amount"], "puzzle_nonce": pp["nonce"],
+                                       "self_vouched": pp["operator"] == pub} if pp else None,
+            "backer_money_down": stake["stake"] if stake else 0, "backer_name": stake["name"] if stake else None,
+            "backer_suspended": bool(stake and stake.get("suspended")),
+            "summary": {k: h[k] for k in ("trades", "accepted", "disputed", "volume")},
+            "verdict": svc.decision(pub), "deals": deals[::-1]}
+
+
+@app.get("/market/deal/{n}")
+def market_deal(n: int):
+    """Everything about one deal from sim/market.py, with every signature and proof checked again now."""
+    from . import crypto
+    from .core import LOG_DIR
+    f = LOG_DIR / "market" / f"{n}.json"
+    if not f.exists():
+        raise HTTPException(404, "no details for that event")
+    d = json.loads(f.read_text())
+    env = d.get("envelope") or {}
+    req, cred, chain = env.get("request") or {}, env.get("credential"), env.get("chain") or []
+    checks = []
+
+    def add(what, ok, note=""):
+        checks.append({"what": what, "ok": bool(ok), "note": note})
+
+    if req:
+        add("The agent signed the request", crypto.verify(req.get("from", ""), crypto.body_of(req), req.get("sig", "")),
+            f"agent key {req.get('from', '')[:16]}…")
+        add("The request has not been changed since (its id is the hash of its content)", crypto.id_ok(req))
+    if cred:
+        add(f"{cred.get('operator')} ({cred.get('backer_kind', 'company')}) signed the agent's ID",
+            crypto.verify(cred.get("issuer", ""), crypto.body_of(cred), cred.get("sig", "")) and crypto.id_ok(cred),
+            f"backer key {cred.get('issuer', '')[:16]}…")
+        with gate.lock:
+            revoked = cred.get("id") in gate.state["revoked"]
+            stake = gate.state["stakes"].get(cred.get("issuer"))
+        add("The ID is still valid today (not cancelled)", not revoked, "cancelled by its backer" if revoked else "")
+        add("Its backer has money down at the gate", bool(stake and stake["stake"] > 0),
+            f"${stake['stake']:,.0f}" if stake else "none")
+    elif req:
+        add("Someone signed an ID for this agent", False, "no ID was presented")
+    for depth, m in enumerate(chain):
+        ok = crypto.verify(m.get("issuer", ""), crypto.body_of(m), m.get("sig", "")) and crypto.id_ok(m)
+        sc = m.get("scope", {})
+        who = "its backer" if depth == 0 else "the agent above it"
+        add(f"Permission {depth + 1}: signed by {who}: may {', '.join(sc.get('actions', []))} up to ${float(sc.get('max_amount', 0)):,.0f}", ok)
+    if env.get("pow"):
+        add("It solved the puzzle (proof of work)", True, f"answer {env['pow'].get('nonce')}, accepted by the gate")
+    ans = d.get("gate_answer")
+    if ans and ans.get("receipt"):
+        r = ans["receipt"]
+        add("Attest signed its answer, and the answer was not changed",
+            r.get("gate") == gate.pubkey and crypto.id_ok(r) and crypto.verify(gate.pubkey, crypto.body_of(r), r.get("sig", "")),
+            f"gate key {gate.pubkey[:16]}…")
+        add("The answer is about this very request", r.get("request_id") == req.get("id"))
+    ledger = None
+    rid = d.get("ledger_record_id")
+    if rid:
+        from network import ledger as L
+        from .ledger_api import enabled as ledger_on, service
+        if ledger_on():
+            node = service().nodes[0]
+            for blk in node.chain.best_chain():
+                ids = [x["id"] for x in blk["records"]]
+                if rid in ids:
+                    i, rec = ids.index(rid), blk["records"][ids.index(rid)]
+                    proof_ok = L.verify_proof(rid, L.merkle_proof(ids, i), blk["header"]["root"])
+                    ledger = {"block": blk["header"]["height"], "block_hash": L.block_hash(blk["header"]),
+                              "final": node.chain.height(node.chain.finalized) >= blk["header"]["height"],
+                              "record": rec}
+                    add(f"The outcome ({rec['status']}) is signed by both the shop and the agent", L.check_outcome(rec))
+                    add(f"It is in ledger block {blk['header']['height']} (Merkle proof checks out)", proof_ok)
+                    add("That block is final (more than 2/3 of validators voted for it)", ledger["final"])
+                    break
+            else:
+                add("The outcome is on the ledger", False, "not found")
+    return {**d, "checks": checks, "ledger": ledger, "gate_pubkey": gate.pubkey}
+
+
+@app.get("/market/events")
+def market_events(after: int = 0):
+    """Events from sim/market.py (a market that runs by itself), for the page at /static/market/."""
+    from .core import LOG_DIR
+    f = LOG_DIR / "market.jsonl"
+    if not f.exists():
+        return []
+    out = []
+    for line in f.read_text().splitlines():
+        if line.strip():
+            e = json.loads(line)
+            if e["n"] > after:
+                out.append(e)
+    return out[:400]
 
 
 class Revoke(BaseModel):

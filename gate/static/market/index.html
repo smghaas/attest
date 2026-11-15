@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attest Town Live</title>
+<link rel="icon" href="/static/logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f4f5f2;--card:#fff;--ink:#141821;--mute:#5d6673;--line:#dcdfe4;--ok:#12a150;--okbg:#e1f4e9;--bad:#c62828;--badbg:#fbe6e4;
+  --wait:#a86a00;--waitbg:#fcefd4;--new:#4a5565;--newbg:#e8ebf0;--accent:#2f4bd6;--road:#e7e9e4}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1217;--card:#181c23;--ink:#e8ebf0;--mute:#9aa4b2;--line:#2a313c;
+  --ok:#5fd394;--okbg:#10301f;--bad:#ff8a80;--badbg:#3a1613;--wait:#f2c14e;--waitbg:#38290a;--new:#b6c0cf;--newbg:#262d38;--accent:#8ea2ff;--road:#151a21}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1240px;margin:0 auto;padding:20px 16px 50px}
+header{margin-bottom:10px}
+h1{font-size:26px;margin:0;display:flex;gap:10px;align-items:center}
+.lead{color:var(--mute);margin:2px 0 0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+.bar button,.bar select,.btn{font:inherit;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card);color:var(--ink);cursor:pointer}
+.bar button.main,.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.bar button:disabled{opacity:.5;cursor:default}
+.bar .state{margin-left:auto;color:var(--mute);font-size:13px}
+button:focus-visible,select:focus-visible,input:focus-visible,li:focus-visible,.who:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:24px}.stat span{color:var(--mute);font-size:13px}
+.town{position:relative;display:grid;grid-template-columns:1fr 230px 1fr;gap:14px;background:var(--road);border-radius:14px;padding:14px}
+.col h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:0 0 8px}
+.who{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;transition:box-shadow .3s,border-color .3s;cursor:pointer}
+.who:hover{border-color:var(--mute)}
+.who.hot{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.who .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.who b{font-size:14px}.who small{display:block;color:var(--mute);font-size:12px;line-height:1.3}
+.tag{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.t-ok{background:var(--okbg);color:var(--ok)}.t-bad{background:var(--badbg);color:var(--bad)}.t-wait{background:var(--waitbg);color:var(--wait)}.t-new{background:var(--newbg);color:var(--new)}
+.counts{font-size:12px;color:var(--mute);margin-top:3px}
+.gatecol{display:flex;flex-direction:column;align-items:center;padding-top:24px}
+.bouncer{position:sticky;top:20px;width:210px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.bouncer .mark{width:84px;height:84px;margin:6px auto;border-radius:12px;display:grid;place-items:center;background:var(--bg)}
+.bouncer .mark svg{width:70px;height:70px}
+.mark path,.drawer .bigmark path{fill:none;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:70;stroke-dashoffset:70;animation:draw .5s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.bouncer .say{font-size:13px;min-height:6em}
+.bouncer .say a{color:var(--accent);cursor:pointer;text-decoration:underline}
+.bouncer .title{font-weight:800}
+svg#wires{position:absolute;inset:0;pointer-events:none;overflow:visible}
+svg#wires path{fill:none;stroke-width:2.5;stroke-dasharray:6 6;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.feed{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.feed h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:0 0 6px}
+.feed ol{list-style:none;margin:0;padding:0;max-height:360px;overflow:auto}
+.feed li{display:flex;gap:10px;padding:6px 4px;border-top:1px solid var(--line);font-size:14px}
+.feed li:first-child{border-top:0}
+.feed li.click{cursor:pointer}.feed li.click:hover{background:var(--bg)}
+.feed .when{color:var(--mute);font-size:12px;width:34px;flex:0 0 auto}
+.feed .more{margin-left:auto;color:var(--accent);font-size:12px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}.chip{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--mute)}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(600px,100%);background:var(--card);border-left:1px solid var(--line);
+  box-shadow:-8px 0 30px rgba(0,0,0,.15);transform:translateX(105%);transition:transform .25s;z-index:10;overflow:auto;padding:18px 18px 40px}
+.drawer.open{transform:none}
+.drawer.wide{width:min(980px,100%)}
+.drawer h3{margin:0 0 4px;font-size:19px}.drawer h4{margin:16px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+.drawer .close{float:right}
+.ck{display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.ck:first-child{border-top:0}
+.ck .i{font-weight:800;width:16px;flex:0 0 auto}.ck .i.y{color:var(--ok)}.ck .i.n{color:var(--bad)}
+.ck small{display:block;color:var(--mute);font-size:12px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:3px 10px;font-size:14px}.kv dt{color:var(--mute)}.kv dd{margin:0;word-break:break-word}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+.drawer pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:11.5px;overflow:auto;max-height:340px}
+.verdict{display:inline-block;font-weight:800;border-radius:8px;padding:4px 10px;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mute);font-size:12px}
+.edit input,.edit select{font:inherit;font-size:13px;width:100%;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.edit input[type=checkbox]{width:auto}
+.edit td{padding:4px 3px}
+.edit .x{border:0;background:none;color:var(--bad);font-size:18px;cursor:pointer;padding:0 4px}
+.help{font-size:13px;color:var(--mute)}
+@media (max-width:900px){.town{grid-template-columns:1fr}.gatecol{order:-1;padding-top:0}.bouncer{position:static;width:100%}svg#wires{display:none}}
+@media (prefers-reduced-motion:reduce){svg#wires path,.mark path{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1><img src="/static/logo.svg" alt="" width="34" height="34">Attest Town, live</h1>
+  <p class="lead">AI agents shop at stores on their own. Attest stands at the door and checks every one. Nothing is scripted except who behaves how. Click any agent, shop or line to see everything.</p>
+</header>
+<div class="bar">
+  <button class="main" id="start">Start the town</button>
+  <button id="pp" disabled>Pause</button>
+  <button id="step" disabled>Next transaction</button>
+  <label class="help">Speed <select id="speed"><option value="6">Slow</option><option value="3" selected>Normal</option><option value="1">Fast</option></select></label>
+  <button id="edit">Edit the town</button>
+  <span class="state" id="state">Not running.</span>
+</div>
+<div class="stats" id="stats"></div>
+<div class="town" id="town">
+  <svg id="wires"></svg>
+  <section class="col"><h2>The agents (and who stands behind them)</h2><div id="agents"><p class="help">Press "Start the town".</p></div></section>
+  <section class="gatecol"><div class="bouncer"><div class="title">Attest</div><div style="font-size:12px;color:var(--mute)">the bouncer</div>
+    <div class="mark" id="mark"></div><div class="say" id="say">Waiting for the first agent.</div></div></section>
+  <section class="col"><h2>The shops (and their house rules)</h2><div id="shops"></div></section>
+</div>
+<section class="feed"><h2>Every transaction, newest first (click one for the details)</h2><ol id="feed"></ol></section>
+<aside class="drawer" id="drawer" aria-label="Details"></aside>
+<p style="color:var(--mute);font-size:13px">Every check is a real, signed answer from the Attest gate, and every finished deal is signed by both sides and kept on the ledger. <a href="/">Back to Attest</a> · <a href="/static/town/">The NANDA Town runs</a></p>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=v=>"$"+Number(v||0).toLocaleString();
+const short=k=>k?String(k).slice(0,12)+"…":"";
+const when=t=>t?new Date(t*1000).toLocaleTimeString():"";
+const MARK={allow:'<svg viewBox="0 0 32 32"><path d="M6 27 L16 5 L24 20" stroke="var(--ok)"/></svg>',
+  refuse:'<svg viewBox="0 0 32 32"><path d="M8 8 L24 24 M24 8 L8 24" stroke="var(--bad)"/></svg>',
+  wait:'<svg viewBox="0 0 32 32"><path d="M11 7 V25 M21 7 V25" stroke="var(--wait)"/></svg>'};
+const WHY={
+  ok:"Let in. A real backer, money behind it, and within what it may do.",
+  pow_ok:"Let in to look only. No money behind it, so it solved a puzzle first. It may look, not pay.",
+  policy_escalation:"Held at the door: this is above the shop's limit, so a person at the shop must approve.",
+  unstaked_money_action:"Stopped. No one has put money behind this agent, so it may look but never pay.",
+  attenuation_violation:"Stopped. It was given more power than the agent that made it. That is not allowed.",
+  cumulative_over_limit:"Stopped. Added to what it already spent, this goes over its budget. Splitting doesn't work.",
+  issuer_exposure_over_stake:"Stopped. Its backer's agents already spent more than the backer's guarantee covers.",
+  credential_revoked:"Stopped. Its backer cancelled its ID.",
+  over_limit:"Stopped. That is more than it may spend at once.",
+  out_of_scope:"Stopped. Its backer never allowed it to do this.",
+  bad_track_record:"Turned away by the shop: its record shows too many unhappy sellers.",
+  error:"Something went wrong (see details).",
+};
+const BEHAVE={honest:"honest",shady:"often leaves sellers unhappy",splitter:"splits orders to dodge its limit",big:"big spender",revoked:"its backer cancels its ID halfway",greedy:"helper given more power than its maker",impostor:"no ID at all"};
+const why=e=>WHY[e.reason]||e.plain||e.detail||e.reason;
+const BAD=new Set(["unstaked_money_action","attenuation_violation","cumulative_over_limit","credential_revoked","bad_track_record","over_limit","out_of_scope","issuer_exposure_over_stake"]);
+let A={},S={},last=0,stats={},queue=[],busy=false,mode="idle",running=false;
+
+// ---------------- the town ----------------
+function reset(){stats={served:0,refused:0,human:0,disputed:0,bad:0};queue=[];$("#feed").innerHTML="";drawStats()}
+function build(setup){
+  A={};S={};
+  for(const a of setup.agents)A[a.key]={...a,ok:0,no:0,wait:0,status:"New",cls:"t-new",cancelled:false};
+  for(const s of setup.shops)S[s.key]={...s,ok:0};
+  drawCards();
+}
+function backerLine(a){
+  if(a.behaviour==="impostor")return "no one stands behind it";
+  if(a.behaviour==="greedy")return `made by ${(A[a.parent]||{}).name||a.parent}`;
+  return `${a.backer} (${a.backer_kind}), ${a.money?"put money down":"no money down"}`;
+}
+function drawCards(){
+  $("#agents").innerHTML=Object.entries(A).map(([k,a])=>`<div class="who" id="a-${k}" tabindex="0" data-agent="${k}"><div class="top"><b>${esc(a.name)}</b><span class="tag ${a.cls}">${esc(a.status)}</span></div>
+    <small>${esc(backerLine(a))}</small><small>may ${esc(a.actions.join(", "))}, up to ${money(a.limit)}</small><div class="counts">${a.ok} let in · ${a.no} stopped${a.wait?` · ${a.wait} held for a person`:""}</div></div>`).join("");
+  $("#shops").innerHTML=Object.entries(S).map(([k,s])=>`<div class="who" id="s-${k}" tabindex="0" data-shop="${k}"><div class="top"><b>${esc(s.name)}</b><span class="counts">${s.ok} served</span></div>
+    <small>${esc(s.sells||"")}</small><div class="chips">${s.min_stake?`<span class="chip">backer must put down ${money(s.min_stake)}</span>`:`<span class="chip">anyone with an ID</span>`}${s.human_above?`<span class="chip">a person approves above ${money(s.human_above)}</span>`:""}${s.checks_record?`<span class="chip">checks track record</span>`:""}</div></div>`).join("");
+  document.querySelectorAll("[data-agent]").forEach(el=>{el.onclick=()=>card(el.dataset.agent);el.onkeydown=k=>{if(k.key==="Enter")card(el.dataset.agent)}});
+  document.querySelectorAll("[data-shop]").forEach(el=>{el.onclick=()=>card(el.dataset.shop,true);el.onkeydown=k=>{if(k.key==="Enter")card(el.dataset.shop,true)}});
+}
+function drawStats(){
+  $("#stats").innerHTML=[["Let in",stats.served],["Stopped at the door",stats.refused],["Held for a person",stats.human],["Deals disputed",stats.disputed],["Bad behaviour stopped",stats.bad]]
+    .map(x=>`<div class="stat"><b>${x[1]||0}</b><span>${x[0]}</span></div>`).join("");
+}
+function wire(agentKey,shopKey,color){
+  const town=$("#town").getBoundingClientRect(),a=$("#a-"+agentKey),s=$("#s-"+shopKey),g=$(".bouncer");
+  if(!a||!s||getComputedStyle($("#wires")).display==="none"){$("#wires").innerHTML="";return}
+  const r=el=>el.getBoundingClientRect(),ra=r(a),rs=r(s),rg=r(g);
+  const ax=ra.right-town.left,ay=ra.top+ra.height/2-town.top,gx1=rg.left-town.left,gx2=rg.right-town.left,gy=rg.top+70-town.top,sx=rs.left-town.left,sy=rs.top+rs.height/2-town.top;
+  $("#wires").innerHTML=`<path d="M${ax},${ay} C${ax+50},${ay} ${gx1-50},${gy} ${gx1},${gy}" stroke="var(--accent)"/>`+
+    (color!=="var(--bad)"?`<path d="M${gx2},${gy} C${gx2+50},${gy} ${sx-50},${sy} ${sx},${sy}" stroke="${color}"/>`:"");
+}
+function taskText(e){return e.action==="place_order"?`an order of ${money(e.amount)}`:e.action==="request_quote"?"a price quote":`to ${e.action.replace(/_/g," ")} (${money(e.amount)})`}
+function apply(e){
+  if(e.kind==="setup"){reset();build(e);feed(`The town opens: ${e.agents.length} agents, ${e.shops.length} shops.`);return}
+  if(e.kind==="revoked"){const a=A[e.agent];if(a){a.cancelled=true;a.status="ID cancelled";a.cls="t-bad"}
+    feed(`<b>${esc(e.plain)}</b>. From now on Attest will stop it.`);drawCards();return}
+  if(e.kind==="done"){feed("The run is over.");setRunning(false);return}
+  if(e.kind!=="deal")return;
+  const a=A[e.agent],s=S[e.shop];if(!a||!s)return;
+  if(e.verdict==="allow"){a.ok++;s.ok++;stats.served++}else if(e.verdict==="wait"){a.wait++;stats.human++}else{a.no++;stats.refused++;if(BAD.has(e.reason))stats.bad++}
+  if(e.outcome==="disputed")stats.disputed++;
+  if(!a.cancelled){
+    if(e.reason==="bad_track_record"){a.status="Flagged";a.cls="t-bad"}
+    else if(e.outcome==="accepted"&&a.status==="New"&&a.ok>=3){a.status="Trusted";a.cls="t-ok"}
+    else if(e.outcome==="disputed"&&a.status!=="Flagged"){a.status="Disputes";a.cls="t-wait"}
+    else if(["unstaked_money_action","attenuation_violation"].includes(e.reason)&&a.status==="New"){a.status=e.reason==="attenuation_violation"?"Over-powered":"No money behind it";a.cls="t-bad"}
+  }
+  const v=e.verdict==="allow"?"allow":e.verdict==="wait"?"wait":"refuse";
+  $("#mark").innerHTML=MARK[v];
+  $("#say").innerHTML=`<b>${esc(a.name)}</b> wants ${esc(taskText(e))} at <b>${esc(s.name)}</b>.<br>${esc(why(e))}${e.has_detail?`<br><a data-n="${e.n}">See every detail</a>`:""}`;
+  const link=$("#say a");if(link)link.onclick=()=>details(e.n);
+  document.querySelectorAll(".who.hot").forEach(x=>x.classList.remove("hot"));
+  drawCards();drawStats();
+  $("#a-"+e.agent).classList.add("hot");$("#s-"+e.shop).classList.add("hot");
+  wire(e.agent,e.shop,v==="allow"?"var(--ok)":v==="wait"?"var(--wait)":"var(--bad)");
+  const out=e.outcome==="accepted"?" Deal done, both signed it.":e.outcome==="disputed"?" Afterwards the shop disputed the deal: it goes on the agent's record.":"";
+  feed(`<span>${MARK[v].replace('viewBox','width="16" height="16" style="vertical-align:-3px" viewBox')}</span> <b>#${e.round}</b> ${esc(a.name)} → ${esc(s.name)}, ${esc(taskText(e))}: ${esc(why(e))}${esc(out)}`,e.has_detail?e.n:null);
+}
+function feed(html,n){
+  const li=document.createElement("li");
+  li.innerHTML=`<span>${html}</span>${n?'<span class="more">details →</span>':""}`;
+  if(n){li.className="click";li.tabIndex=0;li.onclick=()=>details(n);li.onkeydown=k=>{if(k.key==="Enter")details(n)}}
+  $("#feed").prepend(li);
+}
+function pump(){if(busy||!queue.length)return;busy=true;apply(queue.shift());setTimeout(()=>{busy=false;pump()},queue.length>15?80:500)}
+async function poll(){
+  try{const evs=await (await fetch("/market/events?after="+last)).json();
+    for(const e of evs){last=e.n;queue.push(e)}pump();
+  }catch(e){}
+}
+
+// ---------------- controls ----------------
+async function control(body){const r=await fetch("/market/control",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});return r.ok}
+function setRunning(on){running=on;$("#pp").disabled=!on;$("#step").disabled=!on;$("#start").textContent=on?"Start over":"Start the town";
+  $("#state").textContent=on?(mode==="play"?"Running. One transaction every "+$("#speed").selectedOptions[0].text.toLowerCase()+" beat.":"Paused. Press \"Next transaction\" to see one more."):"Not running."}
+$("#start").onclick=async()=>{
+  reset();$("#agents").innerHTML='<p class="help">Setting up the town: making IDs and keys…</p>';$("#shops").innerHTML="";
+  const r=await fetch(`/market/start?rounds=150&pace=${$("#speed").value}&mode=play`,{method:"POST"});
+  last=0;queue=[];
+  if(!r.ok){$("#state").textContent="Starting a run needs demo mode on this gate.";return}
+  mode="play";$("#pp").textContent="Pause";setRunning(true);
+};
+$("#pp").onclick=async()=>{mode=mode==="play"?"pause":"play";await control({mode,pace:Number($("#speed").value)});$("#pp").textContent=mode==="play"?"Pause":"Play";setRunning(true)};
+$("#step").onclick=async()=>{mode="pause";$("#pp").textContent="Play";await control({mode:"step"});setRunning(true)};
+$("#speed").onchange=()=>{if(running&&mode==="play")control({mode:"play",pace:Number($("#speed").value)});setRunning(running)};
+
+// ---------------- drawer: one transaction ----------------
+function openDrawer(html,wide){const d=$("#drawer");d.classList.toggle("wide",!!wide);d.classList.add("open");d.innerHTML='<button class="btn close" id="x">Close</button>'+html;$("#x").onclick=()=>d.classList.remove("open");$("#x").focus()}
+addEventListener("keydown",k=>{if(k.key==="Escape")$("#drawer").classList.remove("open")});
+async function details(n){
+  openDrawer("<p>Checking every signature again…</p>");
+  let r;try{r=await (await fetch("/market/deal/"+n)).json()}catch(e){openDrawer("<p>Could not load it.</p>");return}
+  const e=r.event,a=A[e.agent]||{},s=S[e.shop]||{},env=r.envelope||{},req=env.request||{},cred=env.credential,ans=r.gate_answer||{};
+  const v=e.verdict==="allow"?"allow":e.verdict==="wait"?"wait":"refuse",col={allow:"t-ok",wait:"t-wait",refuse:"t-bad"}[v];
+  const allOk=r.checks.length&&r.checks.every(c=>c.ok);
+  openDrawer(`<h3>Transaction #${e.round}: ${esc(a.name||e.agent)} → ${esc(s.name||e.shop)}</h3>
+  <div class="verdict ${col}">${{allow:"Let in",wait:"Held for a person",refuse:"Stopped"}[v]}</div>
+  <p style="margin:4px 0">${esc(a.name)} wanted ${esc(taskText(e))}. ${esc(why(e))}${e.outcome?` Afterwards: ${e.outcome==="accepted"?"deal done, both signed":"the shop disputed it"}.`:""}</p>
+  <h4>Checked again just now</h4>
+  <div>${r.checks.map(c=>`<div class="ck"><span class="i ${c.ok?"y":"n"}">${c.ok?"✓":"✕"}</span><span>${esc(c.what.replace(/ \d{5} \(/," ("))}${c.note?`<small>${esc(c.note)}</small>`:""}</span></div>`).join("")||'<p class="help">Nothing to check: the shop turned it away because of its record, before asking Attest.</p>'}</div>
+  ${r.checks.length?`<p class="help">${allOk?"Every signature and proof above checks out.":"A ✕ above is what made Attest stop it, or a sign something was tampered with."}</p>`:""}
+  <h4>1. The request</h4><dl class="kv">
+   <dt>Agent</dt><dd>${esc(a.name||e.agent)} <span class="mono">${esc(short(req.from||r.agent_pub))}</span></dd>
+   <dt>Shop</dt><dd>${esc(s.name||e.shop)}</dd>
+   <dt>Wants</dt><dd>${esc(e.action)} for ${money(e.amount)}</dd>
+   <dt>Sent at</dt><dd>${esc(when(req.ts))}</dd>
+   <dt>One-time code</dt><dd class="mono">${esc(short(req.nonce))}</dd></dl>
+  <h4>2. Who stands behind it</h4><dl class="kv">${cred?`
+   <dt>Backer</dt><dd>${esc(String(cred.operator).replace(/ \d+$/,""))} (${esc(cred.backer_kind||"company")})</dd>
+   <dt>Backer key</dt><dd class="mono">${esc(short(cred.issuer))}</dd>
+   <dt>ID valid until</dt><dd>${esc(new Date(cred.expires_at*1000).toLocaleDateString())}</dd>
+   <dt>Permissions</dt><dd>${(env.chain||[]).map((m,i)=>`${i?"then a helper: ":""}${esc(m.scope.actions.join(", "))} up to ${money(m.scope.max_amount)}`).join("<br>")}</dd>`:`<dt>Backer</dt><dd>none: no ID presented</dd>`}</dl>
+  ${r.ledger_decision?`<h4>Track record the shop looked at</h4><p>${esc(r.ledger_decision.why)}</p>`:""}
+  ${ans.reason?`<h4>3. Attest's answer</h4><dl class="kv"><dt>Decision</dt><dd>${esc(ans.decision)} (${esc(ans.reason)})</dd><dt>Why</dt><dd>${esc(ans.detail)}</dd>
+   <dt>Receipt</dt><dd class="mono">${esc(short(ans.receipt&&ans.receipt.id))}</dd><dt>Signed by</dt><dd class="mono">gate ${esc(short(r.gate_pubkey))}</dd></dl>`:""}
+  ${env.pow?`<h4>Proof of work</h4><p>Answer ${esc(env.pow.nonce)}${e.pow?`, found after ${e.pow.tries.toLocaleString()} tries (${e.pow.bits} bits)`:""}.</p>`:""}
+  ${r.ledger?`<h4>4. On the ledger</h4><dl class="kv"><dt>Outcome</dt><dd>${esc(r.ledger.record.status)}, ${money(r.ledger.record.amount)}</dd><dt>Block</dt><dd>${r.ledger.block} ${r.ledger.final?"(final)":""}</dd><dt>Block hash</dt><dd class="mono">${esc(short(r.ledger.block_hash))}</dd></dl>`:""}
+  <p><button class="btn" id="seeagent">Open ${esc(a.name||e.agent)}'s card and history</button></p>
+  <details><summary style="cursor:pointer;color:var(--mute);margin-top:10px">Raw data (for engineers)</summary><pre>${esc(JSON.stringify({envelope:env,gate_answer:ans,ledger:r.ledger},null,1))}</pre></details>`);
+  $("#seeagent").onclick=()=>card(e.agent);
+}
+
+// ---------------- drawer: an agent's (or shop's) card ----------------
+function nameOf(ledgerName){   // ledger names are "<key>-<run tag>"
+  const k=String(ledgerName).replace(/-\d+$/,"");return (A[k]||S[k]||{}).name||ledgerName}
+async function card(key,isShop){
+  const x=isShop?S[key]:A[key];if(!x)return;
+  openDrawer("<p>Loading the card from the ledger…</p>");
+  let c=null;try{const r=await fetch("/card/"+x.pub);if(r.ok)c=await r.json()}catch(e){}
+  const p=c&&c.passport,vd=c&&c.verdict;
+  const vtag=vd?{allow:["Trusted","t-ok"],unknown:["New","t-new"],refuse:["Flagged","t-bad"]}[vd.decision]:["No passport","t-bad"];
+  const myDeals=[...document.querySelectorAll("#feed li.click")];
+  openDrawer(`<h3>${esc(x.name)}</h3><div class="verdict ${vtag[1]}">${vtag[0]}</div>
+  <p style="margin:4px 0">${esc(x.about||x.sells||"")}</p>
+  <h4>Agent card</h4><dl class="kv">
+   ${isShop?`<dt>Sells</dt><dd>${esc(x.sells)}</dd><dt>House rules</dt><dd>${x.min_stake?`backer must put down ${money(x.min_stake)}`:"anyone with an ID"}${x.human_above?`; a person approves above ${money(x.human_above)}`:""}${x.checks_record?"; checks track records":""}</dd><dt>Free to look</dt><dd>${esc((x.free_actions||[]).join(", ")||"nothing")}</dd>`
+    :`<dt>Stands behind it</dt><dd>${esc(backerLine(x))}</dd>
+   <dt>May do</dt><dd>${esc(x.actions.join(", "))}</dd><dt>Limit</dt><dd>${money(x.limit)}</dd>
+   <dt>ID</dt><dd>${x.cancelled?"cancelled by its backer":x.behaviour==="impostor"?"none":"valid"}</dd>
+   <dt>Really is (sim only)</dt><dd>${esc(BEHAVE[x.behaviour]||x.behaviour)} <span class="help">(the gate does not know this; it sees only what is signed)</span></dd>`}
+   <dt>Public key</dt><dd class="mono">${esc(short(x.pub))}</dd>
+   ${p?`<dt>Passport on ledger</dt><dd>${esc(p.self_vouched?"vouches for itself (a shop)":"signed by its backer and by itself")}, registration puzzle answer ${esc(p.puzzle_nonce)}</dd>
+   <dt>Backer's money down</dt><dd>${c.backer_money_down?money(c.backer_money_down):"none"}${c.backer_suspended?" (suspended)":""}</dd>`:`<dt>Passport on ledger</dt><dd>none</dd>`}
+  </dl>
+  ${c?`<h4>Track record</h4><dl class="kv"><dt>Deals</dt><dd>${c.summary.trades} (${c.summary.accepted} confirmed, ${c.summary.disputed} disputed)</dd><dt>Volume</dt><dd>${money(c.summary.volume)}</dd><dt>A stranger would conclude</dt><dd>${esc(vd.why)}</dd></dl>
+  <h4>Every deal on its record (newest first)</h4>${c.deals.length?`<table><tr><th>Block</th><th>With</th><th>As</th><th>Amount</th><th>Outcome</th><th>When</th></tr>${c.deals.map(d=>`<tr><td>${d.block}</td><td>${esc(nameOf(d.with))}</td><td>${esc(d.role)}</td><td>${money(d.amount)}</td><td><span class="tag ${d.status==="accepted"?"t-ok":"t-bad"}">${esc(d.status)}</span></td><td>${esc(when(d.ts))}</td></tr>`).join("")}</table>`:'<p class="help">No finished deals yet.</p>'}`:'<p class="help">No ledger record: this agent has no passport (no ID).</p>'}
+  <h4>Its transactions in this run</h4><div id="mytx"></div>`);
+  const mine=myDeals.filter(li=>li.textContent.includes(x.name));
+  $("#mytx").innerHTML=mine.length?"<ol style='padding-left:18px;margin:0'>"+mine.slice(0,40).map(li=>`<li style="margin:4px 0;cursor:pointer">${li.querySelector("span").innerHTML}</li>`).join("")+"</ol>":'<p class="help">None yet.</p>';
+  [...$("#mytx").querySelectorAll("li")].forEach((li,i)=>li.onclick=()=>mine[i].click());
+}
+
+// ---------------- editing the town ----------------
+const BEH_OPTS=Object.entries(BEHAVE).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join("");
+let draft=null;
+async function editor(){
+  draft=await (await fetch("/market/cast")).json();
+  drawEditor();
+}
+function inp(v,attr=""){return `<input value="${esc(v??"")}" ${attr}>`}
+function drawEditor(){
+  openDrawer(`<h3>Edit the town</h3><p class="help">Change anyone, add agents or shops, give agents any actions (comma separated). Save, then press "Start over". The gate only sees what is signed: "behaviour" is how the simulated agent will act, not something it tells Attest.</p>
+  <h4>Agents</h4><div class="edit" style="overflow:auto"><table id="ea"><tr><th>Name</th><th>Stands behind it</th><th>Person?</th><th>Money down</th><th>May do</th><th>Limit $</th><th>Amounts $</th><th>Behaviour</th><th>Made by (helper)</th><th></th></tr>
+  ${draft.agents.map((a,i)=>`<tr data-i="${i}"><td>${inp(a.name,'data-f="name"')}</td><td>${inp(a.backer,'data-f="backer" placeholder="nobody"')}</td>
+   <td><input type="checkbox" data-f="person" ${a.backer_kind==="person"?"checked":""}></td><td><input type="checkbox" data-f="money" ${a.money?"checked":""}></td>
+   <td>${inp((a.actions||[]).join(", "),'data-f="actions"')}</td><td>${inp(a.limit,'data-f="limit" type="number" min="0" style="width:80px"')}</td>
+   <td>${inp((a.amount||[20,400]).join("-"),'data-f="amount" style="width:80px"')}</td>
+   <td><select data-f="behaviour">${BEH_OPTS.replace(`value="${a.behaviour}"`,`value="${a.behaviour}" selected`)}</select></td>
+   <td><select data-f="parent"><option value="">-</option>${draft.agents.map(o=>`<option value="${esc(o.key)}" ${o.key===a.parent?"selected":""}>${esc(o.name)}</option>`).join("")}</select></td>
+   <td><button class="x" data-del-a="${i}" aria-label="Remove">×</button></td></tr>`).join("")}</table></div>
+  <button class="btn" id="adda">Add an agent</button>
+  <h4>Shops</h4><div class="edit" style="overflow:auto"><table id="es"><tr><th>Name</th><th>Sells</th><th>Backer must put down $</th><th>A person approves above $</th><th>Checks record</th><th>Free to look</th><th></th></tr>
+  ${draft.shops.map((s,i)=>`<tr data-i="${i}"><td>${inp(s.name,'data-f="name"')}</td><td>${inp(s.sells,'data-f="sells"')}</td>
+   <td>${inp(s.min_stake,'data-f="min_stake" type="number" min="0" style="width:90px"')}</td><td>${inp(s.human_above??"",'data-f="human_above" type="number" min="0" style="width:90px" placeholder="never"')}</td>
+   <td><input type="checkbox" data-f="checks_record" ${s.checks_record?"checked":""}></td><td>${inp((s.free_actions||[]).join(", "),'data-f="free_actions"')}</td>
+   <td><button class="x" data-del-s="${i}" aria-label="Remove">×</button></td></tr>`).join("")}</table></div>
+  <button class="btn" id="adds">Add a shop</button>
+  <p style="margin-top:18px"><button class="btn main" id="save">Save the town</button> <button class="btn" id="reset">Back to the default town</button> <span class="help" id="emsg"></span></p>`,true);
+  $("#adda").onclick=()=>{collect();draft.agents.push({key:"agent-"+(draft.agents.length+1),name:"New agent",backer:"New backer",backer_kind:"person",money:true,actions:["request_quote","place_order"],limit:5000,amount:[50,500],behaviour:"honest",about:""});drawEditor()};
+  $("#adds").onclick=()=>{collect();draft.shops.push({key:"shop-"+(draft.shops.length+1),name:"New shop",sells:"",min_stake:1000,human_above:null,checks_record:true,free_actions:["request_quote","search"]});drawEditor()};
+  document.querySelectorAll("[data-del-a]").forEach(b=>b.onclick=()=>{collect();draft.agents.splice(+b.dataset.delA,1);drawEditor()});
+  document.querySelectorAll("[data-del-s]").forEach(b=>b.onclick=()=>{collect();draft.shops.splice(+b.dataset.delS,1);drawEditor()});
+  $("#save").onclick=async()=>{collect();const r=await fetch("/market/cast",{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify(draft)});const o=await r.json();
+    $("#emsg").textContent=r.ok?`Saved: ${o.agents} agents, ${o.shops} shops. Press "Start over" to run it.`:(o.detail||"Could not save.")};
+  $("#reset").onclick=async()=>{await fetch("/market/cast",{method:"DELETE"});await editor();$("#emsg").textContent="Back to the default town."};
+}
+function collect(){
+  const list=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
+  document.querySelectorAll("#ea tr[data-i]").forEach(tr=>{const a=draft.agents[+tr.dataset.i],f=n=>tr.querySelector(`[data-f="${n}"]`);
+    a.name=f("name").value;a.key=a.key||a.name;a.backer=f("backer").value;a.backer_kind=f("person").checked?"person":"company";a.money=f("money").checked;
+    a.actions=list(f("actions").value);a.limit=Number(f("limit").value)||0;const am=f("amount").value.split("-").map(Number);a.amount=[am[0]||0,am[1]||am[0]||0];
+    a.behaviour=f("behaviour").value;a.parent=f("parent").value||undefined;if(a.behaviour==="impostor")a.backer="";});
+  document.querySelectorAll("#es tr[data-i]").forEach(tr=>{const s=draft.shops[+tr.dataset.i],f=n=>tr.querySelector(`[data-f="${n}"]`);
+    s.name=f("name").value;s.sells=f("sells").value;s.min_stake=Number(f("min_stake").value)||0;s.human_above=f("human_above").value===""?null:Number(f("human_above").value);
+    s.checks_record=f("checks_record").checked;s.free_actions=list(f("free_actions").value);});
+}
+$("#edit").onclick=editor;
+
+drawStats();setInterval(poll,700);poll();
+addEventListener("resize",()=>{$("#wires").innerHTML=""});
+</script>
+</body>
+</html>

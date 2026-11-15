@@ -77,6 +77,17 @@ whether a person must approve. The answer is a checklist signed by the gate. Not
 needs permission to ask. In Python: `Attest(url).check_task(envelope, "bob", allowed=True, work_bits=16)`.
 On a web page, `gate/static/widget.js` draws it as a reverse CAPTCHA: a box that confirms the agent.
 
+## Attest Town: a market that runs by itself
+
+`sim/market.py` runs agents and shops as separate programs with their own keys, trading on their own through
+the real gate: honest buyers, a person with no money down who does proof of work, an impostor, a helper with
+more power than its maker, an order splitter, a big spender whose orders go to a person, a reseller that keeps
+getting disputed (and gets turned away once its record is bad), and one whose ID is cancelled halfway.
+Open `/static/market/` on a gate started with `ATTEST_DEMO=1 ATTEST_SANDBOX=1 ATTEST_LEDGER=1`: start it,
+pause, step one transaction at a time, change the speed, edit the agents, shops and actions, click any
+transaction to see every signature checked again, and click any agent for its card and full history
+(`GET /card/<agent key>` works for any agent on the ledger).
+
 ## Try it on a public sandbox (anyone, no setup from the gate owner)
 
 A gate started with `ATTEST_SANDBOX=1` lets strangers register themselves. Stake there is free test credit,
