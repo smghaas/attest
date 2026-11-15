@@ -88,6 +88,11 @@ The same steps exist in Python (`attest.identity`, `Attest.faucet`, `Attest.regi
 To run your own sandbox, see [docs/DEPLOY.md](docs/DEPLOY.md) (Dockerfile and a Render blueprint are included).
 The sandbox proves the decision logic. It does not prove an operator has money, because anyone can mint test stake.
 
+## NANDA Town
+
+How agents in NANDA Town find the gate through the seller, the Town tests, and Town's catalog entry:
+[docs/NANDATOWN.md](docs/NANDATOWN.md).
+
 ## Agent history ledger (Bitcoin's ideas applied to agent history)
 
 `network/` is a small chain that records what agents have done, with no referee. A **passport** (operator and

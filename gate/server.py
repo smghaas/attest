@@ -54,7 +54,7 @@ from pydantic import BaseModel
 
 from .core import Gate, STATE_DIR
 
-app = FastAPI(title="Attest", version="0.3")
+app = FastAPI(title="Attest", version="0.4.0")
 gate = Gate()
 INBOX_FILE = STATE_DIR / "inbox.json"
 _inbox_lock = threading.Lock()
@@ -346,7 +346,7 @@ def demo_try(t: Try):
 
 
 # ---------------- demo inbox ----------------
-@app.post("/inbox/{receiver}")
+@app.post("/inbox/{receiver}", include_in_schema=False)
 def inbox_post(receiver: str, envelope: dict):
     req = envelope.get("request") or {}
     rid = req.get("id")
@@ -360,7 +360,7 @@ def inbox_post(receiver: str, envelope: dict):
     return {"ok": True, "request_id": rid}
 
 
-@app.get("/inbox/{receiver}/next")
+@app.get("/inbox/{receiver}/next", include_in_schema=False)
 def inbox_next(receiver: str):
     with _inbox_lock:
         d = _inbox()
@@ -372,7 +372,7 @@ def inbox_next(receiver: str):
     return {"request_id": rid, **d["all"][rid]}
 
 
-@app.get("/inbox/{receiver}/get/{rid}")
+@app.get("/inbox/{receiver}/get/{rid}", include_in_schema=False)
 def inbox_get(receiver: str, rid: str):
     with _inbox_lock:
         item = _inbox()["all"].get(rid)
@@ -386,7 +386,7 @@ class Reply(BaseModel):
     text: str
 
 
-@app.post("/inbox/{receiver}/reply")
+@app.post("/inbox/{receiver}/reply", include_in_schema=False)
 def inbox_reply(receiver: str, r: Reply):
     with _inbox_lock:
         d = _inbox()
@@ -399,7 +399,7 @@ def inbox_reply(receiver: str, r: Reply):
     return {"ok": True}
 
 
-@app.get("/replies/{agent_pub}")
+@app.get("/replies/{agent_pub}", include_in_schema=False)
 def replies(agent_pub: str):
     with _inbox_lock:
         d = _inbox()
