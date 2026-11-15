@@ -1,0 +1,1027 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Attest",
+  "version": "0.3"
+ },
+ "paths": {
+  "/info": {
+   "get": {
+    "summary": "Info",
+    "operationId": "info_info_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stats": {
+   "get": {
+    "summary": "Stats",
+    "operationId": "stats_stats_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/pubkey": {
+   "get": {
+    "summary": "Pubkey",
+    "operationId": "pubkey_pubkey_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/receivers": {
+   "get": {
+    "summary": "Receivers",
+    "operationId": "receivers_receivers_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stakes": {
+   "get": {
+    "summary": "Stakes",
+    "operationId": "stakes_stakes_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/block": {
+   "get": {
+    "summary": "Block",
+    "operationId": "block_block_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stake": {
+   "post": {
+    "summary": "Stake",
+    "operationId": "stake_stake_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Stake"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/claims": {
+   "get": {
+    "summary": "Claims",
+    "operationId": "claims_claims_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "summary": "File Claim",
+    "operationId": "file_claim_claims_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Claim"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/claims/{claim_id}/dispute": {
+   "post": {
+    "summary": "Dispute",
+    "operationId": "dispute_claims__claim_id__dispute_post",
+    "parameters": [
+     {
+      "name": "claim_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Claim Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Dispute"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/claims/{claim_id}/resolve": {
+   "post": {
+    "summary": "Resolve",
+    "operationId": "resolve_claims__claim_id__resolve_post",
+    "parameters": [
+     {
+      "name": "claim_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Claim Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Resolve"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/verify/{receiver}": {
+   "post": {
+    "summary": "Verify",
+    "operationId": "verify_verify__receiver__post",
+    "parameters": [
+     {
+      "name": "receiver",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Receiver"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object",
+        "additionalProperties": true,
+        "title": "Envelope"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/revoke": {
+   "post": {
+    "summary": "Revoke",
+    "operationId": "revoke_revoke_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Revoke"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/receipts": {
+   "get": {
+    "summary": "Receipts",
+    "operationId": "receipts_receipts_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 20,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sandbox/faucet": {
+   "post": {
+    "summary": "Faucet",
+    "description": "An operator proves it holds its key, and gets free test stake once.",
+    "operationId": "faucet_sandbox_faucet_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Faucet"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/register/receiver": {
+   "post": {
+    "summary": "Register Receiver",
+    "description": "A receiver proves it holds its key and creates itself. Names are first come, first served.",
+    "operationId": "register_receiver_register_receiver_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewReceiver"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/agents": {
+   "get": {
+    "summary": "Demo Agents",
+    "operationId": "demo_agents_demo_agents_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/try": {
+   "post": {
+    "summary": "Demo Try",
+    "operationId": "demo_try_demo_try_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Try"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/inbox/{receiver}": {
+   "post": {
+    "summary": "Inbox Post",
+    "operationId": "inbox_post_inbox__receiver__post",
+    "parameters": [
+     {
+      "name": "receiver",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Receiver"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object",
+        "additionalProperties": true,
+        "title": "Envelope"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/inbox/{receiver}/next": {
+   "get": {
+    "summary": "Inbox Next",
+    "operationId": "inbox_next_inbox__receiver__next_get",
+    "parameters": [
+     {
+      "name": "receiver",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Receiver"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/inbox/{receiver}/get/{rid}": {
+   "get": {
+    "summary": "Inbox Get",
+    "operationId": "inbox_get_inbox__receiver__get__rid__get",
+    "parameters": [
+     {
+      "name": "receiver",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Receiver"
+      }
+     },
+     {
+      "name": "rid",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Rid"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/inbox/{receiver}/reply": {
+   "post": {
+    "summary": "Inbox Reply",
+    "operationId": "inbox_reply_inbox__receiver__reply_post",
+    "parameters": [
+     {
+      "name": "receiver",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Receiver"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Reply"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/replies/{agent_pub}": {
+   "get": {
+    "summary": "Replies",
+    "operationId": "replies_replies__agent_pub__get",
+    "parameters": [
+     {
+      "name": "agent_pub",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Agent Pub"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "Claim": {
+    "properties": {
+     "receipt": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Receipt"
+     },
+     "breach": {
+      "type": "string",
+      "title": "Breach"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "receipt",
+     "breach",
+     "sig"
+    ],
+    "title": "Claim"
+   },
+   "Dispute": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason",
+     "sig"
+    ],
+    "title": "Dispute"
+   },
+   "Faucet": {
+    "properties": {
+     "issuer": {
+      "type": "string",
+      "title": "Issuer"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "issuer",
+     "name",
+     "sig"
+    ],
+    "title": "Faucet"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "NewReceiver": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "pubkey": {
+      "type": "string",
+      "title": "Pubkey"
+     },
+     "min_stake": {
+      "type": "number",
+      "title": "Min Stake",
+      "default": 0
+     },
+     "policy": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Policy",
+      "default": {}
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "pubkey",
+     "sig"
+    ],
+    "title": "NewReceiver"
+   },
+   "Reply": {
+    "properties": {
+     "request_id": {
+      "type": "string",
+      "title": "Request Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "type": "object",
+    "required": [
+     "request_id",
+     "text"
+    ],
+    "title": "Reply"
+   },
+   "Resolve": {
+    "properties": {
+     "uphold": {
+      "type": "boolean",
+      "title": "Uphold"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "uphold",
+     "sig"
+    ],
+    "title": "Resolve"
+   },
+   "Revoke": {
+    "properties": {
+     "document": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Document"
+     },
+     "by": {
+      "type": "string",
+      "title": "By"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "document",
+     "by",
+     "sig"
+    ],
+    "title": "Revoke"
+   },
+   "Stake": {
+    "properties": {
+     "issuer": {
+      "type": "string",
+      "title": "Issuer"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "amount": {
+      "type": "number",
+      "title": "Amount"
+     },
+     "sig": {
+      "type": "string",
+      "title": "Sig"
+     }
+    },
+    "type": "object",
+    "required": [
+     "issuer",
+     "name",
+     "amount",
+     "sig"
+    ],
+    "title": "Stake"
+   },
+   "Try": {
+    "properties": {
+     "agent": {
+      "type": "string",
+      "title": "Agent"
+     },
+     "receiver": {
+      "type": "string",
+      "title": "Receiver",
+      "default": "supplierco"
+     },
+     "action": {
+      "type": "string",
+      "title": "Action",
+      "default": "request_quote"
+     },
+     "amount": {
+      "type": "number",
+      "title": "Amount",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "agent"
+    ],
+    "title": "Try"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}

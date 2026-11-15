@@ -10,8 +10,16 @@ envelope to the gate (POST /verify/<receiver>) and quotes only on `allow`.
 
 Environment, besides Town's TOWN_URL RUN_ID NAME TOKEN STATE_DIR DEADLINE:
     ATTEST_URL        gate base URL (default http://127.0.0.1:8402)
+    ATTEST_PUBLIC_URL gate URL to tell other agents, when it differs from ATTEST_URL
+                      (default ATTEST_URL)
     ATTEST_RECEIVER   receiver name the gate knows this seller as (default supplierco)
     ATTEST_JOURNAL    "0" turns off the journal: the negative control
+
+A buyer that is turned away is told how to be served: every quote_refusal carries
+`how_to_get_served`, with the gate's address and public key, this seller's receiver
+name and the envelope to attach. An agent that has never heard of Attest can read it,
+come back with an envelope, and (with no stake behind it) solve the gate's puzzle for
+a public quote. Nothing in it is secret.
 
 Town delivers at least once and the gate refuses a repeated nonce as a replay,
 so the two meet on every redelivery. The journal is what reconciles them: a
@@ -29,8 +37,33 @@ from nandatown.client import TownClient
 from nandatown.participants.base import Journal, run_loop
 
 ATTEST_URL = os.environ.get("ATTEST_URL", "http://127.0.0.1:8402")
+PUBLIC_URL = os.environ.get("ATTEST_PUBLIC_URL", ATTEST_URL).rstrip("/")
 RECEIVER = os.environ.get("ATTEST_RECEIVER", "supplierco")
 USE_JOURNAL = os.environ.get("ATTEST_JOURNAL", "1") != "0"
+GUIDE = "https://github.com/smghaas/attest/blob/main/AGENTS.md"
+
+
+def how_to_get_served(http: httpx.Client) -> dict:
+    """What a turned-away buyer needs to come back with a request this seller can check."""
+    try:
+        gate_pub = http.get(f"{ATTEST_URL}/pubkey").json()["gate"]
+    except (httpx.HTTPError, KeyError, ValueError):
+        gate_pub = None
+    return {
+        "checked_by": "attest",
+        "gate": PUBLIC_URL,
+        "gate_pubkey": gate_pub,
+        "receiver": RECEIVER,
+        "info": f"{PUBLIC_URL}/info",
+        "guide": GUIDE,
+        "attach": ("put an `attest` field in the quote_request body: {credential, chain, request}. "
+                   "request is signed with your own Ed25519 key and names "
+                   f"to={RECEIVER!r}, action 'request_quote' or 'place_order', and the amount in USD."),
+        "no_credentials": ("send the envelope with credential null and chain [] and only a signed request: "
+                           "the refusal then carries a puzzle (`challenge`); solve it, add "
+                           "`pow: {challenge_id, nonce}` to the same envelope and resend for a public quote. "
+                           "Orders need a credential from an operator with stake at the gate."),
+    }
 
 
 def ask_gate(http: httpx.Client, envelope: dict | None) -> dict:
@@ -44,6 +77,7 @@ def ask_gate(http: httpx.Client, envelope: dict | None) -> dict:
 
 def build_handler(journal: Journal | None):
     http = httpx.Client(timeout=10.0)
+    hint: dict = {}             # fetched once, on the first refusal
 
     def handler(claim):
         if claim["kind"] != "quote_request":
@@ -72,12 +106,15 @@ def build_handler(journal: Journal | None):
                               "attest_receipt": receipt}}
             note.update(applied=True, total_cents=total)
         else:
+            if not hint:
+                hint.update(how_to_get_served(http))
             reply = {"message_id": "x-" + mid.removeprefix("q-"), "to": claim["from"],
                      "kind": "quote_refusal",
                      "body": {"request_id": mid, "attest_decision": decision,
                               "reason": verdict["reason"], "attest_receipt": receipt,
-                              "challenge": verdict.get("challenge")}}
-            note.update(applied=False)
+                              "challenge": verdict.get("challenge"),
+                              "how_to_get_served": hint}}
+            note.update(applied=False, attest_hint_sent=True)
         if journal is not None:
             journal.record(mid, {"note": note, "reply": reply})
         return "processed", note, [reply]
