@@ -70,7 +70,7 @@ button:disabled{opacity:.6;cursor:wait}
     <li><b>Who answers for it?</b> That company has put money down. If its robot cheats, it loses some.</li>
     <li><b>Is it allowed to do this?</b> The company said what it may do, and up to how much.</li>
   </ul>
-  <div class="cta"><a class="btn" href="/static/town/">See it work in NANDA Town</a><a class="btn ghost" href="#mine">Try it yourself</a></div>
+  <div class="cta"><a class="btn" href="/static/market/">Attest Town, live: 10 agents, 10 shops</a><a class="btn" href="/static/people/">Between two people</a><a class="btn ghost" href="/static/town/">In NANDA Town</a><a class="btn ghost" href="#mine">Try it yourself</a></div>
   <p class="sub" id="banner" hidden style="margin:12px 0 0"></p>
 </section>
 
@@ -171,8 +171,8 @@ button:disabled{opacity:.6;cursor:wait}
 
 <p class="sub" style="margin-top:18px">For agents: <span class="mono">GET /openapi.json</span> · <span class="mono">POST /verify/{receiver}</span> · MCP: <span class="mono">python -m attest.mcp_server</span> · CLI: <span class="mono">attest --help</span></p>
 </main>
-<script src="/static/keys.js"></script>
-<script src="/static/widget.js"></script>
+<script src="/static/keys.js?v=4"></script>
+<script src="/static/widget.js?v=4"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));

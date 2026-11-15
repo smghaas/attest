@@ -71,3 +71,16 @@ def test_a_stranger_with_no_backer_fails_the_backer_check(at):
     assert items(out)["signed"] == "pass" and items(out)["backer"] == "fail"
     assert at.check_task(do_work(build_request(lone, "carol", "chat", 0), 10), "carol",
                          backer=False, work_bits=10)["verdict"] == "pass"     # work alone, if that is all carol asks
+
+
+def test_someone_who_vouches_only_for_themself_has_no_backer_but_can_put_money_down(at):
+    me = identity.new_operator("Bob Stone", backer_kind="self")
+    at.faucet(me)
+    bob = identity.new_agent("bob", me, "me", ["lease_apartment"], 2000)
+    out = at.check_task(build_request(bob, "alice", "lease_apartment", 1500), "alice",
+                        backer=True, allowed=True, min_stake=1000)
+    assert items(out) == {"signed": "pass", "backer": "fail", "allowed": "pass", "stake": "pass"}
+    assert "only for themself" in next(i["why"] for i in out["items"] if i["key"] == "backer")
+    out = at.check_task(build_request(bob, "alice", "lease_apartment", 1500), "alice",
+                        backer=False, allowed=True, min_stake=1000)
+    assert out["verdict"] == "pass"                       # alice may accept money down instead of a backer

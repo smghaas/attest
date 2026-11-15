@@ -69,6 +69,7 @@ const AttestWidget = (() => {
     const mark = el.querySelector(".atw-mark"), title = el.querySelector(".atw-title"), sub = el.querySelector(".atw-sub");
     const more = el.querySelector(".atw-more");
     let running = false;
+    const clean = opts.clean || (s => s);
     async function go() {
       if (running) return; running = true;
       mark.className = "atw-mark busy"; mark.innerHTML = '<div class="atw-spin"></div>';
@@ -91,11 +92,11 @@ const AttestWidget = (() => {
     function show(out) {
       mark.className = "atw-mark done"; mark.innerHTML = MARK[out.verdict];
       mark.setAttribute("aria-label", TITLE[out.verdict]);
-      title.textContent = TITLE[out.verdict];
+      title.textContent = (opts.titles || TITLE)[out.verdict];
       const passed = out.items.filter(i => i.status === "pass").length;
       sub.textContent = `${passed} of ${out.items.length} checks passed for ${out.action} ($${Number(out.amount || 0).toLocaleString()})`;
       more.innerHTML = `<ul class="atw-list">${out.items.map(i => `<li><span class="atw-ic ${i.status}">${ICON[i.status]}</span>
-        <span class="atw-li"><b>${esc(i.label)}</b><span>${esc(i.why)}</span></span></li>`).join("")}</ul>
+        <span class="atw-li"><b>${esc(i.label)}</b><span>${esc(clean(i.why))}</span></span></li>`).join("")}</ul>
         <div class="atw-foot">Signed by Attest (${esc(out.id.slice(0, 10))}) · anyone can check this answer was not changed.</div>`;
       [...more.querySelectorAll("li")].forEach((li, k) => setTimeout(() => li.classList.add("on"), 250 + 180 * k));
     }

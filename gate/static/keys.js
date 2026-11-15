@@ -83,6 +83,20 @@ const AttestKeys = (() => {
     return out;
   }
 
+  // Reuse a backer that already exists in this browser (one organization can vouch for many people).
+  async function backer(name, backerKind, putMoney) {
+    const have = get(name);
+    if (have && have.kind === "operator") return have;
+    await createOperator(name, backerKind, putMoney);
+    return get(name);
+  }
+
+  // Someone with a key and nothing else: no ID, no backer. They can still sign and do proof of work.
+  async function bare(name) {
+    if (exists(name)) throw new Error(name + " already exists in this browser");
+    return save({ kind: "agent", name, ...(await keygen()), credential: null, chain: [] });
+  }
+
   // Proof of work on this request: a nonce so sha256(request id + ":" + nonce) starts with `bits` zero bits.
   async function work(env, bits, progress) {
     const rid = env.request.id;
@@ -206,5 +220,5 @@ const AttestKeys = (() => {
   }
 
   return { supported, canon, list, get, save, forget, createOperator, createReceiver, createAgent, envelope, check,
-           passport, trade, settle, hasPassport, nonce, work, ensureChecker };
+           passport, trade, settle, hasPassport, nonce, work, ensureChecker, ensurePassport, backer, bare };
 })();

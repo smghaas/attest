@@ -7,7 +7,8 @@ fresh, so an old envelope cannot be shown to someone else.
 
 Requirements (all optional except the first):
   signed       the agent signed this request, just now, for this asker          always on
-  backer       a person or company signed the agent's ID and permission, valid, not revoked
+  backer       a person, company or organization other than the agent signed its ID and permission,
+               valid, not revoked (an ID marked backer_kind "self" fails this; its permission still counts)
   allowed      the task (action, amount) is inside what the backer allowed
   stake        the backer put down at least `min_stake`
   work         the agent did proof of work of at least `work_bits` on this request
@@ -62,6 +63,9 @@ def _chain(gate, env: dict, now: float) -> tuple[bool, str, dict | None]:
     if req.get("from") != prev["subject"]:
         return False, "the request is not from the agent the permission is for", None
     kind = cred.get("backer_kind", "company")
+    if kind == "self":
+        # a valid, signed ID, but nobody else answers for it: the permission still counts, the backing does not
+        return False, f"{cred.get('operator', '?')} vouches only for themself", prev["scope"]
     return True, f"{cred.get('operator', '?')} ({kind}) signed its ID and permission", prev["scope"]
 
 
@@ -98,8 +102,8 @@ def run(gate, env: dict, checker: str, require: dict, ledger=None) -> dict:
     elif not fresh:
         why = f"the request is more than {REQUEST_SKEW_S // 60} minutes old"
     else:
-        why = "the agent holds its key and signed this request for you just now"
-    add("signed", "It signed this request itself", sig_ok and req.get("to") == checker and fresh, why)
+        why = "the sender holds its key and signed this request for you just now"
+    add("signed", "Signed by the sender itself", sig_ok and req.get("to") == checker and fresh, why)
 
     try:
         amount = float(req.get("amount") or 0)
@@ -108,10 +112,10 @@ def run(gate, env: dict, checker: str, require: dict, ledger=None) -> dict:
     action = req.get("action")
 
     chain_ok, chain_why, scope = _chain(gate, env, now)
-    if require.get("backer", True) or require.get("allowed"):
-        add("backer", "A person or company stands behind it", chain_ok, chain_why)
+    if require.get("backer", True):
+        add("backer", "Someone else vouches for it", chain_ok, chain_why)
     if require.get("allowed"):
-        if not chain_ok:
+        if scope is None:
             add("allowed", "It may do this task", False, "no valid permission to check against")
         elif action not in scope.get("actions", []):
             add("allowed", "It may do this task", False, f"its backer never allowed {action!r} (allowed: "
@@ -126,7 +130,7 @@ def run(gate, env: dict, checker: str, require: dict, ledger=None) -> dict:
     bits = min(int(require.get("work_bits") or 0), MAX_WORK_BITS)
     stake_res = work_res = None
     if min_stake is not None:
-        s = gate.state["stakes"].get((env.get("credential") or {}).get("issuer")) if chain_ok else None
+        s = gate.state["stakes"].get((env.get("credential") or {}).get("issuer")) if scope is not None else None
         if not s:
             stake_res = (False, "its backer has put no money down")
         elif s.get("suspended"):
