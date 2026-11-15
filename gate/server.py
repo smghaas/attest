@@ -2,6 +2,7 @@
 
 Gate endpoints (the product):
   GET  /pubkey                       the gate's signing key, so receipts can be checked
+  POST /check                        {envelope, checker, require} -> a checklist the asker chose, signed
   POST /verify/{receiver}            body = envelope -> decision + signed receipt
                                      header X-Attest-Receiver-Sig (required on a sandbox): see verify()
   POST /revoke                       {document, by, sig, reason}   by must be the document's signer
@@ -94,7 +95,7 @@ def _num(var: str, default: float) -> float:
 
 # Sandbox guards: body size, per-IP rate limits, no demo inbox, open CORS so browser agents can call.
 _hits: dict = defaultdict(deque)
-WRITE_PATHS = ("/sandbox/", "/register/", "/claims", "/revoke", "/ledger/records")
+WRITE_PATHS = ("/sandbox/", "/register/", "/claims", "/revoke", "/ledger/records")  # /check counts as a check
 
 
 @app.middleware("http")
@@ -243,6 +244,28 @@ def verify(receiver: str, envelope: dict, x_attest_receiver_sig: str | None = He
             raise HTTPException(401, f"only {receiver} can ask about requests sent to it: sign "
                                      '{"verify": <request id>, "receiver": <name>} and send it as X-Attest-Receiver-Sig')
     return gate.verify(receiver, envelope)
+
+
+class Check(BaseModel):
+    envelope: dict
+    checker: str
+    require: dict = {}
+
+
+@app.post("/check")
+def check(c: Check):
+    """Anyone checks an agent for a task, choosing what must be true. Nothing is spent; the answer is a
+    checklist signed by the gate. See gate/checklist.py for the requirements."""
+    if not 0 < len(c.checker) <= 64:
+        raise HTTPException(400, "checker: 1 to 64 characters (who is asking; the request must be addressed to it)")
+    from . import checklist
+    from .core import LOG_DIR
+    from .ledger_api import enabled as ledger_on, service as ledger
+    with gate.lock:
+        out = checklist.run(gate, c.envelope, c.checker, c.require, ledger() if ledger_on() else None)
+    with (LOG_DIR / "checks.jsonl").open("a") as f:
+        f.write(json.dumps(out) + "\n")
+    return out
 
 
 class Revoke(BaseModel):

@@ -43,6 +43,16 @@ def build_request(agent: dict, to: str, action: str, amount: float, message: str
     return {"credential": agent["credential"], "chain": agent["chain"], "request": req}
 
 
+def do_work(envelope: dict, bits: int) -> dict:
+    """Proof of work on this request: find a nonce so sha256(request id + ':' + nonce) starts with `bits`
+    zero bits. A checker may accept this instead of money put down. Returns the envelope with `work` added."""
+    import hashlib
+    rid, n = envelope["request"]["id"], 0
+    while int.from_bytes(hashlib.sha256(f"{rid}:{n}".encode()).digest(), "big") >> (256 - bits):
+        n += 1
+    return {**envelope, "work": {"nonce": n, "bits": bits}}
+
+
 class Attest:
     def __init__(self, url: str | None = None, timeout: float = 10):
         self.url = (url or os.environ.get("ATTEST_URL") or DEFAULT_URL).rstrip("/")
@@ -95,6 +105,16 @@ class Attest:
         rec = out["receipt"]
         return Decision(out["decision"], out["reason"], out.get("detail", ""), rec,
                         self.verify_receipt(rec), out.get("challenge"), out)
+
+    def check_task(self, envelope: dict, checker: str, **require) -> dict:
+        """Check an agent for one task, choosing what must be true (see gate/checklist.py):
+        backer, allowed, min_stake, work_bits, either, min_deals, max_disputed, human_above.
+        The envelope's request must be addressed to `checker`. Returns the signed checklist."""
+        r = self.http.post("/check", json={"envelope": envelope, "checker": checker, "require": require})
+        _raise(r)
+        out = r.json()
+        out["verified_signature"] = self.verify_receipt(out)
+        return out
 
     # -- writing (each call is signed with the caller's own key) -----------------------------
     def stake(self, operator: dict, amount: float) -> dict:

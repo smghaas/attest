@@ -45,10 +45,11 @@ def _fresh(name: str):
         raise FileExistsError(f"{name!r} already exists in {home()}")
 
 
-def new_operator(name: str, persist: bool = True) -> dict:
+def new_operator(name: str, persist: bool = True, backer_kind: str = "company") -> dict:
+    """Whoever stands behind agents: a company or a person (backer_kind)."""
     _fresh(name)
     priv, pub = crypto.keygen()
-    doc = {"kind": "operator", "name": name, "priv": priv, "pub": pub}
+    doc = {"kind": "operator", "name": name, "priv": priv, "pub": pub, "backer_kind": backer_kind}
     if persist:
         save(doc)
     return doc
@@ -71,6 +72,7 @@ def new_agent(name: str, operator: dict, purpose: str, actions: list[str], max_a
     now = time.time()
     cred = crypto.signed(operator["priv"], {
         "type": "kya.credential/1", "agent": pub, "operator": operator["name"], "issuer": operator["pub"],
+        "backer_kind": operator.get("backer_kind", "company"),
         "purpose": purpose, "issued_at": now, "expires_at": now + days * DAY})
     root = crypto.signed(operator["priv"], {
         "type": "kya.mandate/1", "subject": pub, "issuer": operator["pub"], "parent": None,

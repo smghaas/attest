@@ -71,13 +71,35 @@ const AttestKeys = (() => {
     return out;
   }
 
-  async function createOperator(name) {
+  // Whoever stands behind agents: a person or a company. Money down (test stake) is optional.
+  async function createOperator(name, backerKind = "company", putMoney = true) {
     if (exists(name)) throw new Error(name + " already exists in this browser");
     const k = await keygen();
-    const op = { kind: "operator", name, ...k };
-    const out = await post("/sandbox/faucet", { issuer: op.pub, name, sig: await sign(op, { faucet: true, issuer: op.pub, name }) });
+    const op = { kind: "operator", name, backer_kind: backerKind, ...k };
+    let out = { stake: 0 };
+    if (putMoney)
+      out = await post("/sandbox/faucet", { issuer: op.pub, name, sig: await sign(op, { faucet: true, issuer: op.pub, name }) });
     save(op);                                  // keep the key only once the gate accepted it
     return out;
+  }
+
+  // Proof of work on this request: a nonce so sha256(request id + ":" + nonce) starts with `bits` zero bits.
+  async function work(env, bits, progress) {
+    const rid = env.request.id;
+    let n = 0;
+    while (zeroBits(await sha(rid + ":" + n)) < bits) {
+      n++;
+      if (progress && n % 2000 === 0) progress(n);
+    }
+    return { ...env, work: { nonce: n, bits } };
+  }
+
+  // The person (or agent) doing the checking gets a key too, so it can sign the outcome with the agent.
+  async function ensureChecker(name) {
+    const have = get(name);
+    if (have && (have.kind === "checker" || have.kind === "receiver")) return have;
+    if (have) throw new Error(name + " is already used for something else in this browser; pick another name");
+    return save({ kind: "checker", name, ...(await keygen()) });
   }
 
   async function createReceiver(name, minStake, escalateAbove, escalateFor, readOnly) {
@@ -100,6 +122,7 @@ const AttestKeys = (() => {
     const t = now();
     if (issuer.kind === "operator") {
       const cred = await signed(issuer, { type: "kya.credential/1", agent: k.pub, operator: issuer.name, issuer: issuer.pub,
+                                          backer_kind: issuer.backer_kind || "company",
                                           purpose, issued_at: t, expires_at: t + days * 86400 });
       const root = await signed(issuer, { type: "kya.mandate/1", subject: k.pub, issuer: issuer.pub, parent: null,
                                           scope: { actions, max_amount: maxAmount, currency: "USD" }, expires_at: t + days * 86400 });
@@ -123,7 +146,7 @@ const AttestKeys = (() => {
   // Only the receiver may ask about requests sent to it: it signs {verify: request id, receiver}.
   async function check(agentName, receiver, action, amount) {
     const rc = get(receiver);
-    if (!rc || rc.kind !== "receiver")
+    if (!rc || (rc.kind !== "receiver" && rc.kind !== "checker"))
       throw new Error("Only " + receiver + " can check requests sent to it, and its key is not in this browser. " +
                       "Pick a receiver you created here (step 3).");
     const env = await envelope(agentName, receiver, action, amount, "sent from the browser");
@@ -146,12 +169,13 @@ const AttestKeys = (() => {
   async function passport(name) {
     const a = get(name);
     // an agent's operator vouches for it; a receiver vouches for itself
-    const op = a.kind === "receiver" ? a : get(a.operator);
+    const self = a.kind === "receiver" || a.kind === "checker";
+    const op = self ? a : get(a.operator);
     if (!op) throw new Error("the passport needs the operator's key, and " + a.operator + " is not in this browser");
     const bits = (await (await fetch("/ledger/info")).json()).registration_puzzle_bits;
     let n = 0;
     while (zeroBits(await sha(a.pub + ":" + n)) < bits) n++;     // the registration puzzle (proof of work)
-    const scope = a.kind === "receiver" ? { actions: ["receive"], max_amount: 0 } : a.chain[0].scope;
+    const scope = self ? { actions: ["receive"], max_amount: 0 } : a.chain[0].scope;
     const doc = await signed(op, { type: "passport", agent: a.pub, operator: op.pub, name: a.name,
                                    actions: [...scope.actions].sort(), max_amount: scope.max_amount, nonce: n });
     doc.agent_sig = await sign(a, { id: doc.id });
@@ -166,9 +190,9 @@ const AttestKeys = (() => {
   // The record's request field is the gate request's id, so the history points back to the gate's receipt.
   async function settle(agentName, receiverName, requestId, amount, status) {
     const rc = get(receiverName);
-    if (!rc || rc.kind !== "receiver")
-      throw new Error("the receiver " + receiverName + " must countersign, and its key is not in this browser. " +
-                      "Only receivers you created here can confirm a deal from this page.");
+    if (!rc || (rc.kind !== "receiver" && rc.kind !== "checker"))
+      throw new Error(receiverName + " must sign too, and its key is not in this browser. " +
+                      "Only someone whose key is here can confirm a deal from this page.");
     await ensurePassport(agentName);
     await ensurePassport(receiverName);
     return trade(receiverName, agentName, requestId, amount, status);
@@ -182,5 +206,5 @@ const AttestKeys = (() => {
   }
 
   return { supported, canon, list, get, save, forget, createOperator, createReceiver, createAgent, envelope, check,
-           passport, trade, settle, hasPassport, nonce };
+           passport, trade, settle, hasPassport, nonce, work, ensureChecker };
 })();

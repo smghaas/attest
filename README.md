@@ -68,6 +68,15 @@ if d.allowed and d.receipt_verified:
 `list_receivers`, `get_stakes` and `recent_decisions`. Set `ATTEST_URL` to point at your gate.
 Agents reading this repo should start with [AGENTS.md](AGENTS.md). The raw HTTP API is described at `/openapi.json`.
 
+## Check any agent for any task (people and agents alike)
+
+`POST /check` lets anyone, a person or an agent, check an agent for one task and choose what must be true:
+that it signed the request itself, that a person or company stands behind it, that it may do this task at
+this amount, that its backer put money down, or that it did proof of work instead, its track record, and
+whether a person must approve. The answer is a checklist signed by the gate. Nothing is spent, so no one
+needs permission to ask. In Python: `Attest(url).check_task(envelope, "bob", allowed=True, work_bits=16)`.
+On a web page, `gate/static/widget.js` draws it as a reverse CAPTCHA: a box that confirms the agent.
+
 ## Try it on a public sandbox (anyone, no setup from the gate owner)
 
 A gate started with `ATTEST_SANDBOX=1` lets strangers register themselves. Stake there is free test credit,
