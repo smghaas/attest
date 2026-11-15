@@ -37,7 +37,12 @@ Start a gate and open the dashboard (demo mode lets you try the demo agents from
 ATTEST_DEMO=1 .venv/bin/uvicorn gate.server:app --port 8402     # http://127.0.0.1:8402/
 ```
 
-**Human:** the dashboard at `/` shows live decisions, stake behind each operator, receivers and slashing
+**Human, no install:** on a sandbox gate the page at `/` has "Use Attest in your browser": create a company
+(free test stake), an agent or sub-agent, your own receiver, send a request and see allow, refuse or escalate, then
+register a passport and record trades on the ledger. Keys are made and kept in the browser (Ed25519 via WebCrypto);
+the gate only sees signatures. Keys can be downloaded, and keys made with the CLI can be imported.
+
+**Human:** the dashboard at `/` also shows live decisions, stake behind each operator, receivers and slashing
 claims, and has a "Check an agent" box (a demo agent, or a pasted envelope).
 
 **Terminal:** `pip install git+https://github.com/smghaas/attest` (or `pip install -e .` in a checkout) gives an

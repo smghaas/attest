@@ -33,6 +33,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .tabs{display:flex;gap:6px;margin-bottom:6px}.tabs button{width:auto;margin:0;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:4px 12px}.tabs button[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
 .empty{color:var(--mute);padding:8px}
 pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
+h3{font-size:15px;margin:0 0 4px}
+.step{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg)}
+.step select,.step input{background:var(--card)}
+.checks{display:flex;gap:16px}.checks label{display:flex;gap:6px;align-items:center;margin:0;color:var(--ink);font-size:14px}.checks input{width:auto}
+.msg{font-size:13px;margin-top:8px;min-height:1em}.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
+button.ghost{background:var(--card);color:var(--bad);border:1px solid var(--line)}
+button:disabled{opacity:.6;cursor:wait}
 </style>
 </head>
 <body>
@@ -45,9 +52,48 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
 <div id="banner" class="card" hidden style="border-color:var(--warn);background:var(--warnbg);color:var(--warn);margin-bottom:14px"></div>
 <div class="grid tiles" id="tiles"></div>
 
+<section class="card" id="mine" style="margin-bottom:14px" hidden>
+  <h2>Use Attest in your browser</h2>
+  <p class="sub" style="margin:0 0 10px">No install, no demo agents. Keys are made and kept in this browser; the gate only sees signatures. Go in order, or skip to step 4 with an existing receiver.</p>
+  <div class="grid two">
+    <div class="step"><h3>1. Your company</h3>
+      <label for="m-op">Company name</label><input id="m-op" placeholder="e.g. Globex" autocomplete="off">
+      <button id="m-op-go">Create company (gets test stake)</button><div class="msg" id="m-op-msg"></div></div>
+    <div class="step"><h3>2. Your agent</h3>
+      <div class="row"><div><label for="m-ag">Agent name</label><input id="m-ag" placeholder="e.g. globex-buyer" autocomplete="off"></div>
+        <div><label for="m-iss">Issued by</label><select id="m-iss"></select></div></div>
+      <label>May do</label>
+      <div class="checks"><label><input type="checkbox" id="m-q" checked> request_quote</label><label><input type="checkbox" id="m-o" checked> place_order</label></div>
+      <label for="m-max">Up to (USD)</label><input id="m-max" type="number" min="0" value="10000">
+      <button id="m-ag-go">Create agent</button><div class="msg" id="m-ag-msg"></div></div>
+    <div class="step"><h3>3. Who checks (receiver)</h3>
+      <label for="m-rc">Receiver name</label><input id="m-rc" placeholder="e.g. my-desk" autocomplete="off">
+      <div class="row"><div><label for="m-min">Min stake behind an agent</label><input id="m-min" type="number" min="0" value="5000"></div>
+        <div><label for="m-esc">Ask a human for orders above</label><input id="m-esc" type="number" min="0" value="8000"></div></div>
+      <button id="m-rc-go">Create receiver</button><div class="msg" id="m-rc-msg"></div></div>
+    <div class="step"><h3>4. Send a request, get a decision</h3>
+      <div class="row"><div><label for="m-from">From agent</label><select id="m-from"></select></div>
+        <div><label for="m-to">To receiver</label><select id="m-to"></select></div></div>
+      <div class="row"><div><label for="m-act">Action</label><select id="m-act"><option>request_quote</option><option>place_order</option></select></div>
+        <div><label for="m-amt">Amount (USD)</label><input id="m-amt" type="number" min="0" value="2000"></div></div>
+      <button id="m-ask">Ask the gate</button><div id="m-out"></div></div>
+  </div>
+  <div class="step" id="m-ledger" hidden style="margin-top:14px"><h3>5. Build the agent's history on the ledger</h3>
+    <div class="row"><div><label for="m-pp">Agent</label><select id="m-pp"></select></div>
+      <div><label>&nbsp;</label><button id="m-pp-go" style="margin-top:0">Register passport</button></div></div>
+    <div class="row"><div><label for="m-sel">Seller agent</label><select id="m-sel"></select></div><div><label for="m-buy">Buyer agent</label><select id="m-buy"></select></div></div>
+    <div class="row"><div><label for="m-tamt">Amount (USD)</label><input id="m-tamt" type="number" min="0" value="500"></div>
+      <div><label for="m-st">Outcome (both sign it)</label><select id="m-st"><option>accepted</option><option>disputed</option></select></div></div>
+    <button id="m-tr-go">Record trade</button><div class="msg" id="m-l-msg"></div></div>
+  <h3 style="margin-top:16px">Your keys (in this browser)</h3>
+  <div id="m-ids"></div>
+  <div class="row" style="max-width:520px"><button id="m-dl">Download all as JSON</button><button id="m-forget" class="ghost">Forget all keys</button></div>
+  <label for="m-imp" style="margin-top:10px">Import keys made with the <span class="mono">attest</span> CLI (files from ~/.attest)</label><input id="m-imp" type="file" accept=".json" multiple>
+</section>
+
 <div class="grid two">
   <section class="card">
-    <h2>Check an agent</h2>
+    <h2>Try the demo agents</h2>
     <div class="tabs"><button id="t-demo" aria-pressed="true">Demo agents</button><button id="t-paste" aria-pressed="false">Paste envelope</button></div>
     <div id="demo">
       <label for="agent">Agent</label><select id="agent"></select>
@@ -86,13 +132,14 @@ pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
 </section>
 
 <section class="card" id="start" style="margin-top:14px" hidden>
-  <h2>Use it yourself</h2>
+  <h2>Use it from the terminal</h2>
   <p class="sub" style="margin:0 0 8px">Your keys stay on your machine; the gate only sees signatures. Needs <span class="mono">pip install git+https://github.com/smghaas/attest</span>.</p>
   <pre class="mono" id="cmds"></pre>
 </section>
 
 <p class="sub" style="margin-top:18px">For agents: <span class="mono">GET /openapi.json</span> · <span class="mono">POST /verify/{receiver}</span> · MCP: <span class="mono">python -m attest.mcp_server</span> · CLI: <span class="mono">attest --help</span></p>
 </main>
+<script src="/static/keys.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -113,11 +160,11 @@ async function refresh(){
     $("#rcvs").innerHTML=tbl(Object.entries(rv).map(([k,v])=>({k,...v})),[["Receiver",r=>esc(r.k)],["Min stake",r=>Number(r.min_stake||0).toLocaleString()],["Policy",r=>`<span class="mono">${esc(JSON.stringify(r.policy||{}))}</span>`]]);
     $("#claims").innerHTML=tbl(cl,[["Issuer",r=>esc(r.issuer_name)],["Status",r=>esc(r.status)],["Breach",r=>esc(r.breach)]]);
     const names=Object.keys(rv);
-    for(const id of ["#rcv","#rcv2"]){const s=$(id),cur=s.value;s.innerHTML=names.map(n=>`<option>${esc(n)}</option>`).join("");if(names.includes(cur))s.value=cur}
+    for(const id of ["#rcv","#rcv2","#m-to"]){const s=$(id),cur=s.value;s.innerHTML=names.map(n=>`<option>${esc(n)}</option>`).join("");if(names.includes(cur))s.value=cur}
     demo=st.demo;
     try{
       const [li,la,lb]=await Promise.all([get("/ledger/info"),get("/ledger/agents"),get("/ledger/blocks?limit=5")]);
-      $("#ledger").hidden=false;
+      $("#ledger").hidden=false;$("#m-ledger").hidden=false;
       $("#linfo").textContent=`Height ${li.height}, final to ${li.final}, ${li.records} records, ${li.validators} validators. Blocks need a ${li.block_puzzle_bits}-bit puzzle and a staked validator's signature; a block is final once more than 2/3 of stake voted for it. ${li.note}.`;
       $("#lagents").innerHTML=tbl(la,[["Agent",r=>esc(r.name)],["Trades",r=>r.trades],["Accepted",r=>r.accepted],["Disputed",r=>r.disputed],["Volume",r=>"$"+Number(r.volume).toLocaleString()],["Light client says",r=>pill(r.decision)+`<div class="sub">${esc(r.why)}</div>`]]);
       $("#lblocks").innerHTML=tbl(lb,[["Block",r=>r.height],["Records",r=>r.records],["Proposer",r=>`<span class="mono">${esc(r.proposer)}</span>`],["Merkle root",r=>`<span class="mono">${esc(r.root.slice(0,16))}…</span>`]]);
@@ -125,7 +172,7 @@ async function refresh(){
     if(st.sandbox&&!$("#banner").dataset.set){
       $("#banner").dataset.set=1;$("#banner").hidden=false;
       $("#banner").innerHTML="<b>Public sandbox.</b> Stake here is free test credit, not money. Every decision is public. Decisions, signatures and receipts are real.";
-      $("#start").hidden=false;
+      $("#start").hidden=false;$("#mine").hidden=false;
       $("#cmds").textContent=["export ATTEST_URL="+location.origin,"attest operator create MyCompany          # free test stake","attest receiver create my-desk --min-stake 5000 --escalate place_order=8000","attest agent create my-buyer --operator MyCompany --actions request_quote,place_order --max 10000","attest request my-buyer my-desk place_order 2000 --check"].join("\n");
     }
   }catch(e){$("#up").textContent="gate unreachable"}
@@ -155,6 +202,53 @@ $("#go").onclick=async()=>{const r=await post("/demo/try",{agent:$("#agent").val
 $("#go2").onclick=async()=>{let env;try{env=JSON.parse($("#env").value)}catch(e){$("#out").innerHTML='<div class="result">That is not valid JSON.</div>';return}
   const r=await post("/verify/"+encodeURIComponent($("#rcv2").value),env);if(r)render(r)};
 
+
+// ---------------- use Attest in your browser ----------------
+const K=AttestKeys;
+const fill=(sel,items,keep=true)=>{const s=$(sel),cur=s.value;s.innerHTML=items.map(n=>`<option>${esc(n)}</option>`).join("");if(keep&&items.includes(cur))s.value=cur};
+function idsChanged(){
+  const ids=K.list(),names=k=>ids.filter(d=>d.kind===k).map(d=>d.name);
+  const agents=names("agent");
+  fill("#m-iss",[...names("operator"),...agents]);
+  for(const s of ["#m-from","#m-pp","#m-sel","#m-buy"])fill(s,agents);
+  if(agents.length>1&&$("#m-buy").value===$("#m-sel").value)$("#m-buy").value=agents[1];
+  $("#m-ids").innerHTML=tbl(ids,[["Name",r=>esc(r.name)],["Kind",r=>esc(r.kind)],["Details",r=>r.kind==="agent"?esc(`${r.chain[r.chain.length-1].scope.actions.join(", ")} up to $${Number(r.chain[r.chain.length-1].scope.max_amount).toLocaleString()}`+(r.delegated_by?`, delegated by ${r.delegated_by}`:`, for ${r.operator}`)):""],["Public key",r=>`<span class="mono">${esc(r.pub.slice(0,16))}…</span>`]]);
+}
+function say(id,text,ok=true){const m=$(id);m.className="msg "+(ok?"ok":"err");m.textContent=text}
+async function busy(btn,fn){btn.disabled=true;try{await fn()}finally{btn.disabled=false}}
+const clean=v=>v.trim();
+
+$("#m-op-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-op").value);if(!n)return say("#m-op-msg","Give your company a name.",false);
+  try{const r=await K.createOperator(n);say("#m-op-msg",`${n} created with ${Number(r.stake).toLocaleString()} test stake. Its key is in this browser.`);idsChanged();refresh()}catch(err){say("#m-op-msg",err.message,false)}});
+$("#m-ag-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-ag").value),iss=$("#m-iss").value;
+  const acts=[["#m-q","request_quote"],["#m-o","place_order"]].filter(x=>$(x[0]).checked).map(x=>x[1]);
+  if(!n||!iss)return say("#m-ag-msg","Create a company first, then name the agent.",false);
+  if(!acts.length)return say("#m-ag-msg","Tick at least one action.",false);
+  try{const sub=K.get(iss).kind==="agent";await K.createAgent(n,iss,"agent made in the browser",acts,Number($("#m-max").value)||0,sub?7:30);
+    say("#m-ag-msg",sub?`${n} is a sub-agent of ${iss}. If its limits are wider than its parent's, the gate will refuse it.`:`${n} now holds a credential and a mandate signed by ${iss}.`);idsChanged();$("#m-from").value=n}catch(err){say("#m-ag-msg",err.message,false)}});
+$("#m-rc-go").onclick=e=>busy(e.target,async()=>{const n=clean($("#m-rc").value).toLowerCase();if(!n)return say("#m-rc-msg","Name the receiver (lowercase, dashes).",false);
+  try{await K.createReceiver(n,Number($("#m-min").value)||0,Number($("#m-esc").value)||0);say("#m-rc-msg",`Receiver ${n} registered. Pick it in step 4.`);idsChanged();await refresh();$("#m-to").value=n}catch(err){say("#m-rc-msg",err.message,false)}});
+$("#m-ask").onclick=e=>busy(e.target,async()=>{const a=$("#m-from").value,to=$("#m-to").value;
+  if(!a){$("#m-out").innerHTML='<div class="msg err">Create an agent in step 2 first.</div>';return}
+  try{const {envelope,result}=await K.check(a,to,$("#m-act").value,Number($("#m-amt").value)||0);
+    const r=result,ch=r.challenge?`<div class="sub">Puzzle required: ${esc(r.challenge.bits)} bits of proof of work before an unstaked agent is heard.</div>`:"";
+    $("#m-out").innerHTML=`<div class="result"><div class="big">${pill(r.decision)} ${esc(r.reason)}</div>${r.detail?`<pre>${esc(r.detail)}</pre>`:""}${ch}
+      <div class="sub" style="margin-top:8px">Receipt <span class="mono">${esc(r.receipt.id.slice(0,16))}</span> signed by the gate.</div>
+      <button class="ghost" style="color:var(--accent);width:auto;padding:4px 12px" id="m-copy">Copy the signed envelope (to send to another agent)</button></div>`;
+    $("#m-copy").onclick=()=>navigator.clipboard.writeText(JSON.stringify(envelope,null,1)).then(()=>$("#m-copy").textContent="Copied");
+    refresh()}catch(err){$("#m-out").innerHTML=`<div class="msg err">${esc(err.message)}</div>`}});
+$("#m-pp-go").onclick=e=>busy(e.target,async()=>{const a=$("#m-pp").value;if(!a)return say("#m-l-msg","Create an agent first.",false);
+  say("#m-l-msg","Solving the registration puzzle…");
+  try{const r=await K.passport(a);say("#m-l-msg",r.result==="ok"?`Passport for ${a} is in block ${r.height}.`:`${a}: ${r.result}.`);refresh()}catch(err){say("#m-l-msg",err.message,false)}});
+$("#m-tr-go").onclick=e=>busy(e.target,async()=>{const s=$("#m-sel").value,b=$("#m-buy").value;
+  if(!s||!b||s===b)return say("#m-l-msg","Pick two different agents, each with a passport.",false);
+  try{const r=await K.trade(s,b,"trade-"+K.nonce().slice(0,10),Number($("#m-tamt").value)||0,$("#m-st").value);say("#m-l-msg",`Trade recorded in block ${r.height}, signed by both ${s} and ${b}.`);refresh()}catch(err){say("#m-l-msg",err.message,false)}});
+$("#m-dl").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(K.list(),null,1)],{type:"application/json"}));a.download="attest-keys.json";a.click()};
+$("#m-forget").onclick=()=>{if(!K.list().length)return;$("#m-forget").textContent="Click again to delete every key in this browser";
+  $("#m-forget").onclick=()=>{K.forget();idsChanged();$("#m-forget").textContent="Forget all keys"}};
+$("#m-imp").onchange=async e=>{for(const f of e.target.files){try{const d=JSON.parse(await f.text());for(const x of Array.isArray(d)?d:[d])if(x.name&&x.priv&&x.pub)K.save({kind:x.kind||(x.chain?"agent":"operator"),...x})}catch(err){}}idsChanged()};
+K.supported().then(ok=>{if(!ok)$("#mine").insertAdjacentHTML("afterbegin",'<div class="msg err">This browser cannot make Ed25519 keys. Use a recent Chrome, Safari or Firefox.</div>')});
+idsChanged();
 loadAgents();refresh();setInterval(refresh,3000);
 </script>
 </body>

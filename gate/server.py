@@ -49,6 +49,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .core import Gate, STATE_DIR
@@ -122,6 +123,7 @@ async def sandbox_guards(request: Request, call_next):
 from .ledger_api import router as ledger_router  # noqa: E402  (endpoints live in their own file)
 
 app.include_router(ledger_router)
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 
@@ -276,7 +278,7 @@ def faucet(f: Faucet):
 class NewReceiver(BaseModel):
     name: str
     pubkey: str
-    min_stake: float = 0
+    min_stake: int | float = 0             # kept as sent: the signature covers the number as written
     policy: dict = {}
     sig: str
 
@@ -296,7 +298,7 @@ def register_receiver(r: NewReceiver):
             isinstance(k, str) and isinstance(v, (int, float)) and v >= 0 for k, v in esc.items()):
         raise HTTPException(400, 'policy may only be {"escalate_above": {"action": amount}}')
     from . import crypto
-    body = {"register_receiver": r.name, "pubkey": r.pubkey, "min_stake": float(r.min_stake), "policy": r.policy}
+    body = {"register_receiver": r.name, "pubkey": r.pubkey, "min_stake": r.min_stake, "policy": r.policy}
     if not crypto.verify(r.pubkey, body, r.sig):
         raise HTTPException(400, "bad_signature")
     with gate.lock:
