@@ -1,3 +1,0 @@
-[console_scripts]
-attest = attest.cli:main
-attest-mcp = attest.mcp_server:mcp.run
