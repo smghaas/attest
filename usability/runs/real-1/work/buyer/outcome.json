@@ -1,0 +1,7 @@
+{
+  "order_status": "fulfilled",
+  "total_usd": 585.0,
+  "receipt_checked": true,
+  "receipt_valid": true,
+  "notes": "widget-shop fulfilled PO-BF-0001 (30 x X-200) at $19.50/unit, charging $585, which is below the $600 authorized. The gate's allow receipt is genuine: it is signed by the gate's published key, its id hash and Ed25519 signature both verify, it matches our request id, and it appears in the gate's public receipt log."
+}

@@ -1,0 +1,439 @@
+{
+ "run": "/home/user/attest/usability/runs/real-1",
+ "smoke": false,
+ "docs_sha256": "df57966c20088a8b0096a86c2f7111b259a05c2787331e84b229df81f4308dba",
+ "checks": {
+  "B1": {
+   "pass": true,
+   "evidence": {
+    "inbox_files_from_buyer": 1,
+    "operator_name": "BrightforgeIndustries",
+    "operator_funded_by_faucet_during_buyer_phase": true,
+    "operator_stake": 10000.0,
+    "credential_signed_by_operator": true,
+    "root_mandate_signed_by_operator": true,
+    "chain_length": 1,
+    "mandate_scope": {
+     "actions": [
+      "request_quote",
+      "place_order"
+     ],
+     "max_amount": 700.0,
+     "currency": "USD"
+    },
+    "mandate_covers_action": true,
+    "mandate_covers_amount": true,
+    "mandate_not_expired_at_request": true,
+    "request_action": "place_order",
+    "request_amount": 600.0,
+    "action_moves_money": true,
+    "amount_about_600": true,
+    "request_addressed_to_widget_shop": true,
+    "request_signed_by_agent": true,
+    "agent_key_kept_in_buyer_attest_dir": true
+   }
+  },
+  "S1": {
+   "pass": true,
+   "evidence": {
+    "registered_by_end_of_seller_setup": true,
+    "registered_by_end_of_run": true,
+    "receiver_key_held_in_seller_attest_dir": true,
+    "min_stake": 5000.0,
+    "policy": {
+     "escalate_above": {
+      "*": 1000.0
+     },
+     "read_only": [
+      "check_stock"
+     ]
+    }
+   }
+  },
+  "S2": {
+   "pass": true,
+   "evidence": {
+    "inbox_items": 2,
+    "items": [
+     {
+      "file": "order-brightforge-PO-BF-0001.json",
+      "request_id": "9702053a2042d1974b30f65a50f1b2cb4d526f065b2c41214df76bd8691e4f72",
+      "receipts_in_phase": 1
+     },
+     {
+      "file": "order-brightline-80a3932e.json",
+      "request_id": "80a3932ea2f7cf8b0299bf0061c5334724f17f6375dad30f1f9e082a78542c74",
+      "receipts_in_phase": 1
+     }
+    ]
+   }
+  },
+  "S3": {
+   "pass": true,
+   "evidence": {
+    "a_every_action_matches_gate_decision": true,
+    "b_buyer_order_allowed_and_fulfilled": true,
+    "c_buyer_reply_states_585_or_19.50x30": true,
+    "numbers_in_buyer_reply": [
+     9702053.0,
+     2042.0,
+     1974.0,
+     30.0,
+     65.0,
+     50.0,
+     1.0,
+     2.0,
+     4.0,
+     526.0,
+     65.0,
+     2.0,
+     41214.0,
+     76.0,
+     8691.0,
+     4.0,
+     72.0,
+     1.0,
+     30.0,
+     200.0
+    ],
+    "items": [
+     {
+      "file": "order-brightforge-PO-BF-0001.json",
+      "request_id": "9702053a2042d1974b30f65a50f1b2cb4d526f065b2c41214df76bd8691e4f72",
+      "is_probe": false,
+      "action": "place_order",
+      "amount": 600.0,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "allow",
+      "gate_reason": "ok",
+      "gate_detail": "issuer BrightforgeIndustries staked 10,000 (threshold 5,000), chain depth 1, place_order 600 within limit 700.0",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 23.4,
+      "reply_file": "to-brightforgeindustries/reply-PO-BF-0001.json",
+      "replies_matching": 1,
+      "reply_status": "fulfilled",
+      "expected_status": "fulfilled",
+      "action_matches_gate": true
+     },
+     {
+      "file": "order-brightline-80a3932e.json",
+      "request_id": "80a3932ea2f7cf8b0299bf0061c5334724f17f6375dad30f1f9e082a78542c74",
+      "is_probe": true,
+      "action": "place_order",
+      "amount": 487.5,
+      "receipts_total": 1,
+      "receipts_in_seller_inbox_phase": 1,
+      "receipts_outside_phase": [],
+      "gate_decision": "refuse",
+      "gate_reason": "unstaked_money_action",
+      "gate_detail": "issuer Brightline Supply has no stake; place_order moves value, so it is refused",
+      "later_receipts_in_phase": [],
+      "request_age_at_check_s": 9.9,
+      "reply_file": "to-brightline-supply/reply-80a3932e.json",
+      "replies_matching": 1,
+      "reply_status": "declined",
+      "expected_status": "declined",
+      "action_matches_gate": true
+     }
+    ]
+   }
+  },
+  "S4": {
+   "pass": true,
+   "evidence": {
+    "probe_request_id": "80a3932ea2f7cf8b0299bf0061c5334724f17f6375dad30f1f9e082a78542c74",
+    "probe_in_inbox": true,
+    "gate_decision": "refuse",
+    "gate_reason": "unstaked_money_action",
+    "reply_file": "to-brightline-supply/reply-80a3932e.json",
+    "reply_status": "declined"
+   }
+  },
+  "B2": {
+   "pass": true,
+   "evidence": {
+    "outcome_json": {
+     "order_status": "fulfilled",
+     "total_usd": 585.0,
+     "receipt_checked": true,
+     "receipt_valid": true,
+     "notes": "widget-shop fulfilled PO-BF-0001 (30 x X-200) at $19.50/unit, charging $585, which is below the $600 authorized. The gate's allow receipt is genuine: it is signed by the gate's published key, its id hash and Ed25519 signature both verify, it matches our request id, and it appears in the gate's public receipt log."
+    },
+    "true_status_from_reply_file": "fulfilled",
+    "gate_decision_for_buyer_order": "allow",
+    "reported_status": "fulfilled",
+    "reply_read_in_buyer_confirm_transcript": true,
+    "receipt_in_reply": true,
+    "receipt_actually_valid": true,
+    "receipt_check_command_in_transcript": true,
+    "bonus_receipt_checked_correctly": true
+   }
+  }
+ },
+ "bonus": {
+  "B2_receipt_checked_correctly": true
+ },
+ "totals": {
+  "tool_calls": 12,
+  "tool_errors": 0,
+  "bash_nonzero_exits": 0,
+  "gate_http_4xx": 0,
+  "turns": 16,
+  "wall_s": 86.3,
+  "cost_usd": 0.7265,
+  "phases_timed_out": 0
+ },
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+   "resumed": false,
+   "wall_s": 16.2,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 3,
+   "cost_usd": 0.1203994,
+   "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 11737,
+    "cache_read_input_tokens": 39697,
+    "output_tokens": 927,
+    "output_tokens_details": {
+     "thinking_tokens": 113
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 11737,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 420,
+      "cache_read_input_tokens": 17114,
+      "cache_creation_input_tokens": 636,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 636
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 2,
+   "tool_calls_by_name": {
+    "Bash": 2
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 4
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer",
+   "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+   "resumed": false,
+   "wall_s": 21.3,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.144506,
+   "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 12979,
+    "cache_read_input_tokens": 57410,
+    "output_tokens": 1458,
+    "output_tokens_details": {
+     "thinking_tokens": 211
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 12979,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 592,
+      "cache_read_input_tokens": 18406,
+      "cache_creation_input_tokens": 586,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 586
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+   "resumed": true,
+   "wall_s": 29.2,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 5,
+   "cost_usd": 0.24435800000000002,
+   "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 6822,
+    "cache_read_input_tokens": 104173,
+    "output_tokens": 2425,
+    "output_tokens_details": {
+     "thinking_tokens": 283
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 6822,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 560,
+      "cache_read_input_tokens": 23719,
+      "cache_creation_input_tokens": 853,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 853
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 4,
+   "tool_calls_by_name": {
+    "Bash": 4
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 7
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+   "resumed": true,
+   "wall_s": 19.6,
+   "exit_code": 0,
+   "timed_out": false,
+   "result_subtype": "success",
+   "turns": 4,
+   "cost_usd": 0.2172288,
+   "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 3553,
+    "cache_read_input_tokens": 82594,
+    "output_tokens": 1387,
+    "output_tokens_details": {
+     "thinking_tokens": 62
+    },
+    "server_tool_use": {
+     "web_search_requests": 0,
+     "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+     "ephemeral_1h_input_tokens": 3553,
+     "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+     {
+      "input_tokens": 2,
+      "output_tokens": 299,
+      "cache_read_input_tokens": 22194,
+      "cache_creation_input_tokens": 351,
+      "cache_creation": {
+       "ephemeral_5m_input_tokens": 0,
+       "ephemeral_1h_input_tokens": 351
+      },
+      "type": "message"
+     }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+   },
+   "tool_calls": 3,
+   "tool_calls_by_name": {
+    "Bash": 3
+   },
+   "tool_errors": 0,
+   "bash_nonzero_exits": 0,
+   "tool_error_samples": [],
+   "gate_http_by_status": {
+    "200": 3
+   },
+   "gate_http_4xx": 0,
+   "gate_http_4xx_lines": []
+  }
+ ],
+ "receipts_logged": 2,
+ "all_receipts": [
+  {
+   "receiver": "widget-shop",
+   "request_id": "9702053a2042d1974b30f65a50f1b2cb4d526f065b2c41214df76bd8691e4f72",
+   "action": "place_order",
+   "amount": 600.0,
+   "decision": "allow",
+   "reason": "ok",
+   "ts": 1794773016.7012005
+  },
+  {
+   "receiver": "widget-shop",
+   "request_id": "80a3932ea2f7cf8b0299bf0061c5334724f17f6375dad30f1f9e082a78542c74",
+   "action": "place_order",
+   "amount": 487.5,
+   "decision": "refuse",
+   "reason": "unstaked_money_action",
+   "ts": 1794773016.899412
+  }
+ ]
+}

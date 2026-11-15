@@ -1,0 +1,37 @@
+{
+ "kind": "agent",
+ "name": "brightforge-buyer",
+ "priv": "7903fdf582cca451a2dbe89eada43bfd758c77566a58c78b14eee3cdae9244b3",
+ "pub": "07c19d9a39cc7206cdd10bde53a675a91a5c6f548bae9b1c9fddb998ad48de5f",
+ "operator": "BrightforgeIndustries",
+ "credential": {
+  "type": "kya.credential/1",
+  "agent": "07c19d9a39cc7206cdd10bde53a675a91a5c6f548bae9b1c9fddb998ad48de5f",
+  "operator": "BrightforgeIndustries",
+  "issuer": "310617c449959ba56c14615cc7d917cdfe5f98db8e438184409a9eb04663fa6e",
+  "purpose": "agent",
+  "issued_at": 1794772993.0701375,
+  "expires_at": 1797364993.0701375,
+  "id": "b77067b46d22a435b402d2e6d5884b3ecc2de35a625b3afbbf0bf50be15bcf36",
+  "sig": "acaa8a96a506f3f6b222e1425e4765e2b7eb5a80e9190f028a8c72d39d8397e1b94ee1bb982d79570afee339436c831f5bc7916fa41830571bd9e2f77508a00e"
+ },
+ "chain": [
+  {
+   "type": "kya.mandate/1",
+   "subject": "07c19d9a39cc7206cdd10bde53a675a91a5c6f548bae9b1c9fddb998ad48de5f",
+   "issuer": "310617c449959ba56c14615cc7d917cdfe5f98db8e438184409a9eb04663fa6e",
+   "parent": null,
+   "scope": {
+    "actions": [
+     "request_quote",
+     "place_order"
+    ],
+    "max_amount": 700.0,
+    "currency": "USD"
+   },
+   "expires_at": 1797364993.0701375,
+   "id": "c1ddd81272a5c918d068fba669400b29b18c83b3181f29a09263811220d929d8",
+   "sig": "f5996fdddc50c1b91e0e321c6cad1458fa550e627d7d8ca6ea5329806d65389c2189ea3b90ff30bf022071504523ce0647ff51cd4f1628764522ac3f172dd304"
+  }
+ ]
+}

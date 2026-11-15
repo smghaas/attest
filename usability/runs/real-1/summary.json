@@ -1,0 +1,73 @@
+{
+ "run_id": "real-1",
+ "smoke": false,
+ "docs_sha256": "df57966c20088a8b0096a86c2f7111b259a05c2787331e84b229df81f4308dba",
+ "repo_commit": "20655be7c436449de46c06fd039e5edf57034a56",
+ "chaining": "resume",
+ "checks": {
+  "B1": true,
+  "S1": true,
+  "S2": true,
+  "S3": true,
+  "S4": true,
+  "B2": true
+ },
+ "totals": {
+  "tool_calls": 12,
+  "tool_errors": 0,
+  "bash_nonzero_exits": 0,
+  "gate_http_4xx": 0,
+  "turns": 16,
+  "wall_s": 86.3,
+  "cost_usd": 0.7265,
+  "phases_timed_out": 0
+ },
+ "isolation_verdict": "warnings",
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+   "resumed": false,
+   "wall_s": 16.2,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 3,
+   "total_cost_usd": 0.1203994,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "buyer",
+   "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+   "resumed": false,
+   "wall_s": 21.3,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 4,
+   "total_cost_usd": 0.144506,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "seller-inbox",
+   "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+   "resumed": true,
+   "wall_s": 29.2,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 5,
+   "total_cost_usd": 0.24435800000000002,
+   "result_subtype": "success"
+  },
+  {
+   "phase": "buyer-confirm",
+   "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+   "resumed": true,
+   "wall_s": 19.6,
+   "exit_code": 0,
+   "timed_out": false,
+   "num_turns": 4,
+   "total_cost_usd": 0.2172288,
+   "result_subtype": "success"
+  }
+ ],
+ "isolation_verdict_rechecked": "clean: the 7 original warnings were URLs (http://127.0.0.1:PORT/...) read as file paths; check_isolation.py fixed to ignore URLs and rerun"
+}

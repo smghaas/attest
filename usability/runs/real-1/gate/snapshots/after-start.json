@@ -1,0 +1,21 @@
+{
+ "gate_key": {
+  "priv": "45e7e177b770cebace0d43e519a237805f44db4b89ffb5eeea0ef9a8e715d99c",
+  "pub": "73eb248b0b74191862a36a8ecf7a7ca49549ab28fc170c982151301590d80edd"
+ },
+ "receivers": {},
+ "stakes": {},
+ "revoked": {},
+ "nonces_seen": {},
+ "spent": {},
+ "issuer_spent": {},
+ "pow_attempts": {},
+ "pow_recent": {},
+ "pow_open": {},
+ "claims": {},
+ "settings": {
+  "dispute_window_s": 259200,
+  "arbiter": null,
+  "issuer_cap_ratio": 1.0
+ }
+}

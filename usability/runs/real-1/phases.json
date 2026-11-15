@@ -1,0 +1,270 @@
+[
+ {
+  "phase": "seller-setup",
+  "cwd": "/tmp/attest-coldstart/real-1/seller",
+  "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+  "resumed": false,
+  "start": 1794772969.3744948,
+  "end": 1794772985.527987,
+  "wall_s": 16.2,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-setup.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 3,
+  "total_cost_usd": 0.1203994,
+  "usage": {
+   "input_tokens": 6,
+   "cache_creation_input_tokens": 11737,
+   "cache_read_input_tokens": 39697,
+   "output_tokens": 927,
+   "output_tokens_details": {
+    "thinking_tokens": 113
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 11737,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 420,
+     "cache_read_input_tokens": 17114,
+     "cache_creation_input_tokens": 636,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 636
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I registered the shop at the gate (http://127.0.0.1:39889, sandbox mode), and the gate's `/receivers` list now shows it with the settings below.\n\n- **Receiver name:** `widget-shop`, public key `98723216004d0f35\u2026`. The private key is in `/tmp/attest-coldstart/real-1/seller/.attest/widget-shop.json`, readable only by its owner.\n- **Minimum stake:** 5,000. A sender's operator needs at least that much stake for the shop to deal with it. That is half of the 10,000 free test credit, so a sandbox operator gets it just by signing up, but an operator that has been slashed (which takes half its stake) drops below it.\n- **Policy:**\n  - `escalate_above: {\"*\": 1000}`: any request over $1,000 (about 51 units of X-200 at $19.50) goes to a human at the shop instead of being filled automatically. A small parts shop shouldn't ship large orders without someone looking at them.\n  - `read_only: [\"check_stock\"]`: stock checks don't move money, so senders without stake can make them. `request_quote`, `search`, `read`, `lookup` and `get_status` are read-only by default.\n\nI haven't processed the inbox or written anything to the drop-box folder.",
+  "gate_log_offset": [
+   254,
+   502
+  ]
+ },
+ {
+  "phase": "buyer",
+  "cwd": "/tmp/attest-coldstart/real-1/buyer",
+  "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+  "resumed": false,
+  "start": 1794772985.5296824,
+  "end": 1794773006.8461607,
+  "wall_s": 21.3,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.144506,
+  "usage": {
+   "input_tokens": 8,
+   "cache_creation_input_tokens": 12979,
+   "cache_read_input_tokens": 57410,
+   "output_tokens": 1458,
+   "output_tokens_details": {
+    "thinking_tokens": 211
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 12979,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 592,
+     "cache_read_input_tokens": 18406,
+     "cache_creation_input_tokens": 586,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 586
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I placed the order for 30 units of X-200 at $600 from widget-shop, as the company **BrightforgeIndustries**. The shop hasn't processed it yet, and I didn't run a gate check on it myself. Each signed order can only be checked once, so a test check would have used it up before the shop saw it.\n\n**What I set up on the Attest sandbox gate:**\n1. **Company account:** I created BrightforgeIndustries, which came with 10,000 of free test stake. widget-shop requires at least 5,000.\n2. **Buying agent:** I created `brightforge-buyer`, allowed to request quotes and place orders up to $700 total, valid for 30 days.\n3. **Signed order:** the agent signed a `place_order` request to `widget-shop` for $600, with the message \"PO-BF-0001: 30 units of part X-200, $600 total ($20/unit)\". A copy is in `envelope.json` in my working directory.\n\n**The file I dropped:** `/tmp/attest-coldstart/real-1/exchange/to-widget-shop/order-brightforge-PO-BF-0001.json`\n\nIt contains the signed order plus `\"reply_to\": \"to-brightforgeindustries\"` and a plain order summary. I also created that reply folder in the drop-box.\n\n**Two things that could block it:**\n- **Expiry:** the gate rejects orders checked more than 10 minutes after they were signed. If the shop gets to its inbox later than that, it will be refused as stale, and I'll need to sign a fresh order and drop it again.\n- **Human approval:** widget-shop's policy sends anything over $1,000 to a person for approval. $600 is under that, so it shouldn't need one.\n\nMy keys are stored in `/tmp/attest-coldstart/real-1/buyer/.attest`.",
+  "gate_log_offset": [
+   502,
+   686
+  ]
+ },
+ {
+  "phase": "seller-inbox",
+  "cwd": "/tmp/attest-coldstart/real-1/seller",
+  "session_id": "20e31c27-688b-420d-b91b-747b73bc6c2c",
+  "resumed": true,
+  "start": 1794773006.9562716,
+  "end": 1794773036.1331663,
+  "wall_s": 29.2,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/seller-inbox.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 5,
+  "total_cost_usd": 0.24435800000000002,
+  "usage": {
+   "input_tokens": 12,
+   "cache_creation_input_tokens": 6822,
+   "cache_read_input_tokens": 104173,
+   "output_tokens": 2425,
+   "output_tokens_details": {
+    "thinking_tokens": 283
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 6822,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 560,
+     "cache_read_input_tokens": 23719,
+     "cache_creation_input_tokens": 853,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 853
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "I processed both requests in the inbox: one order fulfilled, one declined. Both gate receipts have valid signatures from the gate's own key.\n\n- **`9702053a2042d1974b30f65a50f1b2cb4d526f065b2c41214df76bd8691e4f72`** (BrightforgeIndustries, PO-BF-0001, 30 \u00d7 X-200, sent as $600): the gate said **allow / ok**. BrightforgeIndustries has 10,000 stake, above the shop's 5,000 minimum, and $600 is within its $700 order limit. **Fulfilled** at our list price: 30 \u00d7 $19.50 = **$585.00**. That is less than the $600 the gate cleared, because the sender's PO priced the part at $20/unit. Reply is in `to-brightforgeindustries/`.\n- **`80a3932ea2f7cf8b0299bf0061c5334724f17f6375dad30f1f9e082a78542c74`** (Brightline Supply, 25 \u00d7 X-200, $487.50): the gate said **refuse / unstaked_money_action**, because Brightline Supply has no stake and placing an order moves money. **Declined**. Reply is in `to-brightline-supply/`, a folder I created because that request names it in `reply_to`.\n\nThe two requests came in different layouts. Brightline Supply's request is wrapped inside an `\"envelope\"` field, so for each file I checked only the credential, mandate chain and signed request. Each reply includes the full receipt exactly as the gate returned it. Copies of both receipts are in `/tmp/attest-coldstart/real-1/seller/receipts/`, and the files in `to-widget-shop/` are unchanged.",
+  "gate_log_offset": [
+   686,
+   1118
+  ]
+ },
+ {
+  "phase": "buyer-confirm",
+  "cwd": "/tmp/attest-coldstart/real-1/buyer",
+  "session_id": "657dfaec-209d-416e-a38c-bf203badc456",
+  "resumed": true,
+  "start": 1794773036.1372285,
+  "end": 1794773055.711965,
+  "wall_s": 19.6,
+  "exit_code": 0,
+  "timed_out": false,
+  "max_turns": 40,
+  "timeout_s": 1500,
+  "transcript": "transcripts/buyer-confirm.jsonl",
+  "model": "claude-opus-5-5",
+  "permission_mode": "bypassPermissions",
+  "tools": [
+   "Bash",
+   "Edit",
+   "Glob",
+   "Grep",
+   "Read",
+   "Write"
+  ],
+  "result_subtype": "success",
+  "is_error": false,
+  "num_turns": 4,
+  "total_cost_usd": 0.2172288,
+  "usage": {
+   "input_tokens": 10,
+   "cache_creation_input_tokens": 3553,
+   "cache_read_input_tokens": 82594,
+   "output_tokens": 1387,
+   "output_tokens_details": {
+    "thinking_tokens": 62
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 3553,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 299,
+     "cache_read_input_tokens": 22194,
+     "cache_creation_input_tokens": 351,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 351
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "final_text": "The order went through: widget-shop fulfilled PO-BF-0001 for 30 units of X-200. It charged $585 ($19.50 each), which is $15 less than the $600 I'd signed for. The reply is `to-brightforgeindustries/reply-PO-BF-0001.json` and includes the gate's `allow` receipt, which I confirmed is genuine. The gate's key in the receipt is the same as the one the gate publishes, and the receipt's id and Ed25519 signature both verify, by my own calculation and with `attest verify-receipt`. The receipt names our request, our credential and our mandate, and it shows up in the gate's public receipt log. I wrote the result to `/tmp/attest-coldstart/real-1/buyer/outcome.json`: `order_status` \"fulfilled\", `total_usd` 585.0, and `receipt_checked` and `receipt_valid` both true.",
+  "gate_log_offset": [
+   1118,
+   1303
+  ]
+ }
+]

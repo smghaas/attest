@@ -24,7 +24,7 @@ from pathlib import Path
 
 REPO = "/home/user/attest"
 REPO_RE = re.compile(r"/home/user/attest(?![\w-])|~/attest(?![\w-])")
-ABS_PATH_RE = re.compile(r"(?<![\w.~$}-])(/(?:[\w.@+-]+/?)+)")
+ABS_PATH_RE = re.compile(r"(?<![\w.~$}:/-])(/(?:[\w.@+-]+/?)+)")   # ":" and "/" before it: part of a URL (http://host/...), not a file path
 BROAD_RE = re.compile(r"\bfind\s+/(\s|$)|\bfind\s+/home|\bfind\s+~|\bgrep\s+-\w*r\w*\s+.*\s/(\s|$)|\bls\s+(-\w+\s+)*/home\b|"
                       r"\blocate\s|\brg\s+.*\s/(\s|$)")
 SYSTEM = ("/usr", "/bin", "/sbin", "/lib", "/lib64", "/etc", "/dev", "/proc", "/sys", "/opt", "/var/lib", "/run")

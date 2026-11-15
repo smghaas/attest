@@ -1,0 +1,33 @@
+{
+ "verdict": "clean",
+ "totals": {
+  "repo": 0,
+  "other_party": 0,
+  "gate_files": 0,
+  "broad": 0,
+  "outside": 0,
+  "exposure": 0
+ },
+ "phases": [
+  {
+   "phase": "seller-setup",
+   "role": "seller",
+   "findings": []
+  },
+  {
+   "phase": "buyer",
+   "role": "buyer",
+   "findings": []
+  },
+  {
+   "phase": "seller-inbox",
+   "role": "seller",
+   "findings": []
+  },
+  {
+   "phase": "buyer-confirm",
+   "role": "buyer",
+   "findings": []
+  }
+ ]
+}
