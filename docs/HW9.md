@@ -57,7 +57,8 @@ Two fresh Claude Code sessions run headless (`claude -p`) and have never seen th
 - a shared drop-box folder,
 - a task.
 
-There is no call sequence and no expected answer. The harness only takes turns; it never relays or edits a
+There is no call sequence and no expected answer. Unless noted, the sessions run Claude Code's default model, which
+was Opus 5.5 for every default run here (read from the transcripts; earlier commit messages say "Sonnet" in error). The harness only takes turns; it never relays or edits a
 message. Full details are in `usability/README.md`.
 
 | Phase | Session | Task |
@@ -125,7 +126,7 @@ receipts, verified them and replied.
 
 | Run | Model | Public-log reads | Re-checks | Tool calls | Turns | Wall time | Buyer's order |
 |---|---|---|---|---|---|---|---|
-| `crash-before-1` | Sonnet | 2 | 0 | 4 | 5 | 38.0 s | fulfilled (R1 pass) |
+| `crash-before-1` | Opus 5.5 | 2 | 0 | 4 | 5 | 38.0 s | fulfilled (R1 pass) |
 | `crash-before-haiku-1` | Haiku | 2 | 0 | 7 | 8 | 31.5 s | escalated |
 
 The work-around succeeds, but recovery depends on a public log of everyone's decisions, which `AGENTS.md` itself
@@ -164,7 +165,7 @@ Follow-on changes:
 
 | Run | Model | Public-log reads | Re-checks | Tool calls | Turns | Wall time | Buyer's order |
 |---|---|---|---|---|---|---|---|
-| `crash-after-1` | Sonnet | 0 | 1 (2 `/verify` requests) | 3 | 4 | 29.7 s | fulfilled; all checks pass |
+| `crash-after-1` | Opus 5.5 | 0 | 1 (2 `/verify` requests) | 3 | 4 | 29.7 s | fulfilled; all checks pass |
 | `crash-after-haiku-1` | Haiku | 0 | 2 (4 `/verify` requests) | 4 | 5 | 27.6 s | escalated |
 
 In both after-runs the gate answered with the original receipts marked `repeat: true`, and no new receipts were
@@ -185,6 +186,22 @@ Over the retry phase's tool calls:
 - **Public-log reads:** calls that query the gate's `/receipts` (curl or `attest receipts`).
 - **Re-checks:** calls containing `/verify/`, `attest … check` or `.check(`.
 - **`/verify` requests:** counted from the gate's access log, within the phase.
+
+## Confirmation on the merged code (signed checks)
+
+`main` at `b3d5a5c` merged Sam's signed checks: on a sandbox a receiver must sign every `/verify` call, or the gate
+answers HTTP 401. Two more runs, registered in `CHECKS.md` before they ran (commit `ab40abb`), use the merged code and
+its `AGENTS.md`:
+
+| Run | Checks | Tool calls | Errors | Gate 4xx (incl. 401) | Wall time | Cost |
+|---|---|---|---|---|---|---|
+| `final-1` | B1, S1–S4, B2 pass | 11 | 0 | 0 | 79.6 s | $0.77 |
+| `final-crash-1` | B1, S1–S4, B2, R1 pass | 14 | 0 | 0 | 113.9 s | $0.99 |
+
+The fresh shop agents signed their checks from the documentation alone (no 401s). In `final-crash-1` the restarted
+shop re-checked both orders and got `repeat: true` (0 public-log reads, 2 `/verify` requests, no new receipts).
+Isolation warnings in both runs are benign: the sessions' own Claude Code scratchpad folders and the endpoint name
+`/pubkey` inside a string.
 
 ## Reproduce
 
@@ -213,3 +230,5 @@ each file is. `runs/` is in `.gitignore`, so add new runs with `git add -f`. NAN
 | `29f5a26` | Part 3: runs before the fix |
 | `df78644` | Part 3: repeat checks (gate, tests, docs, scenarios, bench, Town seller) |
 | `511e813` | Part 3: runs after the fix |
+| `b3d5a5c` | Sam's merge (signed checks in `AGENTS.md`, MCP tool signs) |
+| `ab40abb`, `3d239a5` | confirmation runs on the merged code, registered first |

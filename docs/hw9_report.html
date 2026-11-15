@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HW9 Attest Usability</title>
+<style>
+  :root { --ink:#1b1f24; --muted:#59636e; --rule:#d0d7de; --soft:#f6f8fa; --accent:#0b6b3a; --warn:#8a4b00; }
+  @page { size: Letter; margin: 15mm 14mm 16mm 14mm; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font: 10.2pt/1.42 "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); background:#fff; margin:0 auto; max-width: 820px; padding: 0 16px; }
+  h1 { font-size: 19pt; margin: 0 0 2px; letter-spacing: -0.2px; }
+  h2 { font-size: 13pt; margin: 18px 0 6px; padding-bottom: 3px; border-bottom: 1.5px solid var(--ink); break-after: avoid; }
+  h3 { font-size: 10.8pt; margin: 12px 0 4px; break-after: avoid; }
+  p { margin: 5px 0; }
+  .sub { color: var(--muted); margin: 0 0 8px; }
+  .pts { float: right; font-weight: 600; color: var(--muted); font-size: 9.5pt; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 8px; font-size: 9pt; break-inside: avoid; }
+  th, td { border: 1px solid var(--rule); padding: 3px 6px; vertical-align: top; text-align: left; }
+  th { background: var(--soft); font-weight: 600; }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  code, pre { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 8.4pt; }
+  code { background: var(--soft); padding: 0 3px; border-radius: 3px; }
+  pre { background: var(--soft); border: 1px solid var(--rule); border-radius: 4px; padding: 6px 8px; white-space: pre-wrap; word-break: break-word; margin: 5px 0; break-inside: avoid; }
+  .box { border: 1px solid var(--rule); border-left: 4px solid var(--accent); background: #fbfdfb; padding: 6px 9px; margin: 7px 0; break-inside: avoid; }
+  .box.warn { border-left-color: var(--warn); background: #fffaf3; }
+  .ok { color: var(--accent); font-weight: 600; }
+  .no { color: #a40e26; font-weight: 600; }
+  ul, ol { margin: 4px 0 4px 18px; padding: 0; }
+  li { margin: 2px 0; }
+  a { color: #0a58ca; text-decoration: none; }
+  .small { font-size: 8.8pt; color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pagebreak { break-before: page; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } table { font-size: 8.4pt; } }
+</style>
+</head>
+<body>
+
+<h1>HW9: Agent usability of Attest</h1>
+<p class="sub">MAS.665 AI Studio, MIT, fall 2026 · Team: Samuel Haas, Eduard Alsina · Project: <b>Attest</b>, a Know-Your-Agent gate for agent-to-agent requests</p>
+
+<table>
+  <tr><th style="width:27%">Interface documentation</th><td><a href="https://github.com/smghaas/attest/blob/main/AGENTS.md">github.com/smghaas/attest/blob/main/AGENTS.md</a> (repository: <a href="https://github.com/smghaas/attest">github.com/smghaas/attest</a>)</td></tr>
+  <tr><th>Evidence, harness, checks</th><td><code>usability/</code> in the repository: harness, task prompts, pre-registered checks (<code>usability/CHECKS.md</code>), every run in <code>usability/runs/&lt;id&gt;/</code>. Technical notes: <code>docs/HW9.md</code></td></tr>
+  <tr><th>Client test</th><td><b>Self-run.</b> The clients were fresh Claude Code sessions started by our harness, not another team's agent. No manual help during any run (details in §2.6).</td></tr>
+  <tr><th>Our slides in the shared deck</th><td>[link to our slides in the Fall 2026 Demo Day deck] (slides follow this section)</td></tr>
+</table>
+
+<div class="box">
+<b>Summary.</b> A fresh agent that had never seen Attest signed itself up from <code>AGENTS.md</code> alone and placed a $600 order with a shop agent. The shop, equally fresh, registered at the gate, checked both orders in its inbox, fulfilled the legitimate one at the correct price ($585) and declined an unstaked order we planted. The buyer then read the reply and verified the gate's signed receipt. All six checks, fixed in the repository before each run, passed: in the first run and again on the final, merged documentation.
+<br><br>
+We then tested a crash of the shop between checking and replying. The failure we predicted did not happen: the restarted shops (Opus 5.5 and Haiku 5.5) worked around it by searching the gate's public log of every decision. That observation motivated one change, <b>repeat checks</b>: the same request checked again now returns its original answer. After the change, the restarted shops re-checked instead of reading the public log, in fewer steps. 8 new regression tests guard the change, and 7 of them fail on the old gate.
+</div>
+
+<h2>1. Usable interface and instructions <span class="pts">2 pts</span></h2>
+<p><b>What Attest offers.</b> Before an agent acts on a request from another agent, it asks the Attest gate:</p>
+<ul>
+  <li><b>Who deployed the sender:</b> a credential signed by an operator (a company or person).</li>
+  <li><b>Does that operator have enough stake behind it</b> for this receiver?</li>
+  <li><b>May the sender do this:</b> a mandate of actions and a maximum amount, delegable only by narrowing.</li>
+  <li><b>Is it all still valid:</b> expiry, revocation, signatures, freshness, running spend.</li>
+</ul>
+<p>The gate answers <code>allow</code>, <code>refuse</code>, <code>escalate</code> or <code>unknown</code>, with a reason and a receipt signed by the gate.</p>
+
+<table>
+  <tr><th style="width:21%">Rubric item</th><th>Where in <code>AGENTS.md</code> · content</th></tr>
+  <tr><td>Capability</td><td>Opening section and <i>Roles</i>: what is checked, the three roles (operator, sender agent, receiver), the four decisions</td></tr>
+  <tr><td>Access and setup</td><td><i>Access</i> (HTTP with an OpenAPI schema, CLI, Python SDK, MCP server); <i>Run your own gate</i> (two commands); <i>Signing up (sandbox)</i> (self-registration, free test stake)</td></tr>
+  <tr><td>Inputs</td><td><i>Receiver: check a request</i> (the envelope: credential, mandate chain, signed request, with a full JSON example); <i>Sign your check</i> (the receiver's signature header on a sandbox); <i>Document formats and signing</i> (canonical JSON, ids, Ed25519, so any language can take part)</td></tr>
+  <tr><td>Outputs</td><td><i>Response</i> (every field, a full JSON example); how to verify the receipt; <i>What to do with each decision</i>; all 32 reason codes; <i>Checking the same request again</i> (<code>repeat</code>)</td></tr>
+  <tr><td>Permissions and limits</td><td><i>Limits and permissions</i> (sandbox stake is not money, everything is public, 10-minute freshness, rate limits, who may revoke, claim or dispute, one gate process); <i>Errors</i> (400, 401, 403, 404, 409, 413, 429, 503)</td></tr>
+  <tr><td>Concrete example</td><td><i>Quick start</i>: from nothing to an <code>allow</code> and a <code>refuse</code> in five commands, with real output (below)</td></tr>
+</table>
+
+<pre>export ATTEST_URL=http://127.0.0.1:8402
+attest operator create AcmeCorp                     # key pair + 10,000 free test stake
+attest receiver create acme-supplies --min-stake 5000 --escalate place_order=2000
+attest agent create acme-buyer --operator AcmeCorp --actions request_quote,place_order --max 3000
+attest request acme-buyer acme-supplies place_order 1200 --check
+#   ALLOW  ok   issuer AcmeCorp staked 10,000 (threshold 5,000), chain depth 1, place_order 1,200 within limit 3,000
+attest request acme-buyer acme-supplies place_order 2500 --check
+#   REFUSE  cumulative_over_limit   1,200 already spent under this mandate; 2,500 more would exceed 3,000</pre>
+
+<p><b>How the documentation was checked before any agent saw it.</b> We followed it step by step on a fresh sandbox gate and in a clean virtualenv. That found two bugs a newcomer would have hit, both fixed before the cold-start runs (commit <code>3850b2d</code>):</p>
+<ol>
+  <li><b>The documented install could not start the gate.</b> <code>pip install</code> left out the <code>network/</code> package and the <code>static/town</code> pages, so the gate crashed at import. The packaging is fixed, and we checked it with a clean install.</li>
+  <li><b>Sub-agents were always refused.</b> <code>attest agent delegate</code> made sub-agents whose mandate outlived its parent, so the gate refused every one of them (<code>attenuation_violation</code>). The child's expiry is now capped at its parent's, with a regression test.</li>
+</ol>
+
+<h2>2. Cold-start integration and meaningful result use <span class="pts">4 pts</span></h2>
+
+<h3>2.1 Set-up: what the client agents got, and what they did not</h3>
+<p>Attest is shared infrastructure, so the test has <b>two interacting agents</b>: a buyer and a shop. Each was a fresh, headless Claude Code session (<code>claude -p</code>, default model Opus 5.5) that had never seen the repository.</p>
+<p><b>Each session got only:</b></p>
+<ul>
+  <li><code>AGENTS.md</code>;</li>
+  <li>the URL of a fresh sandbox gate;</li>
+  <li>a shared drop-box folder (its only channel to the other agent);</li>
+  <li>a task in plain words.</li>
+</ul>
+<p><b>It did not get:</b> a call sequence, the expected answer, our code, the web (WebFetch and WebSearch were off), MCP servers, or skills.</p>
+<p>The Attest package was preinstalled as a regular, non-editable install. Each session worked in its own folder outside the repository. The harness only takes turns. It never relays, edits or interprets a message: the agents write and read the drop-box themselves.</p>
+
+<table>
+  <tr><th style="width:15%">Phase</th><th>Session</th><th>Task given (abridged, verbatim prompts in <code>usability/tasks/</code>)</th></tr>
+  <tr><td>seller-setup</td><td>shop, new</td><td>"You run the online shop <code>widget-shop</code> … register the shop at the gate under the receiver name <code>widget-shop</code>. You choose the minimum stake and the policy you think fit."</td></tr>
+  <tr><td>buyer</td><td>buyer, new</td><td>"Buy 30 units of part X-200, for about $600 in total, from the shop <code>widget-shop</code>. widget-shop only deals with agents it can vet through Attest … Put your order as ONE JSON file in <code>to-widget-shop/</code>."</td></tr>
+  <tr><td><i>harness</i></td><td>—</td><td>Drops one <b>probe</b>: an order of $487.50 from an operator with no stake (it should not be served)</td></tr>
+  <tr><td>seller-inbox</td><td>shop, resumed</td><td>"Process every file in <code>to-widget-shop/</code> … vet the sender with Attest … decide fulfilled, declined or escalated … write one reply … keep the gate's receipt." Price list: X-200 at $19.50</td></tr>
+  <tr><td>buyer-confirm</td><td>buyer, resumed</td><td>"Find out whether your order went through. If the reply carries a receipt from the Attest gate, check that the receipt is genuine, if you can." Write <code>outcome.json</code></td></tr>
+</table>
+
+<h3>2.2 Success criterion and checks, fixed before the run</h3>
+<div class="box"><b>Useful result</b> (<code>usability/CHECKS.md</code>, committed in <code>20655be</code> before the first real run). The run succeeds when B1, S1, S2, S3, S4 and B2 all pass:
+<ul>
+  <li>A buyer that has never seen Attest signs itself up from <code>AGENTS.md</code> alone and sends an order the gate can vet.</li>
+  <li>A shop that has never seen Attest registers, checks every request at the gate and acts on each decision: it fulfils the legitimate order at the right price and declines the unstaked one.</li>
+  <li>The buyer reads the answer and reports it truthfully.</li>
+</ul></div>
+<table>
+  <tr><th style="width:7%">Check</th><th>Pass when, computed by <code>usability/score.py</code> from artifacts only (gate receipts log, gate state, drop-box files, transcripts), never from an agent's own claims</th></tr>
+  <tr><td>B1</td><td>The buyer's operator got sandbox stake during the buyer phase. Credential and mandate verify. The mandate covers the action and amount. The order is $500–700, signed by the agent's key, addressed to <code>widget-shop</code>.</td></tr>
+  <tr><td>S1</td><td><code>widget-shop</code> is registered at the gate with a key held in the shop's folder.</td></tr>
+  <tr><td>S2</td><td>Every inbox item has a gate receipt for <code>widget-shop</code> from the inbox phase.</td></tr>
+  <tr><td>S3</td><td>Every reply follows the gate's decision. The buyer's order was <code>allow</code>ed and fulfilled at $585 (30 × $19.50).</td></tr>
+  <tr><td>S4</td><td>The planted unstaked order was declined.</td></tr>
+  <tr><td>B2</td><td>The buyer's <code>outcome.json</code> matches the real reply. Bonus: it checked the receipt signature and was right.</td></tr>
+</table>
+
+<h3>2.3 Requests, responses and how the result was used (run <code>final-1</code>, on the final documentation)</h3>
+<p>Every tool call each agent made is listed (shortened). Full transcripts: <code>usability/runs/final-1/transcripts/</code>.</p>
+<table>
+  <tr><th style="width:12%">Phase</th><th>What the agent did (its own commands)</th><th style="width:30%">Gate response / result</th></tr>
+  <tr><td>seller-setup<br><span class="small">2 calls</span></td><td>Read <code>GET /info</code>, <code>GET /receivers</code> and <code>attest receiver create --help</code>, then:<br><code>attest receiver create widget-shop --min-stake 5000 --escalate '*=1000' --read-only check_stock</code></td><td>Registered. Policy chosen by the agent: stake ≥ 5,000; a human for anything above $1,000</td></tr>
+  <tr><td>buyer<br><span class="small">3 calls</span></td><td><code>attest operator create Brightforge</code> · <code>attest agent create brightforge-buyer --operator Brightforge --actions request_quote,place_order --max 700</code> · Python SDK <code>build_request(…, to="widget-shop", action="place_order", amount=600, message="PO-BF-0001: 30 units of part X-200 …")</code>, written to <code>to-widget-shop/</code> with <code>reply_to</code></td><td>10,000 test stake granted. A signed envelope (credential, mandate up to $700, request) dropped</td></tr>
+  <tr><td>seller-inbox<br><span class="small">3 calls</span></td><td>Read both inbox files. Python SDK, signing as the receiver: <code>Attest(url).check("widget-shop", env, identity.load("widget-shop"))</code> for each. Wrote one reply per order with the gate's receipt</td><td>Order 1: <b>allow / ok</b> ("issuer Brightforge staked 10,000 (threshold 5,000) … place_order 600 within limit 700"). Probe: <b>refuse / unstaked_money_action</b>. 2 × <code>POST /verify</code>, both HTTP 200 (signed)</td></tr>
+  <tr><td>buyer-confirm<br><span class="small">3 calls</span></td><td>Read the reply. Fetched <code>GET /pubkey</code> and checked the receipt's id hash and Ed25519 signature. Wrote <code>outcome.json</code></td><td><code>"order_status": "fulfilled", "total_usd": 585.0, "receipt_checked": true, "receipt_valid": true</code></td></tr>
+</table>
+<div class="grid2">
+<pre>// shop's reply to the buyer (receipt shortened)
+{"request_id": "974f1d0c9dc0…",
+ "status": "fulfilled",
+ "reason": "Gate allowed (ok). PO-BF-0001: 30 x X-200
+   at $19.50 = $585.00 (below the $600 authorized).",
+ "total_usd": 585.0,
+ "receipt": {"decision": "allow", "reason": "ok",
+             "id": "04ace183f1bc…", "sig": "…"}}</pre>
+<pre>// shop's reply to the probe (receipt shortened)
+{"request_id": "cec8f9a2a286…",
+ "status": "declined",
+ "reason": "Gate refused: unstaked_money_action
+   (operator Brightline Supply has no stake;
+    orders need a staked operator).",
+ "receipt": {"decision": "refuse",
+             "reason": "unstaked_money_action", …}}</pre>
+</div>
+<p><b>Result use.</b> Both agents acted on what the gate returned, not just on whether the call succeeded:</p>
+<ul>
+  <li>The shop's action on each order is the one the gate's decision calls for. It priced the allowed order from its own price list and attached the receipt as evidence.</li>
+  <li>The buyer independently checked that receipt against the gate's public key before reporting success.</li>
+</ul>
+
+<h3>2.4 Outcome of every cold-start run</h3>
+<table>
+  <tr><th>Run</th><th>Code / docs</th><th>B1</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>B2</th><th class="n">Tool calls</th><th class="n">Errors</th><th class="n">Gate 4xx</th><th class="n">Time</th><th class="n">Cost</th></tr>
+  <tr><td><code>real-1</code> (first real run)</td><td><code>3850b2d</code></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓+</td><td class="n">12</td><td class="n">0</td><td class="n">0</td><td class="n">86 s</td><td class="n">$0.73</td></tr>
+  <tr><td><code>final-1</code> (final docs, signed checks)</td><td><code>ab40abb</code></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓+</td><td class="n">11</td><td class="n">0</td><td class="n">0</td><td class="n">80 s</td><td class="n">$0.77</td></tr>
+</table>
+<p class="small">✓+ = B2 passed with the receipt bonus (the buyer verified the receipt, and was right). In <code>real-1</code> the agents invented the operator "BrightforgeIndustries", gave it a $700 mandate and ordered $600; the shop chose stake ≥ 5,000 and a human above $1,000. Gate 4xx counts HTTP errors from the gate's access log. <code>final-1</code> ran after our teammate's change requiring receivers to sign their checks on a sandbox: the fresh shop learned to sign from <code>AGENTS.md</code> and no call was rejected (0 × HTTP 401).</p>
+
+<h3>2.5 Project or interface limitations vs. test-setup problems</h3>
+<table>
+  <tr><th style="width:36%">Observation</th><th style="width:16%">Kind</th><th>Evidence and handling</th></tr>
+  <tr><td>Install from the documentation could not start the gate; sub-agents made with CLI defaults were always refused</td><td><b>Project</b> (packaging, CLI)</td><td>Found by following <code>AGENTS.md</code> before the runs; fixed in <code>3850b2d</code> with a clean-install check and a regression test</td></tr>
+  <tr><td>A shop that crashes after checking cannot simply re-check: the gate answered <code>replay</code>. Agents recovered only by trawling the public receipt log</td><td><b>Project</b> (interface)</td><td>§3: tested, improved, rerun</td></tr>
+  <tr><td>Requests expire 10 minutes after signing (<code>stale_request</code>), so a slow hand-off between agents would fail</td><td><b>Project</b> (documented limit)</td><td>Did not occur: across all runs, orders were checked 6–31 s after signing (recorded per request in <code>score.json</code>)</td></tr>
+  <tr><td>The first isolation scan flagged 7 "outside paths"</td><td><b>Test set-up</b></td><td>The checker read the gate URL (<code>http://127.0.0.1:PORT/…</code>) as a file path. Fixed and rescanned: clean. The original verdict is kept in <code>summary.json</code></td></tr>
+  <tr><td>Isolation warnings in <code>final-*</code> and <code>crash-*</code> runs</td><td><b>Test set-up</b></td><td>The sessions' own Claude Code scratchpad folders and an endpoint name inside a string. No access to the repository, the gate's files or the other agent's folder in any run</td></tr>
+  <tr><td>Haiku shops escalated the $600 order</td><td><b>Test set-up</b> (check design)</td><td>The task lets the shop choose its policy, and Haiku chose "a human above $200/$500". The shop followed the gate's <code>escalate</code> correctly, but our S3(b)/R1 assumed a shop that accepts $600</td></tr>
+  <tr><td>Documentation was handed to the agents, not discovered; the gate was local, not public</td><td><b>Test set-up</b> (scope)</td><td>Discovery from inside NANDA Town was tested separately in HW8 work (22 Town tests). A public deployment is ready (<code>Dockerfile</code>, <code>docs/DEPLOY.md</code>) but not live</td></tr>
+</table>
+
+<h3>2.6 Independent or self-run, and manual help</h3>
+<ul>
+  <li><b>Self-run.</b> We wrote the harness and the task prompts. The clients were fresh Claude Code sessions (Opus 5.5; Haiku 5.5 in two crash runs) with no memory of our project, started by our harness on our machine.</li>
+  <li><b>No manual help during any run.</b> No human message reached an agent. The harness only started each phase, planted the probe and, in crash runs, moved the shop's replies aside. Resumed phases continue the same session; the prompts are in <code>usability/tasks/</code>.</li>
+  <li><b>Isolation is instructed and audited, not enforced.</b> The sessions could technically read other files. <code>usability/check_isolation.py</code> scans every tool call and found no access to the repository, the gate's files or the other agent's folder.</li>
+  <li><b>Changes made after a run</b>, all in git history:
+    <ul>
+      <li>the isolation checker's URL fix (after <code>real-1</code>);</li>
+      <li>check R1 and the crash scenario, added after <code>real-1</code> but before any crash run (<code>1576ca9</code>);</li>
+      <li>the two confirmation runs, registered before they ran (<code>ab40abb</code>).</li>
+    </ul>
+    No check was changed after a run that it scores.</li>
+</ul>
+
+<h2>3. Boundary, improvement, and rerun with regression tests <span class="pts">2 pts</span></h2>
+<h3>3.1 The boundary tested: a shop that crashes between checking and replying</h3>
+<p>The gate refuses a request whose one-time nonce it has already seen (<code>replay</code>). This protects against replays, but it means a receiver that crashes after asking cannot ask again. Agents retry tool calls, crash and receive messages twice, so this is a realistic failure. We added a crash phase (<code>--crash-retry</code>):</p>
+<ol>
+  <li>After the shop has checked and replied, the harness moves its replies and saved receipts aside. The keys stay.</li>
+  <li>A <b>fresh</b> shop session handles the same inbox, told only that it was restarted after a crash and lost its work.</li>
+</ol>
+<p>Check <b>R1</b> (registered in <code>1576ca9</code> before any crash run) passes when, at the end, the buyer's order has a <code>fulfilled</code> reply carrying a genuine <code>allow</code> receipt, and the probe is declined. <b>Prediction:</b> R1 fails, because a re-check gets <code>replay</code> and the shop declines a good order.</p>
+
+<h3>3.2 What we observed before the change</h3>
+<p>The predicted failure did <b>not</b> happen, for either model. Both restarted shops had read in <code>AGENTS.md</code> that a request can be checked once. So instead of re-checking, they searched the gate's public log of <i>every</i> decision (<code>GET /receipts</code>) for their old receipts, verified the signatures and replied correctly.</p>
+<p>This is an honest negative result for the prediction, and a real finding about the interface: the only way to recover was a workaround through a log of everyone's decisions, which <code>AGENTS.md</code> itself lists as a privacy limit. A client that simply re-checks would get <code>replay</code>.</p>
+
+<h3>3.3 The improvement: repeat checks (commit <code>df78644</code>)</h3>
+<ul>
+  <li>When the <b>same, unchanged</b> request is checked again at the same receiver within 20 minutes, the gate returns its <b>original</b> decision and receipt, marked <code>"repeat": true</code>. Unchanged means the same id (the hash of the body), a valid signature, and the same credential and chain.</li>
+  <li>Nothing is counted twice and no new receipt is written.</li>
+  <li>A different or altered request reusing the nonce is still refused as <code>replay</code>.</li>
+  <li><code>AGENTS.md</code> gained a section, <i>Checking the same request again</i>: act on a request at most once; if your records show you acted, don't act again; if you have none (you crashed), act now.</li>
+  <li>The SDK and MCP tool expose <code>repeat</code>, and the NANDA Town seller treats a repeat as a duplicate.</li>
+</ul>
+<p><b>Regression tests</b> (<code>tests/test_repeat.py</code>, 8 tests; <b>7 fail on the old gate</b>, all pass now). They cover:</p>
+<ul>
+  <li>a repeat returns the identical receipt;</li>
+  <li>spend is counted once (this one passed before too, since the old gate simply refused);</li>
+  <li>refusals are repeated;</li>
+  <li>nonce reuse with new content is still <code>replay</code>;</li>
+  <li>a copy with a broken signature or a swapped mandate chain is not answered from the earlier check;</li>
+  <li>other receivers get nothing;</li>
+  <li>the proof-of-work flow is unchanged;</li>
+  <li>a third party checking a copy first no longer locks the receiver out.</li>
+</ul>
+<p>Also passing: all 57 repository tests, the scripted gate scenarios (15a: repeat; 15b: nonce reuse is still <code>replay</code>) and the 22 NANDA Town integration tests. The HW7 deterministic benchmark is unchanged: Attest alone blocks 100% of attacks with 0% false refusals.</p>
+
+<h3>3.4 Rerun of the affected workflow: the restarted shop, before vs. after</h3>
+<table style="table-layout:fixed">
+  <colgroup><col style="width:18%"><col style="width:8%"><col style="width:7%"><col style="width:9%"><col style="width:10%"><col style="width:6%"><col style="width:6%"><col style="width:8%"><col style="width:28%"></colgroup>
+  <tr><th>Run</th><th>Model</th><th>Gate</th><th class="n">Log reads</th><th class="n">Re-checks</th><th class="n">Calls</th><th class="n">Turns</th><th class="n">Time</th><th>Result (all followed the gate)</th></tr>
+  <tr><td><code>crash-before-1</code></td><td>Opus 5.5</td><td>old</td><td class="n">2</td><td class="n">0</td><td class="n">4</td><td class="n">5</td><td class="n">38.0 s</td><td>fulfilled $585, probe declined; R1 <span class="ok">✓</span></td></tr>
+  <tr><td><code>crash-after-1</code></td><td>Opus 5.5</td><td>repeat</td><td class="n"><b>0</b></td><td class="n">1 (2)</td><td class="n">3</td><td class="n">4</td><td class="n">29.7 s</td><td><code>repeat: true</code>, no new receipts; R1 <span class="ok">✓</span></td></tr>
+  <tr><td><code>crash-before-haiku-1</code></td><td>Haiku 5.5</td><td>old</td><td class="n">2</td><td class="n">0</td><td class="n">7</td><td class="n">8</td><td class="n">31.5 s</td><td>escalated (its policy: human &gt; $200); R1 <span class="no">✗</span> by policy</td></tr>
+  <tr><td><code>crash-after-haiku-1</code></td><td>Haiku 5.5</td><td>repeat</td><td class="n"><b>0</b></td><td class="n">2 (4)</td><td class="n">4</td><td class="n">5</td><td class="n">27.6 s</td><td>escalated (human &gt; $500), <code>repeat: true</code>; R1 <span class="no">✗</span> by policy</td></tr>
+  <tr><td><code>final-crash-1</code></td><td>Opus 5.5</td><td>final</td><td class="n"><b>0</b></td><td class="n">1 (2)</td><td class="n">3</td><td class="n">4</td><td class="n">31.0 s</td><td>signed re-checks; all checks incl. R1 <span class="ok">✓</span></td></tr>
+</table>
+<p class="small">Log reads: the restarted shop's tool calls that query the gate's public <code>/receipts</code> log. Re-checks: its calls containing <code>/verify/</code>, <code>attest … check</code> or <code>.check(</code>, with the gate's own count of <code>/verify</code> requests in brackets. Calls: tool calls in the retry phase. One run per condition.</p>
+
+<h3>3.5 What improved, what did not, what remains unproven</h3>
+<ul>
+  <li><b>Improved.</b> Recovery after a crash is now one supported call. All three post-change runs re-checked and got the original answer, with 0 reads of the public log, versus 2 per run before. The restarted shop needed fewer steps: Opus 4 → 3 tool calls, Haiku 7 → 4 tool calls and 8 → 5 turns. The NANDA Town seller with its journal off now applies a double-delivered order once (it used to get <code>replay</code>). A third party can no longer use up a receiver's check.</li>
+  <li><b>Did not improve.</b> Correctness did not change. Every shop acted correctly before the change too, thanks to the workaround. The Haiku shops' "fail" on R1 is their own escalation policy, not an error, and the change cannot affect it.</li>
+  <li><b>Unproven.</b> We ran one run per condition and model, all self-run. A non-Claude agent, an agent built by another team, and finding the documentation without being handed it are all untested. The gate still cannot tell whether a receiver already <i>acted</i> on a request; keeping that record stays the receiver's job, and <code>AGENTS.md</code> says so. A long hand-off (over 10 minutes) would still expire the request.</li>
+</ul>
+
+<h2>4. How to repeat the test</h2>
+<pre>git clone https://github.com/smghaas/attest && cd attest
+python3.11 -m venv .venv && . .venv/bin/activate && pip install -e . pytest
+# needs the Claude Code CLI (`claude`) logged in; each run starts its own sandbox gate on a free port
+python usability/run_coldstart.py --run-id my-run                          # §2 (about 1.5 min, about $0.75)
+python usability/run_coldstart.py --run-id my-crash --crash-retry          # §3
+MODEL=claude-haiku-5-5 python usability/run_coldstart.py --run-id my-crash-haiku --crash-retry
+python usability/score.py usability/runs/my-run                            # re-score from artifacts
+python -m pytest -q tests && python run_scenarios.py --spawn               # regression tests and gate scenarios</pre>
+
+<h2>5. Team and contributions</h2>
+<table>
+  <tr><th style="width:18%">Member</th><th>Contributions</th></tr>
+  <tr><td><b>Eduard Alsina</b></td><td>HW9 usability work, built with Claude Code:
+    <ul>
+      <li>the <code>AGENTS.md</code> interface rewrite, and the two bugs found by following it;</li>
+      <li>the cold-start harness, task prompts, pre-registered checks, scorer and isolation audit;</li>
+      <li>all cold-start and crash runs;</li>
+      <li>the repeat-check improvement, with its regression tests;</li>
+      <li>this report.</li>
+    </ul>
+    Earlier: the NANDA Town discovery work (the seller tells strangers how to get served; catalog entry).</td></tr>
+  <tr><td><b>Samuel Haas</b></td><td>
+    <ul>
+      <li>The public sandbox: self-registration, faucet, rate limits, Docker and deploy guide.</li>
+      <li>The SDK, CLI, MCP server and web interface; the Attest Town demo; the agent history ledger.</li>
+      <li>Signed checks (only the receiver may ask), and task checks with person or company backers.</li>
+      <li>The <code>AGENTS.md</code> sections on these; the NANDA Town PR (HW8); merging both lines of work.</li>
+    </ul></td></tr>
+</table>
+<p class="small">Both members reviewed the results. Built with Claude Code; the commit history in the repository records who did what.</p>
+
+<div class="pagebreak"></div>
+<h2>Final project slides</h2>
+<p>[The PDF export of our 3–4 slides from the shared Fall 2026 Demo Day deck follows here. Link to our slides in the live deck: …]</p>
+
+</body>
+</html>

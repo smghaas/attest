@@ -117,11 +117,13 @@ The root `.gitignore` ignores `runs/`, so add a run you want to keep with `git a
 | Run | Gate / docs | Model | What it shows |
 |---|---|---|---|
 | `smoke-1` | plumbing only | default | every phase starts and stops; checks fail by design |
-| `real-1` | `3850b2d` | default (Sonnet) | Part 2: B1, S1–S4, B2 and the receipt bonus all pass; 12 tool calls, 0 errors, 86 s, $0.73 |
-| `crash-before-1` | `1576ca9` (before repeat checks) | Sonnet | the restarted shop finds its old receipts in the public `GET /receipts` log (2 log reads, 0 re-checks); R1 passes |
+| `real-1` | `3850b2d` | default (Opus 5.5) | Part 2: B1, S1–S4, B2 and the receipt bonus all pass; 12 tool calls, 0 errors, 86 s, $0.73 |
+| `crash-before-1` | `1576ca9` (before repeat checks) | Opus 5.5 | the restarted shop finds its old receipts in the public `GET /receipts` log (2 log reads, 0 re-checks); R1 passes |
 | `crash-before-haiku-1` | `1576ca9` | Haiku | same workaround (2 log reads, 0 re-checks); its shop escalates orders above $200 (its own policy), so R1 and S3(b) fail by policy, not error |
-| `crash-after-1` | `df78644` (repeat checks) | Sonnet | the restarted shop re-checks and gets `repeat: true` (0 log reads, 1 re-check call); all checks pass |
+| `crash-after-1` | `df78644` (repeat checks) | Opus 5.5 | the restarted shop re-checks and gets `repeat: true` (0 log reads, 1 re-check call); all checks pass |
 | `crash-after-haiku-1` | `df78644` | Haiku | 0 log reads, re-checks get `repeat: true`; its shop escalates above $500, so R1/S3(b) fail by policy again |
+| `final-1` | `ab40abb` (merged, signed checks) | Opus 5.5 | confirmation on the final docs: all checks pass, 0 unsigned checks (no 401s) |
+| `final-crash-1` | `ab40abb` | Opus 5.5 | crash-retry on the final docs: all checks incl. R1 pass; the restarted shop re-checks and gets `repeat: true` |
 
 "Public-log reads" and "re-checks" count the restarted shop's tool calls that query `GET /receipts` and that call
 `/verify` (or `attest check`, or the SDK's `.check(`) respectively; see `docs/HW9.md` for the exact count.
